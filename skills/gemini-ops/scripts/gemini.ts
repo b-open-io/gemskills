@@ -15,18 +15,20 @@ import {
 } from "../../../utils";
 import type { Image } from "@google/genai";
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-  console.error("Error: GEMINI_API_KEY environment variable is not set.");
-  console.error("\nGet an API key from: https://aistudio.google.com/apikey");
-  console.error("\nThen add to your environment:");
-  console.error('  export GEMINI_API_KEY="your-api-key-here"');
-  process.exit(1);
-}
-
 const args = process.argv.slice(2);
 const command = args[0];
+
+function getApiKey(): string {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("Error: GEMINI_API_KEY environment variable is not set.");
+    console.error("\nGet an API key from: https://aistudio.google.com/apikey");
+    console.error("\nThen add to your environment:");
+    console.error('  export GEMINI_API_KEY="your-api-key-here"');
+    process.exit(1);
+  }
+  return apiKey;
+}
 
 function showHelp() {
   console.log(`
@@ -155,6 +157,7 @@ async function handleGenerate() {
     process.exit(1);
   }
 
+  const apiKey = getApiKey();
   const result: GeminiResult = await callGemini(apiKey, prompt, {
     model: parsed.model,
     instructions: parsed.instructions,
@@ -203,6 +206,7 @@ async function handleImage() {
   if (parsed.input) options.inputImage = await loadImage(parsed.input);
 
   console.error("🎨 Generating image...\n");
+  const apiKey = getApiKey();
   const result: GeminiImageResult = await callGeminiImage(apiKey, prompt, options);
 
   if (result.text) {
@@ -243,6 +247,7 @@ async function handleUpscale() {
   if (parsed.quality) options.jpegQuality = parseInt(parsed.quality);
 
   console.error("🔍 Upscaling image...\n");
+  const apiKey = getApiKey();
   const result: GeminiImageResult = await callGeminiUpscale(apiKey, imageData, options);
 
   for (let i = 0; i < result.images.length; i++) {
@@ -276,6 +281,7 @@ async function handleEdit() {
   if (parsed.mode) options.editMode = parsed.mode;
 
   console.error("✏️  Editing image...\n");
+  const apiKey = getApiKey();
   const result: GeminiImageResult = await callGeminiEdit(
     apiKey,
     prompt,
@@ -305,6 +311,7 @@ async function handleSvg() {
   }
 
   console.error("🎨 Generating SVG...\n");
+  const apiKey = getApiKey();
   const result: GeminiSvgResult = await callGeminiSvg(apiKey, prompt, {
     instructions: parsed.instructions,
   });
@@ -331,6 +338,7 @@ async function handleSegment() {
 
   const imageData = await loadImage(inputPath);
   console.error("🔍 Segmenting image...\n");
+  const apiKey = getApiKey();
   const result: GeminiSegmentResult = await callGeminiSegment(
     apiKey,
     imageData,
