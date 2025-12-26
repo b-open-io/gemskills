@@ -1,67 +1,49 @@
 # Gemini Skills for Claude Code
 
-Claude Code plugin providing Gemini 3.0 Pro Preview skills for design analysis, spatial awareness, and visual critique.
+Claude Code plugin for Gemini 3.0 Pro Preview - design analysis, spatial awareness, and visual critique.
 
-## Features
+## What This Does
 
-- **ask-gemini**: Text + multi-image prompts (up to 10 images)
-- Gemini 3.0 Pro Preview model (optimized for design/spatial awareness)
-- Multi-image comparison support
-- Clean API key handling (GEMINI_API_KEY only)
+Provides a skill for asking Gemini 3.0 Pro Preview questions with optional images. Gemini excels at spatial reasoning and visual analysis, making it ideal for design work.
 
 ## Installation
-
-### From GitHub
 
 ```bash
 /plugin marketplace add https://github.com/b-open-io/gemskills
 /plugin install gemskills
 ```
 
-### Requirements
+**Requirements**: Set `GEMINI_API_KEY` environment variable ([get one here](https://aistudio.google.com/apikey))
 
-Set your Gemini API key as an environment variable:
+## Usage
 
-```bash
-export GEMINI_API_KEY="your-api-key-here"
-```
+### ask-gemini skill
 
-Get an API key from: https://aistudio.google.com/apikey
-
-## Skills
-
-### ask-gemini
-
-Ask Gemini 3.0 Pro Preview for design advice with optional images.
-
-**Use cases:**
-- Design review and critique
-- Spatial layout analysis
-- Visual hierarchy assessment
-- Color scheme evaluation
-- Typography feedback
-- Comparing design alternatives (send multiple images)
-- Three.js/WebGL composition analysis
+Ask Gemini for design feedback with up to 10 images.
 
 **Examples:**
 
 ```bash
-# Text-only
-bun run ask_gemini.ts "What makes a good web3 landing page?"
+# Text only
+"What makes effective web3 landing page design?"
 
-# Single image
-bun run ask_gemini.ts screenshot.png "Analyze this design"
+# Single image analysis
+"Analyze this Three.js composition" (with screenshot attached)
 
-# Compare multiple images
-bun run ask_gemini.ts current.png target.png "Compare these - what are the key differences?"
+# Compare multiple designs
+"Compare these two landing pages - what works better?" (with 2 screenshots)
 ```
 
-## Why This Plugin?
+**Best for:**
+- Design critique and spatial layout analysis
+- Visual hierarchy and typography feedback
+- Comparing design alternatives
+- Three.js/WebGL composition analysis
+- Color scheme evaluation
 
-- **Focused on design**: Gemini 3.0 Pro Preview excels at spatial awareness and visual analysis
-- **Multi-image support**: Compare up to 10 images in a single request
-- **Clean implementation**: No ambiguous API keys, minimal dependencies
-- **Portable**: Works across projects, easy to install
+## Why Use This
+
+Gemini 3.0 Pro Preview is specifically strong at spatial awareness and visual understanding - better than other models for design feedback. The multi-image support lets you compare alternatives in a single request.
 
 ## License
 
