@@ -8,7 +8,11 @@
   "components": {
     "skills": [
       "skills/ask-gemini",
-      "skills/gemini-ops"
+      "skills/generate-image",
+      "skills/upscale-image",
+      "skills/edit-image",
+      "skills/generate-svg",
+      "skills/segment-image"
     ]
   }
 }

@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts",
-    "gemini": "bun run skills/gemini-ops/scripts/gemini.ts"
+    "image": "bun run skills/generate-image/scripts/generate.ts",
+    "upscale": "bun run skills/upscale-image/scripts/upscale.ts",
+    "edit": "bun run skills/edit-image/scripts/edit.ts",
+    "svg": "bun run skills/generate-svg/scripts/generate.ts",
+    "segment": "bun run skills/segment-image/scripts/segment.ts"
   },
   "dependencies": {
     "@google/genai": "^1.30.0"
