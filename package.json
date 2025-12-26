@@ -1,0 +1,27 @@
+{
+  "name": "gemskills",
+  "version": "1.0.0",
+  "description": "Gemini 3.0 Pro Preview skills for Claude Code - design analysis, spatial awareness, visual critique",
+  "type": "module",
+  "scripts": {
+    "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.30.0"
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "gemini",
+    "design",
+    "spatial-awareness",
+    "vision",
+    "ai"
+  ],
+  "author": "b-open-io",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/b-open-io/gemskills.git"
+  }
+}

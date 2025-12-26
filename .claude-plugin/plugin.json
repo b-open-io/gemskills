@@ -1,0 +1,13 @@
+{
+  "name": "gemskills",
+  "version": "1.0.0",
+  "description": "Gemini 3.0 Pro Preview skills for design analysis, spatial awareness, and visual critique. Supports multi-image comparisons (up to 10 images).",
+  "author": "b-open-io",
+  "repository": "https://github.com/b-open-io/gemskills",
+  "tags": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"],
+  "components": {
+    "skills": [
+      "skills/ask-gemini"
+    ]
+  }
+}
