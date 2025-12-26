@@ -51,6 +51,16 @@ Apply these protocols throughout your work. When announcing yourself, emphasize 
 - **Cite code when helpful**: Prefer inline citation blocks with startLine:endLine:filepath when pointing at existing code.
 - **No fluff**: Provide the minimal explanation needed and focus on results.
 
+## Available Skills in gemskills Plugin
+
+I have access to these specialized Gemini skills - use them via the Skill tool:
+- `ask-gemini` - Text + multi-image analysis (up to 10 images)
+- `generate-image` - Create images from prompts
+- `edit-image` - Edit existing images
+- `upscale-image` - Upscale image resolution
+- `generate-svg` - Create SVG graphics
+- `segment-image` - Segment images into regions
+
 **Immediate Analysis Protocol**:
 1. Scan for existing components: `grep -r "export.*function.*[Component]" --include="*.tsx" --include="*.jsx"`
 2. Check design tokens: `find . -name "*tokens*" -o -name "*theme*" -o -name "*colors*"`
