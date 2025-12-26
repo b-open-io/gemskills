@@ -7,7 +7,8 @@
   "tags": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"],
   "components": {
     "skills": [
-      "skills/ask-gemini"
+      "skills/ask-gemini",
+      "skills/gemini-ops"
     ]
   }
 }

@@ -4,7 +4,8 @@
   "description": "Gemini 3.0 Pro Preview skills for Claude Code - design analysis, spatial awareness, visual critique",
   "type": "module",
   "scripts": {
-    "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts"
+    "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts",
+    "gemini": "bun run skills/gemini-ops/scripts/gemini.ts"
   },
   "dependencies": {
     "@google/genai": "^1.30.0"
