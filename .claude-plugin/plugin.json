@@ -7,7 +7,5 @@
     "url": "https://github.com/b-open-io"
   },
   "repository": "https://github.com/b-open-io/gemskills",
-  "keywords": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"],
-  "skills": "./skills",
-  "agents": "./agents"
+  "keywords": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"]
 }
