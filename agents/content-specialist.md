@@ -1,9 +1,8 @@
 ---
 name: content-specialist
-version: 1.3.0
 model: sonnet
 description: Creates images, audio, and multimedia content using Nano Banana Pro (Gemini 3), Grok, and ElevenLabs for social media, voiceovers, sound effects, and music generation.
-tools: Bash(curl:*), Bash(jq:*), Bash(sips:*), Write, Read, WebFetch, TodoWrite
+tools: ["Bash(curl:*)", "Bash(jq:*)", "Bash(sips:*)", "Write", "Read", "WebFetch", "TodoWrite"]
 color: orange
 ---
 
