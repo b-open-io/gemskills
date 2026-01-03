@@ -1,18 +1,13 @@
 {
   "name": "gemskills",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Gemini 3.0 Pro Preview skills for design analysis, spatial awareness, and visual critique. Supports multi-image comparisons (up to 10 images).",
-  "author": "b-open-io",
+  "author": {
+    "name": "b-open-io",
+    "url": "https://github.com/b-open-io"
+  },
   "repository": "https://github.com/b-open-io/gemskills",
-  "tags": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"],
-  "components": {
-    "skills": [
-      "skills/ask-gemini",
-      "skills/generate-image",
-      "skills/upscale-image",
-      "skills/edit-image",
-      "skills/generate-svg",
-      "skills/segment-image"
-    ]
-  }
+  "keywords": ["gemini", "design", "vision", "spatial-awareness", "ai", "google"],
+  "skills": "./skills",
+  "agents": "./agents"
 }
