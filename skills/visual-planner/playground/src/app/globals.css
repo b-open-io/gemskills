@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ============================================================
+   Visual Planner Design Tokens
+   All OKLCH — perceptually uniform, HDR-ready
+   ============================================================ */
+
+:root {
+	/* === Surface hierarchy === */
+	--bg: oklch(0.11 0.004 264);
+	--bg-elevated: oklch(0.15 0.004 264);
+	--bg-floating: oklch(0.19 0.006 264);
+	--bg-overlay: oklch(0.13 0.004 264 / 92%);
+
+	/* === Canvas-specific === */
+	--canvas-surface: oklch(0.1 0.003 264);
+	--canvas-dot: oklch(0.22 0.004 264);
+	--canvas-dot-size: 1px;
+	--canvas-dot-gap: 24px;
+
+	/* === Foreground === */
+	--fg: oklch(0.94 0.006 264);
+	--fg-muted: oklch(0.6 0.008 264);
+	--fg-subtle: oklch(0.38 0.006 264);
+	--fg-inverse: oklch(0.1 0.004 264);
+
+	/* === Accent palette — Emerald primary === */
+	--accent: oklch(0.7 0.18 162);
+	--accent-muted: oklch(0.7 0.18 162 / 20%);
+	--accent-strong: oklch(0.82 0.14 162);
+	--accent-dim: oklch(0.4 0.1 162);
+
+	/* === Secondary accent — Amber for human gates === */
+	--warn: oklch(0.78 0.17 85);
+	--warn-muted: oklch(0.78 0.17 85 / 18%);
+	--warn-strong: oklch(0.88 0.14 85);
+
+	/* === Danger === */
+	--danger: oklch(0.64 0.22 27);
+	--danger-muted: oklch(0.64 0.22 27 / 18%);
+
+	/* === Borders === */
+	--border: oklch(1 0 0 / 10%);
+	--border-subtle: oklch(1 0 0 / 6%);
+	--border-strong: oklch(1 0 0 / 20%);
+	--border-accent: oklch(0.7 0.18 162 / 60%);
+
+	/* === Node type colors === */
+	--node-supervisor: oklch(0.7 0.18 162);
+	--node-supervisor-fill: oklch(0.7 0.18 162 / 12%);
+	--node-worker: oklch(0.65 0.01 264);
+	--node-worker-fill: oklch(0.65 0.01 264 / 8%);
+	--node-human: oklch(0.78 0.17 85);
+	--node-human-fill: oklch(0.78 0.17 85 / 12%);
+	--node-subgraph: oklch(0.5 0.008 264);
+	--node-subgraph-fill: oklch(0.15 0.004 264 / 60%);
+	--node-tool: oklch(0.66 0.15 212);
+	--node-tool-fill: oklch(0.66 0.15 212 / 10%);
+	--node-start: oklch(0.72 0.18 145);
+	--node-start-fill: oklch(0.72 0.18 145 / 30%);
+	--node-end: oklch(0.64 0.22 27);
+	--node-end-fill: oklch(0.64 0.22 27 / 20%);
+	--node-parallel: oklch(0.6 0.08 240);
+	--node-parallel-fill: oklch(0.6 0.08 240 / 8%);
+
+	/* === Phase indicators === */
+	--phase-planned: oklch(0.6 0.008 264);
+	--phase-planned-dash: 8px 4px;
+	--phase-in-progress: oklch(0.7 0.18 162);
+	--phase-in-progress-fill: oklch(0.7 0.18 162 / 10%);
+	--phase-implemented: oklch(0.72 0.18 145);
+	--phase-implemented-fill: oklch(0.72 0.18 145 / 18%);
+	--phase-revision: oklch(0.78 0.17 85);
+	--phase-revision-dash: 6px 3px;
+	--phase-revision-fill: oklch(0.78 0.17 85 / 8%);
+
+	/* === Edge colors === */
+	--edge-default: oklch(0.55 0.008 264);
+	--edge-conditional: oklch(0.65 0.12 212);
+	--edge-loop: oklch(0.7 0.18 162);
+	--edge-parallel: oklch(0.6 0.08 240);
+
+	/* === Sticky notes === */
+	--annotation-bg: oklch(0.78 0.1 95 / 88%);
+	--annotation-fg: oklch(0.18 0.04 80);
+	--annotation-pin: oklch(0.6 0.16 30);
+
+	/* === Glass surfaces === */
+	--glass-bg: oklch(0.16 0.005 264 / 85%);
+	--glass-border: oklch(1 0 0 / 12%);
+	--glass-blur: 16px;
+
+	/* === Focus ring === */
+	--ring: oklch(0.7 0.18 162 / 70%);
+	--ring-offset: oklch(0.11 0.004 264);
+
+	/* === Typography === */
+	--font-display: var(--font-geist), system-ui;
+	--font-body: var(--font-geist), system-ui;
+	--font-mono: var(--font-jetbrains), "Geist Mono", monospace;
+
+	/* === Layout === */
+	--toolbar-height: 40px;
+
+	/* === Radii === */
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+	--radius-xl: 12px;
+	--radius-2xl: 16px;
+
+	/* === Shadows === */
+	--shadow-sm: 0 1px 3px oklch(0 0 0 / 40%);
+	--shadow-md: 0 4px 16px oklch(0 0 0 / 50%);
+	--shadow-lg: 0 8px 32px oklch(0 0 0 / 60%);
+
+	/* === Motion === */
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--duration-fast: 100ms;
+	--duration-base: 180ms;
+	--duration-slow: 320ms;
+}
+
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+	:root:not(.dark) {
+		--bg: oklch(0.97 0.003 264);
+		--bg-elevated: oklch(0.93 0.004 264);
+		--bg-floating: oklch(0.99 0.002 264);
+		--canvas-surface: oklch(0.95 0.002 264);
+		--canvas-dot: oklch(0.8 0.006 264);
+		--fg: oklch(0.15 0.006 264);
+		--fg-muted: oklch(0.45 0.008 264);
+		--fg-subtle: oklch(0.65 0.006 264);
+		--border: oklch(0 0 0 / 10%);
+		--border-subtle: oklch(0 0 0 / 6%);
+		--border-strong: oklch(0 0 0 / 20%);
+		--glass-bg: oklch(0.98 0.002 264 / 88%);
+		--glass-border: oklch(0 0 0 / 10%);
+		--ring-offset: oklch(0.97 0.003 264);
+		--node-worker: oklch(0.35 0.02 264);
+		--node-worker-fill: oklch(0.35 0.02 264 / 8%);
+		--edge-default: oklch(0.45 0.008 264);
+	}
+}
+
+/* === Base reset === */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100dvh;
+	width: 100dvw;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--font-body);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#__next {
+	height: 100dvh;
+	width: 100dvw;
+	overflow: hidden;
+}
+
+/* === Scrollbar styling === */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--border-strong);
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: oklch(1 0 0 / 30%);
+}
+
+/* === Focus styles === */
+:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 1px;
+}
+
+/* === Selection === */
+::selection {
+	background: var(--accent-muted);
+	color: var(--fg);
+}

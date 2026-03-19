@@ -1,0 +1,350 @@
+{
+  "store": {
+    "document:document": {
+      "gridSize": 10,
+      "name": "Hierarchical Teams",
+      "meta": { "description": "Top-level supervisor delegates to Research and Content sub-teams, each with their own supervisor and workers." },
+      "id": "document:document",
+      "typeName": "document"
+    },
+    "page:page": {
+      "meta": {},
+      "id": "page:page",
+      "name": "Page 1",
+      "index": "a1",
+      "typeName": "page"
+    },
+
+    "shape:start": {
+      "id": "shape:start", "typeName": "shape", "type": "geo",
+      "x": 470, "y": 0, "rotation": 0, "index": "a1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "green", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Start" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "start", "phase": "implemented" }
+    },
+
+    "shape:top_sup": {
+      "id": "shape:top_sup", "typeName": "shape", "type": "geo",
+      "x": 380, "y": 120, "rotation": 0, "index": "a2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 240, "h": 80,
+        "color": "violet", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Top Supervisor" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "supervisor", "phase": "in_progress",
+        "agent": "Sage", "model": "opus",
+        "tools": ["dispatch-team", "merge-results", "status-check"],
+        "description": "Decomposes requests, dispatches to sub-teams, merges results."
+      }
+    },
+
+    "shape:research_frame": {
+      "id": "shape:research_frame", "typeName": "shape", "type": "frame",
+      "x": 0, "y": 280, "rotation": 0, "index": "a3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": { "w": 480, "h": 380, "name": "Research Team", "color": "blue" },
+      "meta": {}
+    },
+
+    "shape:research_sup": {
+      "id": "shape:research_sup", "typeName": "shape", "type": "geo",
+      "x": 130, "y": 40, "rotation": 0, "index": "a4",
+      "parentId": "shape:research_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 220, "h": 80,
+        "color": "violet", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Research Lead" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "supervisor", "phase": "in_progress",
+        "agent": "Parker", "model": "sonnet",
+        "tools": ["assign-query", "evaluate-sources", "compile-brief"],
+        "description": "Manages research sub-team. Splits queries, compiles briefs."
+      }
+    },
+
+    "shape:web_searcher": {
+      "id": "shape:web_searcher", "typeName": "shape", "type": "geo",
+      "x": 20, "y": 200, "rotation": 0, "index": "a5",
+      "parentId": "shape:research_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 180, "h": 70,
+        "color": "green", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Web Searcher" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "implemented",
+        "tools": ["web-search", "scrape-url"],
+        "description": "Performs web searches, extracts page content."
+      }
+    },
+
+    "shape:data_analyst": {
+      "id": "shape:data_analyst", "typeName": "shape", "type": "geo",
+      "x": 250, "y": 200, "rotation": 0, "index": "a6",
+      "parentId": "shape:research_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 180, "h": 70,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Data Analyst" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "tools": ["query-database", "run-analysis", "generate-chart"],
+        "description": "Queries internal data, produces statistical summaries."
+      }
+    },
+
+    "shape:fact_checker": {
+      "id": "shape:fact_checker", "typeName": "shape", "type": "geo",
+      "x": 150, "y": 300, "rotation": 0, "index": "a7",
+      "parentId": "shape:research_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 180, "h": 70,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Fact Checker" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "agent": "Nyx", "model": "opus",
+        "tools": ["cross-reference", "verify-claim"],
+        "description": "Verifies key claims before brief is finalized."
+      }
+    },
+
+    "shape:content_frame": {
+      "id": "shape:content_frame", "typeName": "shape", "type": "frame",
+      "x": 520, "y": 280, "rotation": 0, "index": "a8",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": { "w": 440, "h": 300, "name": "Content Team", "color": "orange" },
+      "meta": {}
+    },
+
+    "shape:content_sup": {
+      "id": "shape:content_sup", "typeName": "shape", "type": "geo",
+      "x": 110, "y": 40, "rotation": 0, "index": "a9",
+      "parentId": "shape:content_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 220, "h": 80,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Content Lead" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "supervisor", "phase": "planned",
+        "agent": "Flow", "model": "sonnet",
+        "tools": ["assign-section", "review-draft", "merge-document"],
+        "description": "Manages content sub-team. Assigns sections, reviews, merges."
+      }
+    },
+
+    "shape:tech_writer": {
+      "id": "shape:tech_writer", "typeName": "shape", "type": "geo",
+      "x": 20, "y": 200, "rotation": 0, "index": "aA",
+      "parentId": "shape:content_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 180, "h": 70,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Tech Writer" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "agent": "Theo", "model": "sonnet",
+        "tools": ["draft-section", "insert-code-examples"],
+        "description": "Handles technical content."
+      }
+    },
+
+    "shape:copywriter": {
+      "id": "shape:copywriter", "typeName": "shape", "type": "geo",
+      "x": 240, "y": 200, "rotation": 0, "index": "aB",
+      "parentId": "shape:content_frame", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 180, "h": 70,
+        "color": "orange", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Copywriter" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "needs_revision",
+        "agent": "Caal", "model": "sonnet",
+        "tools": ["draft-section", "tone-check"],
+        "description": "Handles marketing and user-facing copy."
+      }
+    },
+
+    "shape:human_approval": {
+      "id": "shape:human_approval", "typeName": "shape", "type": "geo",
+      "x": 400, "y": 720, "rotation": 0, "index": "aC",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "diamond", "w": 200, "h": 120,
+        "color": "yellow", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Final Approval" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "human_checkpoint", "phase": "planned",
+        "description": "Final gate. Human reviews merged output from both teams."
+      }
+    },
+
+    "shape:end": {
+      "id": "shape:end", "typeName": "shape", "type": "geo",
+      "x": 470, "y": 900, "rotation": 0, "index": "aD",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "red", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "End" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "end", "phase": "planned" }
+    },
+
+    "shape:note_parallel": {
+      "id": "shape:note_parallel", "typeName": "shape", "type": "note",
+      "x": 10, "y": 100, "rotation": 0, "index": "aE",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "color": "yellow", "labelColor": "black",
+        "size": "m", "font": "sans", "fontSizeAdjustment": 0,
+        "align": "start", "verticalAlign": "start", "growY": 0, "url": "",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Both teams run in parallel when request has research + content components" }] }] },
+        "scale": 1
+      },
+      "meta": {}
+    },
+
+    "shape:a_start_top": {
+      "id": "shape:a_start_top", "typeName": "shape", "type": "arrow",
+      "x": 500, "y": 60, "rotation": 0, "index": "b1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph" }] }
+      }, "meta": {}
+    },
+    "binding:a_start_top_s": { "id": "binding:a_start_top_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_start_top", "toId": "shape:start", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_start_top_e": { "id": "binding:a_start_top_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_start_top", "toId": "shape:top_sup", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_top_research": {
+      "id": "shape:a_top_research", "typeName": "shape", "type": "arrow",
+      "x": 380, "y": 200, "rotation": 0, "index": "b2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": -140, "y": 120 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Research tasks" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_top_research_s": { "id": "binding:a_top_research_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_research", "toId": "shape:top_sup", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_top_research_e": { "id": "binding:a_top_research_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_research", "toId": "shape:research_sup", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_top_content": {
+      "id": "shape:a_top_content", "typeName": "shape", "type": "arrow",
+      "x": 620, "y": 200, "rotation": 0, "index": "b3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 120, "y": 120 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Content tasks" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_top_content_s": { "id": "binding:a_top_content_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_content", "toId": "shape:top_sup", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_top_content_e": { "id": "binding:a_top_content_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_content", "toId": "shape:content_sup", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_top_human": {
+      "id": "shape:a_top_human", "typeName": "shape", "type": "arrow",
+      "x": 500, "y": 660, "rotation": 0, "index": "b4",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "dashed",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Ready for review" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_top_human_s": { "id": "binding:a_top_human_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_human", "toId": "shape:top_sup", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_top_human_e": { "id": "binding:a_top_human_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_top_human", "toId": "shape:human_approval", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_human_end": {
+      "id": "shape:a_human_end", "typeName": "shape", "type": "arrow",
+      "x": 500, "y": 840, "rotation": 0, "index": "b5",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Approved" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_human_end_s": { "id": "binding:a_human_end_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_human_end", "toId": "shape:human_approval", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_human_end_e": { "id": "binding:a_human_end_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_human_end", "toId": "shape:end", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_human_top": {
+      "id": "shape:a_human_top", "typeName": "shape", "type": "arrow",
+      "x": 350, "y": 720, "rotation": 0, "index": "b6",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "orange", "fill": "none", "dash": "dashed",
+        "size": "s", "font": "sans", "labelColor": "orange",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": -520 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Revisions needed" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_human_top_s": { "id": "binding:a_human_top_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_human_top", "toId": "shape:human_approval", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_human_top_e": { "id": "binding:a_human_top_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_human_top", "toId": "shape:top_sup", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} }
+  }
+}

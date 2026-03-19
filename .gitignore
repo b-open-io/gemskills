@@ -1,0 +1,12 @@
+node_modules/
+*.log
+.DS_Store
+.env
+bun.lockb
+.tmp/
+.claude/settings.local.json
+.next/
+
+# Example outputs are demo artifacts, not shipped content.
+# Seed assets (style tiles, video backgrounds) live in assets/ dirs instead.
+**/examples/

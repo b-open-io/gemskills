@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "deck-playground",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "--cwd", "skills/deck-creator/playground", "next", "dev", "--turbopack", "-p", "3457"],
+      "port": 3457,
+      "env": {
+        "DECK_DIR": "/Users/satchmo/code/gemskills/skills/deck-creator/examples/opl-pitch-deck"
+      }
+    }
+  ]
+}

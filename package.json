@@ -1,0 +1,64 @@
+{
+  "name": "gemskills",
+  "version": "1.0.3",
+  "description": "Gemini 3 skills for Claude Code - image generation, editing, text, design analysis, spatial awareness, visual critique",
+  "type": "module",
+  "scripts": {
+    "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts",
+    "image": "bun run skills/generate-image/scripts/generate.ts",
+    "upscale": "bun run skills/upscale-image/scripts/upscale.ts",
+    "edit": "bun run skills/edit-image/scripts/edit.ts",
+    "svg": "bun run skills/generate-svg/scripts/generate.ts",
+    "segment": "bun run skills/segment-image/scripts/segment.ts",
+    "icon": "bun run skills/generate-icon/scripts/generate.ts",
+    "optimize": "bun run skills/optimize-images/scripts/optimize-images.ts",
+    "tiles": "bun run skills/browsing-styles/scripts/generate_tiles.ts",
+    "video": "bun run skills/generate-video/scripts/generate.ts",
+    "styles": "bun run skills/browsing-styles/scripts/list_styles.ts",
+    "presenter": "bun run skills/deck-creator/scripts/build_presenter.ts",
+    "playground": "bun run skills/deck-creator/scripts/playground_server.ts"
+  },
+  "files": [
+    ".claude-plugin/",
+    "agents/",
+    "scripts/",
+    "skills/",
+    "!skills/**/examples/**",
+    "!skills/**/playground/.next/**",
+    "!skills/**/playground/out/**",
+    "!skills/**/playground/node_modules/**",
+    "README.md",
+    "STYLES.md",
+    "shared.ts",
+    "utils.ts"
+  ],
+  "dependencies": {
+    "@google/genai": "^1.34.0",
+    "@quiverai/sdk": "^0.4.1",
+    "agentation": "^2.2.1",
+    "pngjs": "^7.0.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "replicate": "^1.4.0",
+    "sharp": "^0.34.5"
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "gemini",
+    "design",
+    "spatial-awareness",
+    "vision",
+    "ai"
+  ],
+  "author": "b-open-io",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/b-open-io/gemskills.git"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
+  }
+}

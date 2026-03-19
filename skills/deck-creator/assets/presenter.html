@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>__DECK_TITLE__</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: __ACCENT_COLOR__;
+      --bg: __BG_COLOR__;
+      --transition-ms: __TRANSITION_MS__;
+      --control-height: 56px;
+      --stage-ar-w: 16;
+      --stage-ar-h: 9;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+      user-select: none;
+    }
+
+    /* ── Video Background ─────────────────────────────────── */
+
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .video-bg.active { display: block; }
+
+    .video-bg video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: rgba(0,0,0, var(--overlay-opacity, 0.3));
+      pointer-events: none;
+      display: none;
+    }
+
+    .video-overlay.active { display: block; }
+
+    .image-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: none;
+    }
+
+    .image-bg.active { display: block; }
+
+    /* ── Slides ───────────────────────────────────────────── */
+
+    .slides-container {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 16px calc(var(--control-height) + 28px);
+    }
+
+    .stage {
+      position: relative;
+      width: min(
+        calc(100vw - 32px),
+        calc((100vh - (var(--control-height) + 44px)) * var(--stage-ar-w) / var(--stage-ar-h))
+      );
+      height: min(
+        calc(100vh - (var(--control-height) + 44px)),
+        calc((100vw - 32px) * var(--stage-ar-h) / var(--stage-ar-w))
+      );
+      max-width: calc(100vw - 32px);
+      max-height: calc(100vh - (var(--control-height) + 44px));
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body.fullscreen .slides-container {
+      padding: 0;
+    }
+
+    body.fullscreen .stage {
+      width: min(100vw, calc(100vh * var(--stage-ar-w) / var(--stage-ar-h)));
+      height: min(100vh, calc(100vw * var(--stage-ar-h) / var(--stage-ar-w)));
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+
+    body.exporting {
+      cursor: default;
+    }
+
+    body.exporting .slides-container {
+      padding: 0;
+    }
+
+    body.exporting .stage {
+      width: min(100vw, calc(100vh * var(--stage-ar-w) / var(--stage-ar-h)));
+      height: min(100vh, calc(100vw * var(--stage-ar-h) / var(--stage-ar-w)));
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+
+    body.exporting .slide {
+      transition: none !important;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.95);
+      transition:
+        opacity calc(var(--transition-ms) * 1ms) ease-in-out,
+        transform calc(var(--transition-ms) * 1ms) ease-in-out;
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+
+    .slide-media {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      overflow: hidden;
+      display: block;
+      background: transparent;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .slide.future {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .slide iframe {
+      background: transparent;
+    }
+
+    /* ── Speaker Notes Panel ───────────────────────────────── */
+
+    .notes-panel {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      width: min(700px, 90vw);
+      max-height: 150px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .notes-panel.visible { display: block; }
+
+    .notes-panel .notes-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 6px;
+    }
+
+    /* ── Controls (liquid glass) ──────────────────────────── */
+
+    .controls {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 10px 20px;
+      min-height: var(--control-height);
+      border-radius: 16px;
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-top: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      opacity: 1;
+      transition: opacity 300ms ease;
+    }
+
+    .controls.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Slide counter */
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,0.5);
+      white-space: nowrap;
+      min-width: 48px;
+    }
+
+    /* Progress dots */
+    .progress-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: all 300ms ease;
+      flex-shrink: 0;
+    }
+
+    .dot:hover {
+      background: rgba(255,255,255,0.5);
+    }
+
+    .dot.active {
+      width: 24px;
+      background: var(--accent);
+    }
+
+    /* Nav buttons */
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: background 200ms ease, color 200ms ease;
+      flex-shrink: 0;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .nav-btn:active {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .nav-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── Loading state ────────────────────────────────────── */
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .loading.done {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+
+    /* ── Fullscreen hint ──────────────────────────────────── */
+
+    .fs-hint {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 2s ease 3s;
+    }
+
+    .fs-hint.fade { opacity: 0; }
+
+    /* ── Back button ──────────────────────────────────────── */
+
+    .back-btn {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 20;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 10px;
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 300ms ease, color 200ms ease, background 200ms ease;
+      opacity: 0;
+    }
+
+    .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    body.cursor-visible .back-btn { opacity: 1; }
+
+    .back-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    body.exporting .controls,
+    body.exporting .fs-hint,
+    body.exporting .back-btn,
+    body.exporting .notes-panel {
+      display: none !important;
+    }
+
+    /* ── Cursor restore ───────────────────────────────────── */
+
+    body.cursor-visible { cursor: default; }
+
+    /* ── Responsive ───────────────────────────────────────── */
+
+    @media (max-width: 640px) {
+      .controls {
+        bottom: 8px;
+        padding: 8px 12px;
+        gap: 12px;
+        border-radius: 12px;
+      }
+      .dot { width: 5px; height: 5px; }
+      .dot.active { width: 18px; }
+      .slide-counter { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video background layer -->
+  <div class="video-bg" id="videoBg">
+    <video id="bgVideo" autoplay muted loop playsinline></video>
+  </div>
+  <div class="video-overlay" id="videoOverlay"></div>
+  <div class="image-bg" id="imageBg"></div>
+
+  <!-- Slides -->
+  <div class="slides-container">
+    <div class="stage" id="slidesContainer"></div>
+  </div>
+
+  <!-- Speaker notes panel (toggled with N key) -->
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-label">Speaker Notes</div>
+    <div id="notesContent"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls" id="controls">
+    <span class="slide-counter" id="counter">1 / 1</span>
+    <div class="progress-dots" id="dots"></div>
+    <div class="nav-group">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" aria-label="Next slide">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+      <button class="nav-btn" id="fsBtn" aria-label="Toggle fullscreen">
+        <svg viewBox="0 0 24 24" id="fsIcon">
+          <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Back button (visible on mouse move, closes tab or navigates back) -->
+  <button class="back-btn" id="backBtn" aria-label="Close presenter">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <!-- Fullscreen hint -->
+  <div class="fs-hint" id="fsHint">Press F for fullscreen &middot; N for notes &middot; Esc to close</div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">Loading slides...</div>
+
+<script>
+/* ── Data (injected by build script) ────────────────────── */
+
+const SLIDES = [/* __SLIDES_DATA__ */];
+
+const CONFIG = {/* __PRESENTER_CONFIG__ */};
+
+const ANNOTATIONS = {/* __ANNOTATIONS__ */};
+const QUERY = new URLSearchParams(window.location.search);
+const EXPORT_MODE = QUERY.get('export') === '1';
+const REQUESTED_SLIDE = (() => {
+  var raw = parseInt(QUERY.get('slide') || '1', 10);
+  if (!Number.isFinite(raw)) return 1;
+  return raw;
+})();
+
+/* ── State ──────────────────────────────────────────────── */
+
+let current = 0;
+let idleTimer = null;
+let autoTimer = null;
+let notesVisible = false;
+const IDLE_TIMEOUT = 3000;
+
+/* ── DOM refs ───────────────────────────────────────────── */
+
+const container = document.getElementById('slidesContainer');
+const controls = document.getElementById('controls');
+const counter = document.getElementById('counter');
+const dots = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const fsBtn = document.getElementById('fsBtn');
+const fsIcon = document.getElementById('fsIcon');
+const fsHint = document.getElementById('fsHint');
+const loading = document.getElementById('loading');
+const videoBg = document.getElementById('videoBg');
+const bgVideo = document.getElementById('bgVideo');
+const videoOverlay = document.getElementById('videoOverlay');
+const imageBg = document.getElementById('imageBg');
+const notesPanel = document.getElementById('notesPanel');
+const notesContent = document.getElementById('notesContent');
+
+function parseAspectRatioToken(value) {
+  var token = String(value || '').trim();
+  var m = token.match(/^(\d+)\s*:\s*(\d+)$/);
+  if (!m) return { w: 16, h: 9 };
+  var w = parseInt(m[1], 10);
+  var h = parseInt(m[2], 10);
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
+    return { w: 16, h: 9 };
+  }
+  return { w: w, h: h };
+}
+
+/* ── Init ───────────────────────────────────────────────── */
+
+function init() {
+  if (EXPORT_MODE) {
+    document.body.classList.add('exporting');
+  }
+  if (CONFIG && CONFIG.backgroundColor) {
+    document.documentElement.style.setProperty('--bg', CONFIG.backgroundColor);
+    document.body.style.background = CONFIG.backgroundColor;
+  }
+  var ratio = parseAspectRatioToken(CONFIG && CONFIG.aspectRatio);
+  document.documentElement.style.setProperty('--stage-ar-w', String(ratio.w));
+  document.documentElement.style.setProperty('--stage-ar-h', String(ratio.h));
+  document.body.classList.toggle('fullscreen', !!document.fullscreenElement);
+
+  if (!SLIDES.length) {
+    loading.textContent = 'No slides found';
+    return;
+  }
+
+  current = Math.max(0, Math.min(SLIDES.length - 1, REQUESTED_SLIDE - 1));
+
+  // Build slide elements
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+
+    if (s.renderMode === 'html' && s.htmlContent) {
+      // HTML-mode slide: rich HTML in an iframe
+      div.className = 'slide' + (i === current ? ' active' : (i === current + 1 ? ' future' : ''));
+      const iframe = document.createElement('iframe');
+      iframe.className = 'slide-media';
+      iframe.srcdoc = normalizeHtmlSlideContent(s.htmlContent, s);
+      iframe.style.cssText = 'pointer-events:none;background:transparent;';
+      iframe.sandbox = 'allow-same-origin';
+      iframe.setAttribute('frameborder', '0');
+      div.appendChild(iframe);
+    } else {
+      // Image-mode slide: standard PNG
+      div.className = 'slide' + (i === current ? ' active' : (i === current + 1 ? ' future' : ''));
+      const img = document.createElement('img');
+      img.className = 'slide-media';
+      img.src = s.file;
+      img.alt = s.title || ('Slide ' + (i + 1));
+      img.loading = i < 3 ? 'eager' : 'lazy';
+      img.draggable = false;
+      div.appendChild(img);
+    }
+
+    container.appendChild(div);
+  });
+
+  // Build dots
+  SLIDES.forEach(function(_, i) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === current ? ' active' : '');
+    dot.addEventListener('click', function() { goTo(i); });
+    dots.appendChild(dot);
+  });
+
+  updateCounter();
+  updateNotes();
+  setupImageBackdrop();
+  setupVideo();
+  handleSlideVideo(current);
+  setupKeys();
+  setupMouse();
+  setupButtons();
+  setupAutoAdvance();
+
+  // Hide loading
+  requestAnimationFrame(function() {
+    loading.classList.add('done');
+    setTimeout(function() { loading.remove(); }, 500);
+  });
+
+  // Fade fullscreen hint
+  if (!EXPORT_MODE) {
+    setTimeout(function() { fsHint.classList.add('fade'); }, 100);
+  }
+}
+
+function normalizeHtmlSlideContent(raw, slide) {
+  var transparentMode = !!(slide && slide.backgroundMode === 'transparent');
+  var fallbackBg = ((CONFIG && CONFIG.backgroundColor) ? CONFIG.backgroundColor : '#0a0e1a');
+  var backgroundRule = transparentMode
+    ? 'transparent'
+    : ('var(--background,' + fallbackBg + ')');
+  var themeVars = (CONFIG && CONFIG.themeVars && typeof CONFIG.themeVars === 'object') ? CONFIG.themeVars : {};
+  var cssVarLines = [];
+  for (var key in themeVars) {
+    if (!Object.prototype.hasOwnProperty.call(themeVars, key)) continue;
+    var value = themeVars[key];
+    if (typeof value !== 'string' || !value.trim()) continue;
+    cssVarLines.push('--' + key + ':' + value + ';');
+  }
+  var cssVars = cssVarLines.length ? ':root{' + cssVarLines.join('') + '}' : '';
+  var normalizer = [
+    '<style id="__presenter_normalize__">',
+    cssVars,
+    'html,body{margin:0!important;padding:0!important;width:100%!important;height:100%!important;overflow:hidden!important;}',
+    'html,body{background:' + backgroundRule + '!important;color:var(--foreground,#ffffff);}',
+    '</style>'
+  ].join('');
+
+  if (/<head[\s>]/i.test(raw)) {
+    return raw.replace(/<head([^>]*)>/i, '<head$1>' + normalizer);
+  }
+  if (/<html[\s>]/i.test(raw)) {
+    return raw.replace(/<html([^>]*)>/i, '<html$1><head>' + normalizer + '</head>');
+  }
+  return '<!doctype html><html><head>' + normalizer + '</head><body>' + raw + '</body></html>';
+}
+
+/* ── Navigation ─────────────────────────────────────────── */
+
+function goTo(index) {
+  if (index < 0 || index >= SLIDES.length || index === current) return;
+
+  const slideEls = container.querySelectorAll('.slide');
+
+  // Remove all state classes
+  slideEls.forEach(function(el) {
+    el.classList.remove('active', 'future');
+  });
+
+  var nextEl = slideEls[index];
+
+  // Set correct class for the new slide based on direction
+  if (index > current) {
+    nextEl.classList.add('future');
+  }
+
+  // Force reflow for CSS transition
+  void nextEl.offsetWidth;
+
+  // Apply active state
+  nextEl.classList.remove('future');
+  nextEl.classList.add('active');
+
+  current = index;
+  updateCounter();
+  updateDots();
+  updateNotes();
+  handleSlideVideo(index);
+  resetAutoAdvance();
+}
+
+function next() { goTo(current + 1); }
+function prev() { goTo(current - 1); }
+function first() { goTo(0); }
+function last() { goTo(SLIDES.length - 1); }
+
+function updateCounter() {
+  counter.textContent = (current + 1) + ' / ' + SLIDES.length;
+}
+
+function updateDots() {
+  var dotEls = dots.querySelectorAll('.dot');
+  dotEls.forEach(function(d, i) {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+/* ── Speaker Notes ──────────────────────────────────────── */
+
+function updateNotes() {
+  var slideIndex = SLIDES[current] ? SLIDES[current].index : (current + 1);
+  var note = ANNOTATIONS[slideIndex] || '';
+  notesContent.textContent = note;
+
+  // If notes panel is visible but no note, show placeholder
+  if (notesVisible && !note) {
+    notesContent.textContent = 'No notes for this slide.';
+    notesContent.style.opacity = '0.4';
+  } else {
+    notesContent.style.opacity = '1';
+  }
+}
+
+function toggleNotes() {
+  notesVisible = !notesVisible;
+  notesPanel.classList.toggle('visible', notesVisible);
+  updateNotes();
+}
+
+/* ── Video Background ───────────────────────────────────── */
+
+function setupImageBackdrop() {
+  var imageUrl = CONFIG.globalImageUrl;
+  if (!imageUrl) return;
+  imageBg.style.backgroundImage = "url('" + imageUrl.replace(/'/g, "%27") + "')";
+  imageBg.classList.add('active');
+}
+
+function setupVideo() {
+  var globalUrl = CONFIG.globalVideoUrl;
+  if (!globalUrl) return;
+
+  videoBg.classList.add('active');
+  videoOverlay.classList.add('active');
+  videoOverlay.style.setProperty('--overlay-opacity', CONFIG.overlayOpacity || 0.3);
+  loadVideo(globalUrl, CONFIG.videoType || detectVideoType(globalUrl));
+}
+
+function loadVideo(url, type) {
+  if (type === 'hls') {
+    loadHls(url);
+  } else {
+    bgVideo.src = url;
+  }
+}
+
+function loadHls(url) {
+  // Try hls.js first, fall back to native
+  if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+    var hls = new Hls({ enableWorker: false });
+    hls.loadSource(url);
+    hls.attachMedia(bgVideo);
+  } else if (bgVideo.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari native HLS
+    bgVideo.src = url;
+  } else {
+    console.warn('HLS not supported in this browser');
+  }
+}
+
+function detectVideoType(url) {
+  if (!url) return 'mp4';
+  if (url.includes('.m3u8') || url.includes('m3u8')) return 'hls';
+  return 'mp4';
+}
+
+function handleSlideVideo(index) {
+  var slide = SLIDES[index];
+  if (!slide || !slide.videoUrl) return;
+
+  // Per-slide video: swap source
+  var type = slide.videoType || detectVideoType(slide.videoUrl);
+  loadVideo(slide.videoUrl, type);
+  videoBg.classList.add('active');
+  videoOverlay.classList.add('active');
+}
+
+/* ── Keyboard ───────────────────────────────────────────── */
+
+function setupKeys() {
+  document.addEventListener('keydown', function(e) {
+    showControls();
+
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+      case ' ':
+        e.preventDefault();
+        next();
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault();
+        prev();
+        break;
+      case 'Home':
+        e.preventDefault();
+        first();
+        break;
+      case 'End':
+        e.preventDefault();
+        last();
+        break;
+      case 'f':
+      case 'F':
+        e.preventDefault();
+        toggleFullscreen();
+        break;
+      case 'n':
+      case 'N':
+        e.preventDefault();
+        toggleNotes();
+        break;
+      case 'Escape':
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          closePresenter();
+        }
+        break;
+    }
+  });
+}
+
+/* ── Mouse / Touch ──────────────────────────────────────── */
+
+function setupMouse() {
+  var moveTimeout;
+
+  document.addEventListener('mousemove', function() {
+    document.body.classList.add('cursor-visible');
+    showControls();
+    clearTimeout(moveTimeout);
+    moveTimeout = setTimeout(function() {
+      document.body.classList.remove('cursor-visible');
+    }, IDLE_TIMEOUT);
+  });
+
+  // Touch swipe
+  var touchStartX = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) {
+      dx > 0 ? prev() : next();
+    }
+  }, { passive: true });
+}
+
+/* ── Controls Visibility ────────────────────────────────── */
+
+function showControls() {
+  controls.classList.remove('hidden');
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(function() {
+    controls.classList.add('hidden');
+  }, IDLE_TIMEOUT);
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+function setupButtons() {
+  prevBtn.addEventListener('click', function(e) { e.stopPropagation(); prev(); });
+  nextBtn.addEventListener('click', function(e) { e.stopPropagation(); next(); });
+  fsBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleFullscreen(); });
+  document.getElementById('backBtn').addEventListener('click', function(e) { e.stopPropagation(); closePresenter(); });
+}
+
+/* ── Close / Back ──────────────────────────────────────── */
+
+function closePresenter() {
+  // If opened as a popup or new tab, close it
+  if (window.opener || window.history.length <= 1) {
+    window.close();
+  } else {
+    window.history.back();
+  }
+}
+
+/* ── Fullscreen ─────────────────────────────────────────── */
+
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    document.documentElement.requestFullscreen().catch(function() {});
+  }
+}
+
+document.addEventListener('fullscreenchange', function() {
+  var isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('fullscreen', isFs);
+  fsIcon.innerHTML = isFs
+    ? '<path d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3"/>'
+    : '<path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>';
+});
+
+/* ── Auto-Advance ───────────────────────────────────────── */
+
+function setupAutoAdvance() {
+  if (EXPORT_MODE) return;
+  var secs = CONFIG.autoAdvance || 0;
+  if (secs <= 0) return;
+
+  autoTimer = setInterval(function() {
+    if (current < SLIDES.length - 1) {
+      next();
+    } else {
+      clearInterval(autoTimer);
+    }
+  }, secs * 1000);
+}
+
+function resetAutoAdvance() {
+  if (EXPORT_MODE) return;
+  var secs = CONFIG.autoAdvance || 0;
+  if (secs <= 0) return;
+  clearInterval(autoTimer);
+  autoTimer = setInterval(function() {
+    if (current < SLIDES.length - 1) {
+      next();
+    } else {
+      clearInterval(autoTimer);
+    }
+  }, secs * 1000);
+}
+
+/* ── HLS.js Loader ──────────────────────────────────────── */
+
+(function loadHlsLib() {
+  var globalUrl = CONFIG.globalVideoUrl || '';
+  var hasHlsSlide = SLIDES.some(function(s) { return s.videoUrl && detectVideoType(s.videoUrl) === 'hls'; });
+  var needsHls = detectVideoType(globalUrl) === 'hls' || hasHlsSlide;
+
+  if (!needsHls) return;
+
+  // Skip if native HLS (Safari)
+  var testVideo = document.createElement('video');
+  if (testVideo.canPlayType('application/vnd.apple.mpegurl')) return;
+
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js';
+  script.onload = function() {
+    // Re-init video if global URL was HLS
+    if (detectVideoType(globalUrl) === 'hls') {
+      loadHls(globalUrl);
+    }
+  };
+  script.onerror = function() { console.warn('Could not load hls.js - HLS streams unavailable'); };
+  document.head.appendChild(script);
+})();
+
+/* ── Boot ───────────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+*
+!.gitignore
+!presenter.html
+!videos/
+!videos/*.mp4

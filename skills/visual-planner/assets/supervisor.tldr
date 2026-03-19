@@ -1,0 +1,430 @@
+{
+  "store": {
+    "document:document": {
+      "gridSize": 10,
+      "name": "Supervisor Pattern",
+      "meta": { "description": "Central coordinator routes tasks to specialized workers, reviews output, gates delivery through human review." },
+      "id": "document:document",
+      "typeName": "document"
+    },
+    "page:page": {
+      "meta": {},
+      "id": "page:page",
+      "name": "Page 1",
+      "index": "a1",
+      "typeName": "page"
+    },
+
+    "shape:start": {
+      "id": "shape:start", "typeName": "shape", "type": "geo",
+      "x": 350, "y": 0, "rotation": 0, "index": "a1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "green", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Start" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "start", "phase": "implemented" }
+    },
+
+    "shape:supervisor": {
+      "id": "shape:supervisor", "typeName": "shape", "type": "geo",
+      "x": 280, "y": 120, "rotation": 0, "index": "a2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 220, "h": 80,
+        "color": "violet", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Supervisor" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "supervisor", "phase": "in_progress",
+        "agent": "Sachmo", "model": "opus",
+        "tools": ["dispatch-worker", "evaluate-output", "request-revision"],
+        "description": "Central orchestrator that routes tasks, evaluates results, and gates output."
+      }
+    },
+
+    "shape:researcher": {
+      "id": "shape:researcher", "typeName": "shape", "type": "geo",
+      "x": 50, "y": 300, "rotation": 0, "index": "a3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 200, "h": 80,
+        "color": "green", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Researcher" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "implemented",
+        "agent": "Parker", "model": "sonnet",
+        "tools": ["web-search", "scrape-url", "summarize"],
+        "description": "Handles information gathering. Returns structured research briefs."
+      }
+    },
+
+    "shape:writer": {
+      "id": "shape:writer", "typeName": "shape", "type": "geo",
+      "x": 300, "y": 300, "rotation": 0, "index": "a4",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 200, "h": 80,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Writer" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "agent": "Flow", "model": "sonnet",
+        "tools": ["draft-document", "format-markdown"],
+        "description": "Produces publication-ready content from research briefs and outlines."
+      }
+    },
+
+    "shape:coder": {
+      "id": "shape:coder", "typeName": "shape", "type": "geo",
+      "x": 550, "y": 300, "rotation": 0, "index": "a5",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 200, "h": 80,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Coder" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "agent": "Theo", "model": "sonnet",
+        "tools": ["file-write", "run-tests", "lint"],
+        "description": "Implements code changes, runs tests, returns diff summary."
+      }
+    },
+
+    "shape:human_review": {
+      "id": "shape:human_review", "typeName": "shape", "type": "geo",
+      "x": 290, "y": 480, "rotation": 0, "index": "a6",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "diamond", "w": 200, "h": 120,
+        "color": "yellow", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Human Review" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "human_checkpoint", "phase": "planned",
+        "description": "Blocks until human approves. Rejection sends task back to supervisor."
+      }
+    },
+
+    "shape:end": {
+      "id": "shape:end", "typeName": "shape", "type": "geo",
+      "x": 350, "y": 660, "rotation": 0, "index": "a7",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "red", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "End" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "end", "phase": "planned" }
+    },
+
+    "shape:note_routing": {
+      "id": "shape:note_routing", "typeName": "shape", "type": "note",
+      "x": 560, "y": 100, "rotation": 0, "index": "a8",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "color": "yellow", "labelColor": "black",
+        "size": "m", "font": "sans", "fontSizeAdjustment": 0,
+        "align": "start", "verticalAlign": "start", "growY": 0, "url": "",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Use lightweight intent classifier for routing, not full LLM call" }] }] },
+        "scale": 1
+      },
+      "meta": {}
+    },
+
+    "shape:arrow_start_sup": {
+      "id": "shape:arrow_start_sup", "typeName": "shape", "type": "arrow",
+      "x": 380, "y": 60, "rotation": 0, "index": "b1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph" }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_start_sup_s": {
+      "id": "binding:arrow_start_sup_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_start_sup", "toId": "shape:start",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_start_sup_e": {
+      "id": "binding:arrow_start_sup_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_start_sup", "toId": "shape:supervisor",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_sup_res": {
+      "id": "shape:arrow_sup_res", "typeName": "shape", "type": "arrow",
+      "x": 280, "y": 200, "rotation": 0, "index": "b2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "dashed",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": -130, "y": 100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Research" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_sup_res_s": {
+      "id": "binding:arrow_sup_res_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_res", "toId": "shape:supervisor",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_sup_res_e": {
+      "id": "binding:arrow_sup_res_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_res", "toId": "shape:researcher",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_sup_wri": {
+      "id": "shape:arrow_sup_wri", "typeName": "shape", "type": "arrow",
+      "x": 390, "y": 200, "rotation": 0, "index": "b3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "dashed",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Write" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_sup_wri_s": {
+      "id": "binding:arrow_sup_wri_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_wri", "toId": "shape:supervisor",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_sup_wri_e": {
+      "id": "binding:arrow_sup_wri_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_wri", "toId": "shape:writer",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_sup_cod": {
+      "id": "shape:arrow_sup_cod", "typeName": "shape", "type": "arrow",
+      "x": 500, "y": 200, "rotation": 0, "index": "b4",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "dashed",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 150, "y": 100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Code" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_sup_cod_s": {
+      "id": "binding:arrow_sup_cod_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_cod", "toId": "shape:supervisor",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_sup_cod_e": {
+      "id": "binding:arrow_sup_cod_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_cod", "toId": "shape:coder",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_res_sup": {
+      "id": "shape:arrow_res_sup", "typeName": "shape", "type": "arrow",
+      "x": 150, "y": 300, "rotation": 0, "index": "b5",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "grey", "fill": "none", "dash": "dotted",
+        "size": "s", "font": "sans", "labelColor": "grey",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 130, "y": -100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "results" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_res_sup_s": {
+      "id": "binding:arrow_res_sup_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_res_sup", "toId": "shape:researcher",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_res_sup_e": {
+      "id": "binding:arrow_res_sup_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_res_sup", "toId": "shape:supervisor",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_wri_sup": {
+      "id": "shape:arrow_wri_sup", "typeName": "shape", "type": "arrow",
+      "x": 400, "y": 300, "rotation": 0, "index": "b6",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "grey", "fill": "none", "dash": "dotted",
+        "size": "s", "font": "sans", "labelColor": "grey",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": -100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "draft" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_wri_sup_s": {
+      "id": "binding:arrow_wri_sup_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_wri_sup", "toId": "shape:writer",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_wri_sup_e": {
+      "id": "binding:arrow_wri_sup_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_wri_sup", "toId": "shape:supervisor",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_cod_sup": {
+      "id": "shape:arrow_cod_sup", "typeName": "shape", "type": "arrow",
+      "x": 650, "y": 300, "rotation": 0, "index": "b7",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "grey", "fill": "none", "dash": "dotted",
+        "size": "s", "font": "sans", "labelColor": "grey",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": -150, "y": -100 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "output" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_cod_sup_s": {
+      "id": "binding:arrow_cod_sup_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_cod_sup", "toId": "shape:coder",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_cod_sup_e": {
+      "id": "binding:arrow_cod_sup_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_cod_sup", "toId": "shape:supervisor",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_sup_human": {
+      "id": "shape:arrow_sup_human", "typeName": "shape", "type": "arrow",
+      "x": 390, "y": 400, "rotation": 0, "index": "b8",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "dashed",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 80 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Ready for review" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_sup_human_s": {
+      "id": "binding:arrow_sup_human_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_human", "toId": "shape:supervisor",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_sup_human_e": {
+      "id": "binding:arrow_sup_human_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_sup_human", "toId": "shape:human_review",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_human_end": {
+      "id": "shape:arrow_human_end", "typeName": "shape", "type": "arrow",
+      "x": 390, "y": 600, "rotation": 0, "index": "b9",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Approved" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_human_end_s": {
+      "id": "binding:arrow_human_end_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_human_end", "toId": "shape:human_review",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_human_end_e": {
+      "id": "binding:arrow_human_end_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_human_end", "toId": "shape:end",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+
+    "shape:arrow_human_sup": {
+      "id": "shape:arrow_human_sup", "typeName": "shape", "type": "arrow",
+      "x": 240, "y": 480, "rotation": 0, "index": "bA",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "orange", "fill": "none", "dash": "dashed",
+        "size": "s", "font": "sans", "labelColor": "orange",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": -280 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Needs revision" }] }] }
+      },
+      "meta": {}
+    },
+    "binding:arrow_human_sup_s": {
+      "id": "binding:arrow_human_sup_s", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_human_sup", "toId": "shape:human_review",
+      "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    },
+    "binding:arrow_human_sup_e": {
+      "id": "binding:arrow_human_sup_e", "typeName": "binding", "type": "arrow",
+      "fromId": "shape:arrow_human_sup", "toId": "shape:supervisor",
+      "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" },
+      "meta": {}
+    }
+  }
+}

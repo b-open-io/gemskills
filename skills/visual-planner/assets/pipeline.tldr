@@ -1,0 +1,220 @@
+{
+  "store": {
+    "document:document": {
+      "gridSize": 10,
+      "name": "Linear Pipeline",
+      "meta": { "description": "Sequential pipeline: ingest, process, validate, deliver. Ideal for ETL, CI/CD, or any linear process." },
+      "id": "document:document",
+      "typeName": "document"
+    },
+    "page:page": {
+      "meta": {},
+      "id": "page:page",
+      "name": "Page 1",
+      "index": "a1",
+      "typeName": "page"
+    },
+
+    "shape:start": {
+      "id": "shape:start", "typeName": "shape", "type": "geo",
+      "x": 300, "y": 0, "rotation": 0, "index": "a1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "green", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Start" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "start", "phase": "planned" }
+    },
+
+    "shape:ingestion": {
+      "id": "shape:ingestion", "typeName": "shape", "type": "geo",
+      "x": 230, "y": 120, "rotation": 0, "index": "a2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "cloud", "w": 200, "h": 100,
+        "color": "light-blue", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Data Ingestion" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "tool", "phase": "planned",
+        "tools": ["fetch-api", "read-csv", "stream-events"],
+        "description": "Pull data from sources, normalize into common schema."
+      }
+    },
+
+    "shape:processing": {
+      "id": "shape:processing", "typeName": "shape", "type": "geo",
+      "x": 230, "y": 280, "rotation": 0, "index": "a3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "rectangle", "w": 200, "h": 80,
+        "color": "grey", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Processor" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "worker", "phase": "planned",
+        "agent": "Maxim", "model": "sonnet",
+        "tools": ["transform-data", "deduplicate", "enrich"],
+        "description": "Clean, deduplicate, and enrich ingested data."
+      }
+    },
+
+    "shape:validation": {
+      "id": "shape:validation", "typeName": "shape", "type": "geo",
+      "x": 230, "y": 430, "rotation": 0, "index": "a4",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "diamond", "w": 200, "h": 120,
+        "color": "yellow", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Validate" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "human_checkpoint", "phase": "planned",
+        "description": "Quality gate. Human spot-checks processed records."
+      }
+    },
+
+    "shape:output": {
+      "id": "shape:output", "typeName": "shape", "type": "geo",
+      "x": 230, "y": 610, "rotation": 0, "index": "a5",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "cloud", "w": 200, "h": 100,
+        "color": "light-blue", "fill": "solid", "dash": "solid",
+        "size": "m", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Output Delivery" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": {
+        "nodeType": "tool", "phase": "planned",
+        "tools": ["write-database", "push-api", "generate-report"],
+        "description": "Deliver validated data to destinations."
+      }
+    },
+
+    "shape:end": {
+      "id": "shape:end", "typeName": "shape", "type": "geo",
+      "x": 300, "y": 770, "rotation": 0, "index": "a6",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "geo": "ellipse", "w": 60, "h": 60,
+        "color": "red", "fill": "solid", "dash": "solid",
+        "size": "s", "font": "sans", "align": "middle", "verticalAlign": "middle",
+        "labelColor": "black",
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "End" }] }] },
+        "url": "", "growY": 0, "scale": 1
+      },
+      "meta": { "nodeType": "end", "phase": "planned" }
+    },
+
+    "shape:a_start_ing": {
+      "id": "shape:a_start_ing", "typeName": "shape", "type": "arrow",
+      "x": 330, "y": 60, "rotation": 0, "index": "b1",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph" }] }
+      }, "meta": {}
+    },
+    "binding:a_start_ing_s": { "id": "binding:a_start_ing_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_start_ing", "toId": "shape:start", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_start_ing_e": { "id": "binding:a_start_ing_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_start_ing", "toId": "shape:ingestion", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_ing_proc": {
+      "id": "shape:a_ing_proc", "typeName": "shape", "type": "arrow",
+      "x": 330, "y": 220, "rotation": 0, "index": "b2",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Raw data" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_ing_proc_s": { "id": "binding:a_ing_proc_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_ing_proc", "toId": "shape:ingestion", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_ing_proc_e": { "id": "binding:a_ing_proc_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_ing_proc", "toId": "shape:processing", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_proc_val": {
+      "id": "shape:a_proc_val", "typeName": "shape", "type": "arrow",
+      "x": 330, "y": 360, "rotation": 0, "index": "b3",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 70 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Processed" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_proc_val_s": { "id": "binding:a_proc_val_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_proc_val", "toId": "shape:processing", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_proc_val_e": { "id": "binding:a_proc_val_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_proc_val", "toId": "shape:validation", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_val_out": {
+      "id": "shape:a_val_out", "typeName": "shape", "type": "arrow",
+      "x": 330, "y": 550, "rotation": 0, "index": "b4",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Approved" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_val_out_s": { "id": "binding:a_val_out_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_val_out", "toId": "shape:validation", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_val_out_e": { "id": "binding:a_val_out_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_val_out", "toId": "shape:output", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_out_end": {
+      "id": "shape:a_out_end", "typeName": "shape", "type": "arrow",
+      "x": 330, "y": 710, "rotation": 0, "index": "b5",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "black", "fill": "none", "dash": "solid",
+        "size": "m", "font": "sans", "labelColor": "black",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": 60 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph" }] }
+      }, "meta": {}
+    },
+    "binding:a_out_end_s": { "id": "binding:a_out_end_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_out_end", "toId": "shape:output", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_out_end_e": { "id": "binding:a_out_end_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_out_end", "toId": "shape:end", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+
+    "shape:a_val_proc": {
+      "id": "shape:a_val_proc", "typeName": "shape", "type": "arrow",
+      "x": 180, "y": 430, "rotation": 0, "index": "b6",
+      "parentId": "page:page", "isLocked": false, "opacity": 1,
+      "props": {
+        "kind": "elbow", "color": "orange", "fill": "none", "dash": "dashed",
+        "size": "s", "font": "sans", "labelColor": "orange",
+        "arrowheadStart": "none", "arrowheadEnd": "triangle",
+        "start": { "x": 0, "y": 0 }, "end": { "x": 0, "y": -150 },
+        "bend": 0, "labelPosition": 0.5, "scale": 1, "elbowMidPoint": 0.5,
+        "richText": { "type": "doc", "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Rejected" }] }] }
+      }, "meta": {}
+    },
+    "binding:a_val_proc_s": { "id": "binding:a_val_proc_s", "typeName": "binding", "type": "arrow", "fromId": "shape:a_val_proc", "toId": "shape:validation", "props": { "terminal": "start", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} },
+    "binding:a_val_proc_e": { "id": "binding:a_val_proc_e", "typeName": "binding", "type": "arrow", "fromId": "shape:a_val_proc", "toId": "shape:processing", "props": { "terminal": "end", "normalizedAnchor": { "x": 0.5, "y": 0.5 }, "isExact": false, "isPrecise": false, "snap": "none" }, "meta": {} }
+  }
+}

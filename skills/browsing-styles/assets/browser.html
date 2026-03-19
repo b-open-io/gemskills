@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Style Browser</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg-app: hsl(240 10% 4%);
+      --bg-panel: hsl(240 10% 7%);
+      --bg-surface: hsl(240 6% 10%);
+      --fg-primary: hsl(0 0% 98%);
+      --fg-secondary: hsl(240 5% 65%);
+      --fg-tertiary: hsl(240 5% 40%);
+      --accent: hsl(190 100% 50%);
+      --accent-muted: hsl(190 50% 20%);
+      --border-subtle: hsl(240 6% 14%);
+      --border-strong: hsl(240 6% 25%);
+      --radius: 6px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-app);
+      color: var(--fg-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-app); }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--fg-tertiary); }
+
+    .pick-banner {
+      background: var(--accent);
+      color: hsl(240 10% 4%);
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: hsla(240, 10%, 4%, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0 16px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg-primary);
+      white-space: nowrap;
+    }
+
+    input, select {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-primary);
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      height: 32px;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px hsla(190, 100%, 50%, 0.3);
+    }
+    input::placeholder { color: var(--fg-tertiary); }
+    #search { flex: 1; max-width: 220px; }
+    select { cursor: pointer; }
+    select:hover { border-color: var(--fg-tertiary); }
+
+    .count {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-tertiary);
+      background: var(--bg-surface);
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+    .count .num { color: var(--accent); font-weight: 600; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1px;
+      background: var(--border-subtle);
+      padding: 0;
+    }
+
+    .style-card {
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      background: var(--bg-panel);
+    }
+    .style-card.hidden { display: none; }
+
+    .style-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid transparent;
+      transition: border-color 0.2s var(--ease);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .style-card:hover::after { border-color: var(--accent); }
+    .style-card.selected::after { border-color: var(--accent); border-width: 2px; }
+
+    .thumb {
+      aspect-ratio: 1;
+      background: var(--bg-surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0.92;
+      transition: transform 0.4s var(--ease), opacity 0.3s ease;
+    }
+    .style-card:hover .thumb img {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+    .no-thumb {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-tertiary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px 8px 6px;
+      background: linear-gradient(to top, hsl(240 10% 4%) 0%, hsla(240, 10%, 4%, 0.7) 60%, transparent 100%);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px;
+      transform: translateY(100%);
+      transition: transform 0.2s var(--ease);
+    }
+    .style-card:hover .label { transform: translateY(0); }
+
+    .label-name {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--fg-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
+    }
+    .label-short {
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: hsla(0, 0%, 0%, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal.active { display: flex; animation: fadeIn 0.2s ease-out; }
+
+    .modal-content {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+      animation: scaleIn 0.25s var(--ease);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--fg-tertiary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      transition: all 0.15s;
+    }
+    .close-btn:hover { background: var(--bg-surface); color: var(--fg-primary); }
+
+    .modal-body { padding: 20px; }
+    .modal-image {
+      width: 100%;
+      aspect-ratio: 1;
+      background-color: var(--bg-surface);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+    }
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+    }
+    .detail-label {
+      color: var(--fg-tertiary);
+      min-width: 64px;
+      font-weight: 500;
+    }
+    .detail-value {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-secondary);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: hsla(190, 100%, 50%, 0.1);
+      color: var(--accent);
+      border: 1px solid hsla(190, 100%, 50%, 0.2);
+    }
+    .prompt-hints {
+      background: var(--bg-surface);
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--fg-secondary);
+      margin-top: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn {
+      flex: 1;
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn:disabled:hover { opacity: 0.5; }
+    .btn:disabled:active { transform: none; }
+    .btn-primary {
+      background: var(--accent);
+      color: hsl(240 10% 4%);
+    }
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--fg-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn.copied { background: hsl(142 76% 36%); color: white; }
+
+    /* Regenerate dialog */
+    .regen-dialog {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: hsla(0, 0%, 0%, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .regen-dialog.active { display: flex; animation: fadeIn 0.2s ease-out; }
+    .regen-content {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+      animation: scaleIn 0.25s var(--ease);
+    }
+    .regen-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .regen-header h2 { font-size: 0.9rem; font-weight: 600; }
+    .regen-body { padding: 20px; }
+    .regen-body label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      margin-bottom: 6px;
+    }
+    .regen-body textarea {
+      width: 100%;
+      min-height: 80px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-primary);
+      padding: 10px;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      line-height: 1.5;
+      resize: vertical;
+      transition: border-color 0.15s;
+    }
+    .regen-body textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .regen-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .regen-compare-item { text-align: center; }
+    .regen-compare-item .compare-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--fg-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .regen-compare-item img, .regen-compare-item .compare-placeholder {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      object-fit: cover;
+      border: 1px solid var(--border-subtle);
+    }
+    .compare-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      color: var(--fg-tertiary);
+      font-size: 0.75rem;
+    }
+    .regen-status {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.8rem;
+      color: var(--fg-secondary);
+      display: none;
+    }
+    .regen-status.active { display: block; }
+    .regen-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn-danger {
+      background: hsl(0 72% 51%);
+      color: white;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--fg-primary);
+      color: var(--bg-app);
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.15s, transform 0.15s;
+      pointer-events: none;
+      z-index: 300;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="pick-banner" id="pick-banner">Click any style to select it</div>
+  <header>
+    <div class="controls">
+      <h1>Styles</h1>
+      <input type="text" id="search" placeholder="Search styles..." autofocus>
+      <select id="category"><option value="">All categories</option></select>
+      <span class="count"><span class="num" id="visible-count">0</span> / <span id="total-count">0</span></span>
+    </div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title"></h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-image" id="modal-image"></div>
+        <div id="modal-details"></div>
+        <div class="prompt-hints" id="modal-hints"></div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="copy-btn">Copy ID</button>
+          <button class="btn btn-secondary" id="regen-btn">Regenerate Tile</button>
+          <button class="btn btn-primary" id="select-btn" style="display:none">Select This Style</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="regen-dialog" id="regen-dialog">
+    <div class="regen-content">
+      <div class="regen-header">
+        <h2 id="regen-title">Regenerate Tile</h2>
+        <button class="close-btn" id="regen-close">&times;</button>
+      </div>
+      <div class="regen-body">
+        <label for="regen-prompt">Tile Prompt</label>
+        <textarea id="regen-prompt"></textarea>
+        <div class="regen-compare" id="regen-compare" style="display:none">
+          <div class="regen-compare-item">
+            <div class="compare-label">Current</div>
+            <img id="regen-current" src="">
+          </div>
+          <div class="regen-compare-item">
+            <div class="compare-label">Preview</div>
+            <img id="regen-preview" src="" style="display:none">
+            <div class="compare-placeholder" id="regen-placeholder">Click Generate</div>
+          </div>
+        </div>
+        <div class="regen-status" id="regen-status"></div>
+        <div class="regen-actions">
+          <button class="btn btn-primary" id="regen-generate-btn">Generate Preview</button>
+          <button class="btn btn-secondary" id="regen-accept-btn" style="display:none">Accept</button>
+          <button class="btn btn-secondary" id="regen-cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+let styles = [];
+let categories = {};
+let pickMode = false;
+
+const grid = document.getElementById('grid');
+const searchInput = document.getElementById('search');
+const categorySelect = document.getElementById('category');
+const visibleCount = document.getElementById('visible-count');
+const totalCount = document.getElementById('total-count');
+const modal = document.getElementById('modal');
+const toast = document.getElementById('toast');
+
+async function init() {
+  const config = await (await fetch('/api/config')).json();
+  styles = config.styles;
+  categories = config.categories;
+  pickMode = config.pickMode;
+
+  totalCount.textContent = styles.length;
+  if (pickMode) document.getElementById('pick-banner').style.display = 'block';
+
+  for (const [id, name] of Object.entries(categories)) {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = name;
+    categorySelect.appendChild(opt);
+  }
+
+  renderGrid();
+  searchInput.addEventListener('input', filterCards);
+  categorySelect.addEventListener('change', filterCards);
+
+  modal.querySelector('.close-btn').addEventListener('click', () => modal.classList.remove('active'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (document.getElementById('regen-dialog').classList.contains('active')) {
+        closeRegenDialog();
+      } else {
+        modal.classList.remove('active');
+      }
+    }
+  });
+}
+
+function renderGrid() {
+  grid.innerHTML = '';
+  for (const s of styles) {
+    const card = document.createElement('div');
+    card.className = 'style-card';
+    card.dataset.id = s.id;
+    card.dataset.short = s.shortName;
+    card.dataset.category = s.category;
+    card.dataset.name = s.name.toLowerCase();
+
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+
+    if (s.hasTile) {
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = s.name;
+      img.src = '/tile/' + s.id;
+      thumb.appendChild(img);
+    } else {
+      thumb.innerHTML = '<span class="no-thumb">' + s.shortName + '</span>';
+    }
+
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.innerHTML = '<span class="label-name">' + s.name + '</span><span class="label-short">' + s.shortName + '</span>';
+    thumb.appendChild(label);
+    card.appendChild(thumb);
+
+    card.addEventListener('click', () => openModal(s));
+    grid.appendChild(card);
+  }
+  visibleCount.textContent = styles.length;
+}
+
+function filterCards() {
+  const q = searchInput.value.toLowerCase();
+  const cat = categorySelect.value;
+  let n = 0;
+  grid.querySelectorAll('.style-card').forEach(c => {
+    const ok = (!q || c.dataset.name.includes(q) || c.dataset.short.includes(q) || c.dataset.id.includes(q))
+      && (!cat || c.dataset.category === cat);
+    c.classList.toggle('hidden', !ok);
+    if (ok) n++;
+  });
+  visibleCount.textContent = n;
+}
+
+function openModal(s) {
+  document.getElementById('modal-title').textContent = s.name;
+  document.getElementById('modal-image').style.backgroundImage = 'url(/tile/' + s.id + ')';
+  document.getElementById('modal-hints').textContent = s.promptHints;
+  document.getElementById('modal-details').innerHTML =
+    '<div class="detail-row"><span class="detail-label">ID</span><span class="detail-value">' + s.id + '</span></div>' +
+    '<div class="detail-row"><span class="detail-label">Short</span><span class="detail-value">' + s.shortName + '</span></div>' +
+    '<div class="detail-row"><span class="detail-label">Category</span><span class="badge">' + (categories[s.category] || s.category) + '</span></div>';
+
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.textContent = 'Copy ID';
+  copyBtn.classList.remove('copied');
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(s.id);
+    copyBtn.textContent = 'Copied!';
+    copyBtn.classList.add('copied');
+    showToast('Copied to clipboard');
+  };
+
+  const regenBtn = document.getElementById('regen-btn');
+  regenBtn.textContent = 'Regenerate Tile';
+  regenBtn.disabled = false;
+  regenBtn.classList.remove('copied');
+  regenBtn.onclick = () => regenerateTile(s);
+
+  const selectBtn = document.getElementById('select-btn');
+  if (pickMode) {
+    selectBtn.style.display = 'block';
+    selectBtn.onclick = () => selectStyle(s);
+  } else {
+    selectBtn.style.display = 'none';
+  }
+
+  modal.classList.add('active');
+}
+
+async function selectStyle(s) {
+  modal.classList.remove('active');
+  const card = grid.querySelector('[data-id="' + s.id + '"]');
+  if (card) card.classList.add('selected');
+  showToast('Selected: ' + s.name);
+
+  await fetch('/select', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: s.id, shortName: s.shortName, name: s.name, category: s.category, promptHints: s.promptHints })
+  });
+
+  setTimeout(() => window.close(), 500);
+}
+
+// ── Regenerate dialog ──
+let regenState = { style: null, pendingImageData: null };
+const regenDialog = document.getElementById('regen-dialog');
+
+document.getElementById('regen-close').addEventListener('click', closeRegenDialog);
+document.getElementById('regen-cancel-btn').addEventListener('click', closeRegenDialog);
+regenDialog.addEventListener('click', (e) => { if (e.target === regenDialog) closeRegenDialog(); });
+document.getElementById('regen-generate-btn').addEventListener('click', generatePreview);
+document.getElementById('regen-accept-btn').addEventListener('click', acceptTile);
+
+function openRegenDialog(s) {
+  regenState = { style: s, pendingImageData: null };
+  document.getElementById('regen-title').textContent = 'Regenerate: ' + s.name;
+  document.getElementById('regen-prompt').value = s.tilePrompt || '';
+
+  // Show current tile
+  const compare = document.getElementById('regen-compare');
+  compare.style.display = 'grid';
+  const currentImg = document.getElementById('regen-current');
+  currentImg.src = s.hasTile ? '/tile/' + s.id + '?v=' + Date.now() : '';
+  currentImg.style.display = s.hasTile ? 'block' : 'none';
+
+  // Reset preview
+  document.getElementById('regen-preview').style.display = 'none';
+  document.getElementById('regen-placeholder').style.display = 'flex';
+  document.getElementById('regen-placeholder').textContent = 'Click Generate';
+
+  // Reset buttons
+  document.getElementById('regen-generate-btn').textContent = 'Generate Preview';
+  document.getElementById('regen-generate-btn').disabled = false;
+  document.getElementById('regen-generate-btn').style.display = '';
+  document.getElementById('regen-accept-btn').style.display = 'none';
+  document.getElementById('regen-status').classList.remove('active');
+
+  regenDialog.classList.add('active');
+}
+
+function closeRegenDialog() {
+  regenDialog.classList.remove('active');
+  regenState = { style: null, pendingImageData: null };
+}
+
+async function generatePreview() {
+  const s = regenState.style;
+  if (!s) return;
+
+  const prompt = document.getElementById('regen-prompt').value.trim();
+  if (!prompt) { showToast('Prompt cannot be empty'); return; }
+
+  const genBtn = document.getElementById('regen-generate-btn');
+  genBtn.textContent = 'Generating...';
+  genBtn.disabled = true;
+  document.getElementById('regen-accept-btn').style.display = 'none';
+
+  const status = document.getElementById('regen-status');
+  status.textContent = 'Calling Gemini API... this takes 10-30 seconds';
+  status.classList.add('active');
+
+  document.getElementById('regen-preview').style.display = 'none';
+  document.getElementById('regen-placeholder').style.display = 'flex';
+  document.getElementById('regen-placeholder').textContent = 'Generating...';
+
+  try {
+    const res = await fetch('/regenerate/' + s.id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      regenState.pendingImageData = data.imageData;
+      const previewImg = document.getElementById('regen-preview');
+      previewImg.src = 'data:' + (data.mimeType || 'image/png') + ';base64,' + data.imageData;
+      previewImg.style.display = 'block';
+      document.getElementById('regen-placeholder').style.display = 'none';
+
+      genBtn.textContent = 'Try Again';
+      genBtn.disabled = false;
+      document.getElementById('regen-accept-btn').style.display = '';
+      status.textContent = 'Preview ready. Accept to save, or adjust prompt and try again.';
+    } else {
+      genBtn.textContent = 'Try Again';
+      genBtn.disabled = false;
+      document.getElementById('regen-placeholder').textContent = 'Failed';
+      status.textContent = 'Error: ' + (data.error || 'Unknown error');
+    }
+  } catch (err) {
+    genBtn.textContent = 'Try Again';
+    genBtn.disabled = false;
+    document.getElementById('regen-placeholder').textContent = 'Failed';
+    status.textContent = 'Network error';
+  }
+}
+
+async function acceptTile() {
+  const s = regenState.style;
+  if (!s || !regenState.pendingImageData) return;
+
+  const acceptBtn = document.getElementById('regen-accept-btn');
+  acceptBtn.textContent = 'Saving...';
+  acceptBtn.disabled = true;
+
+  try {
+    const res = await fetch('/save-tile/' + s.id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageData: regenState.pendingImageData }),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      const ts = Date.now();
+      // Update modal image behind the dialog
+      document.getElementById('modal-image').style.backgroundImage = 'url(/tile/' + s.id + '?v=' + ts + ')';
+
+      // Update grid thumbnail
+      const card = grid.querySelector('[data-id="' + s.id + '"]');
+      if (card) {
+        const thumb = card.querySelector('.thumb');
+        const existingImg = thumb.querySelector('img');
+        if (existingImg) {
+          existingImg.src = '/tile/' + s.id + '?v=' + ts;
+        } else {
+          const noThumb = thumb.querySelector('.no-thumb');
+          if (noThumb) noThumb.remove();
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.alt = s.name;
+          img.src = '/tile/' + s.id + '?v=' + ts;
+          thumb.insertBefore(img, thumb.querySelector('.label'));
+        }
+      }
+
+      s.hasTile = true;
+      showToast('Tile saved for ' + s.name);
+      closeRegenDialog();
+    } else {
+      acceptBtn.textContent = 'Accept';
+      acceptBtn.disabled = false;
+      showToast('Save failed: ' + (data.error || 'Unknown'));
+    }
+  } catch (err) {
+    acceptBtn.textContent = 'Accept';
+    acceptBtn.disabled = false;
+    showToast('Save failed: network error');
+  }
+}
+
+function regenerateTile(s) {
+  openRegenDialog(s);
+}
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1500);
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1377 @@
+{
+  "version": "2.0.0",
+  "categories": {
+    "traditional": "Traditional Art",
+    "digital": "Digital & Modern",
+    "illustration": "Illustration",
+    "photography": "Photography & Film",
+    "design": "Design & UI",
+    "retro": "Retro & Nostalgia",
+    "technique": "Texture & Technique",
+    "decorative": "Pattern & Decorative",
+    "creative": "Creative & Material",
+    "cultural": "Pop Culture & Iconic"
+  },
+  "styles": [
+    {
+      "id": "impressionism",
+      "shortName": "impr",
+      "name": "Impressionism",
+      "category": "traditional",
+      "promptHints": "visible brushstrokes, pure unmixed colors, emphasis on natural light and atmosphere, soft diffused edges, sun-dappled scenes, spontaneous plein air feeling, Monet-like color harmony",
+      "tilePrompt": "Full-bleed Impressionist painting of a sun-dappled garden path with blooming flowers and dappled light filtering through trees, visible loose brushstrokes and pure unmixed colors. Soft atmospheric light, warm color palette. Edge to edge, no frame, no border, no canvas edge visible."
+    },
+    {
+      "id": "post-impressionism",
+      "shortName": "post",
+      "name": "Post-Impressionism",
+      "category": "traditional",
+      "promptHints": "bold expressive colors, thick impasto brushwork, swirling dynamic textures, emotional intensity, strong outlines, visible paint texture like Van Gogh",
+      "tilePrompt": "A swirling starry night sky over a small village with bold expressive brushstrokes and thick impasto texture, vivid blues and yellows in the Post-Impressionist style. Dynamic, emotionally charged composition."
+    },
+    {
+      "id": "expressionism",
+      "shortName": "expr",
+      "name": "Expressionism",
+      "category": "traditional",
+      "promptHints": "distorted exaggerated forms, intense non-naturalistic colors, raw emotional power, bold angular outlines, psychological depth, dramatic contrast",
+      "tilePrompt": "A dramatic urban street scene with distorted angular buildings and exaggerated figures, painted in intense non-naturalistic reds and greens in the Expressionist style. Raw emotional energy, bold outlines."
+    },
+    {
+      "id": "surrealism",
+      "shortName": "surr",
+      "name": "Surrealism",
+      "category": "traditional",
+      "promptHints": "dreamlike impossible imagery, unexpected juxtapositions, melting and morphing forms, hyperrealistic detail in impossible scenes, subconscious symbolism",
+      "tilePrompt": "A dreamlike desert landscape where giant clocks melt over tree branches and staircases float in the sky, rendered with hyperrealistic detail in the Surrealist style. Impossible perspective, enigmatic atmosphere."
+    },
+    {
+      "id": "art-nouveau",
+      "shortName": "nouv",
+      "name": "Art Nouveau",
+      "category": "traditional",
+      "promptHints": "organic flowing whiplash curves, natural floral forms, decorative elegance, elegant feminine figures, intricate botanical patterns, Mucha-style composition",
+      "tilePrompt": "An elegant woman with flowing hair surrounded by ornate floral borders and organic whiplash curves in the Art Nouveau style. Decorative botanical motifs, warm gold and jewel tones, Mucha-inspired composition."
+    },
+    {
+      "id": "art-deco",
+      "shortName": "deco",
+      "name": "Art Deco",
+      "category": "traditional",
+      "promptHints": "bold geometric patterns, gold and metallic accents, streamlined symmetrical forms, luxury materials aesthetic, sunburst motifs, Gatsby-era glamour",
+      "tilePrompt": "A geometric Art Deco skyscraper facade with bold gold sunburst patterns, chrome accents, and symmetrical stepped forms. Rich navy and gold color palette, luxury glamour, 1920s elegance."
+    },
+    {
+      "id": "pop-art",
+      "shortName": "popa",
+      "name": "Pop Art",
+      "category": "traditional",
+      "promptHints": "bold primary colors, Ben-Day halftone dots, commercial imagery, graphic bold outlines, screen-print look, mass culture aesthetic, Warhol/Lichtenstein style",
+      "tilePrompt": "A bold close-up of a colorful flower with Ben-Day halftone dots, thick black outlines, and saturated primary colors in the Pop Art style. Flat graphic composition, screen-print aesthetic."
+    },
+    {
+      "id": "abstract-expressionism",
+      "shortName": "abex",
+      "name": "Abstract Expressionism",
+      "category": "traditional",
+      "promptHints": "gestural spontaneous brushwork, large-scale energy, drips and splatters, emotional abstraction, all-over composition, action painting, color field",
+      "tilePrompt": "Full-bleed abstract expressionist painting filling the entire canvas. Dynamic paint splatters, drips, and bold gestural brushstrokes covering every inch. Edge to edge, no frame, no border, no canvas edge, no wall visible. Vibrant colors layered with raw energy."
+    },
+    {
+      "id": "fauvism",
+      "shortName": "fauv",
+      "name": "Fauvism",
+      "category": "traditional",
+      "promptHints": "wild vibrant non-naturalistic colors, simplified bold forms, spontaneous brushwork, pure color straight from tube, joyful exuberance, Matisse-like harmony",
+      "tilePrompt": "A vibrant harbor scene with boats and buildings painted in wild non-naturalistic colors — orange trees, purple water, green sky — in the Fauvist style. Joyful, bold, simplified forms."
+    },
+    {
+      "id": "baroque-dramatic",
+      "shortName": "barq",
+      "name": "Baroque Dramatic",
+      "category": "traditional",
+      "promptHints": "dramatic chiaroscuro lighting, deep rich shadows, theatrical spotlighting, ornate sumptuous detail, dynamic diagonal composition, Caravaggio-style contrast",
+      "tilePrompt": "A dramatic still life of fruit and a wine goblet lit by a single candle, deep rich shadows and theatrical chiaroscuro lighting in the Baroque style. Sumptuous textures, Caravaggio-like drama."
+    },
+    {
+      "id": "romanticism",
+      "shortName": "roma",
+      "name": "Romanticism",
+      "category": "traditional",
+      "promptHints": "sublime dramatic nature, awe-inspiring scale, turbulent skies, emotional landscapes, atmospheric golden light, Turner-like luminous atmosphere",
+      "tilePrompt": "A dramatic mountain landscape at sunset with turbulent clouds, golden atmospheric light, and a tiny figure dwarfed by sublime nature in the Romantic style. Awe-inspiring, luminous, Turner-like atmosphere."
+    },
+    {
+      "id": "minimalism",
+      "shortName": "minm",
+      "name": "Minimalism",
+      "category": "traditional",
+      "promptHints": "extreme simplicity, geometric shapes, monochrome or limited palette, vast negative space, clean precise lines, stark austere composition",
+      "tilePrompt": "A minimal composition with a single red circle on a vast white field, precise geometric lines, and expansive negative space in the Minimalist style. Clean, austere, meditative simplicity."
+    },
+    {
+      "id": "pointillism",
+      "shortName": "poin",
+      "name": "Pointillism",
+      "category": "traditional",
+      "promptHints": "tiny dots of pure color that optically blend, shimmering luminous effect, systematic dot application, Seurat-like precision, vibrant light",
+      "tilePrompt": "A riverside park scene composed entirely of tiny dots of pure color that shimmer and blend optically in the Pointillist style. Luminous sunlight, Seurat-like precision, vibrant harmonious palette."
+    },
+    {
+      "id": "ukiyo-e",
+      "shortName": "ukiy",
+      "name": "Ukiyo-e",
+      "category": "traditional",
+      "promptHints": "flat bold color areas, strong outlines, asymmetric composition, woodblock print aesthetic, Japanese nature scenes, wave and mountain motifs, Hokusai/Hiroshige style",
+      "tilePrompt": "A dramatic ocean wave with bold flat color areas and strong outlines in the Ukiyo-e woodblock print style. Mt Fuji in the background, Japanese aesthetic, Hokusai-inspired composition."
+    },
+    {
+      "id": "pre-raphaelite",
+      "shortName": "prer",
+      "name": "Pre-Raphaelite",
+      "category": "traditional",
+      "promptHints": "jewel-like saturated colors, meticulous botanical detail, literary romantic subjects, flowing red hair, medieval settings, Rossetti/Waterhouse style",
+      "tilePrompt": "A beautiful woman with flowing auburn hair in a medieval garden surrounded by meticulously detailed flowers and foliage in the Pre-Raphaelite style. Jewel-like colors, romantic, literary atmosphere."
+    },
+    {
+      "id": "cyberpunk",
+      "shortName": "cybr",
+      "name": "Cyberpunk",
+      "category": "digital",
+      "promptHints": "neon lights reflecting on rain-soaked streets, futuristic megacity, holographic advertisements, tech noir atmosphere, pink and cyan neon, dark dystopian future",
+      "tilePrompt": "A rain-soaked cyberpunk megacity alley with neon signs in pink and cyan reflecting off wet pavement, holographic ads, and towering buildings disappearing into fog. Dark, atmospheric, tech noir."
+    },
+    {
+      "id": "synthwave",
+      "shortName": "synw",
+      "name": "Synthwave / Retrowave",
+      "category": "digital",
+      "promptHints": "retro 80s neon grid landscape, chrome text, sunset gradient purple to pink, analog synthesizer aesthetic, laser lines, starfield background",
+      "tilePrompt": "A glowing neon grid landscape stretching to a sunset horizon with purple-to-pink gradient sky, chrome mountains, and laser lines in the Synthwave style. Retro 80s analog aesthetic, starfield."
+    },
+    {
+      "id": "vaporwave",
+      "shortName": "vapr",
+      "name": "Vaporwave",
+      "category": "digital",
+      "promptHints": "80s/90s nostalgia, pastel pink and cyan, Greek marble busts, palm trees, sunset grids, glitch artifacts, Japanese text, consumer culture remix",
+      "tilePrompt": "A pastel pink and cyan composition with a Greek marble bust surrounded by palm trees, sunset grid floor, and subtle glitch artifacts in the Vaporwave aesthetic. Dreamy, nostalgic, consumer surrealism."
+    },
+    {
+      "id": "solarpunk",
+      "shortName": "solr",
+      "name": "Solarpunk",
+      "category": "digital",
+      "promptHints": "green technology harmonizing with nature, lush vegetation on buildings, solar panels, optimistic sustainable future, warm golden light, community gardens",
+      "tilePrompt": "A futuristic city where buildings are covered in lush green gardens and solar panels, with warm golden sunlight and people walking among trees in the Solarpunk style. Optimistic, sustainable, beautiful."
+    },
+    {
+      "id": "glitch-art",
+      "shortName": "gltc",
+      "name": "Glitch Art",
+      "category": "digital",
+      "promptHints": "data corruption artifacts, pixel sorting, RGB channel displacement, scan lines, digital noise, broken image aesthetic, databending effects",
+      "tilePrompt": "A portrait fragmented by glitch effects — pixel sorting, RGB channel displacement, horizontal scan lines, and data corruption artifacts. Bold digital colors, broken beauty, Glitch Art aesthetic."
+    },
+    {
+      "id": "low-poly",
+      "shortName": "lpol",
+      "name": "Low Poly",
+      "category": "digital",
+      "promptHints": "geometric triangular facets, flat shaded polygons, stylized 3D look, angular crystalline forms, vibrant faceted surfaces, minimal polygon count",
+      "tilePrompt": "A majestic mountain landscape rendered in geometric triangular facets with flat shading and vibrant gradients in the Low Poly style. Crystalline angular forms, stylized 3D aesthetic."
+    },
+    {
+      "id": "pixel-art",
+      "shortName": "pixl",
+      "name": "Pixel Art",
+      "category": "digital",
+      "promptHints": "blocky visible pixels, limited color palette, 8-bit or 16-bit retro gaming aesthetic, dithering patterns, clean pixel-perfect edges, nostalgic gaming",
+      "tilePrompt": "A colorful pixel art landscape with a castle, rolling hills, and clouds rendered in a limited 16-bit color palette with clean pixel-perfect edges. Retro gaming aesthetic, dithering patterns, charming."
+    },
+    {
+      "id": "isometric",
+      "shortName": "isom",
+      "name": "Isometric",
+      "category": "digital",
+      "promptHints": "30-degree angle view, no perspective distortion, tile-based layout, detailed miniature environments, game art style, clean precise rendering",
+      "tilePrompt": "An isometric miniature city block with detailed buildings, tiny trees, cars, and people viewed from a 30-degree angle. Clean precise rendering, no perspective distortion, charming game art style."
+    },
+    {
+      "id": "neon-noir",
+      "shortName": "nnoi",
+      "name": "Neon Noir",
+      "category": "digital",
+      "promptHints": "dark moody atmosphere with neon accent lighting, silhouettes against neon signs, wet reflective surfaces, urban mystery, cinematic night scenes",
+      "tilePrompt": "A lone figure silhouetted against a glowing neon sign on a dark rainy street, wet pavement reflecting red and blue light in the Neon Noir style. Moody, cinematic, mysterious."
+    },
+    {
+      "id": "outrun",
+      "shortName": "outr",
+      "name": "Outrun",
+      "category": "digital",
+      "promptHints": "speeding car on neon grid road, sunset horizon, chrome and pink, 80s supercar aesthetic, speed lines, digital sun, palm tree silhouettes",
+      "tilePrompt": "A chrome sports car racing down a neon grid highway toward a massive digital sun on the horizon, palm tree silhouettes, and a pink-purple sky in the Outrun style. Speed, retro-future, thrill."
+    },
+    {
+      "id": "dreamcore",
+      "shortName": "drmc",
+      "name": "Dreamcore",
+      "category": "digital",
+      "promptHints": "surreal nostalgic imagery, uncanny familiar spaces, washed out dreamlike quality, childhood memory distortion, eerie calm, liminal beauty",
+      "tilePrompt": "A surreal playground floating in a pastel sky with oversized flowers and distorted familiar objects in the Dreamcore aesthetic. Washed-out nostalgic colors, uncanny calm, childhood dream distortion."
+    },
+    {
+      "id": "liminal-space",
+      "shortName": "limn",
+      "name": "Liminal Space",
+      "category": "digital",
+      "promptHints": "empty transitional spaces, fluorescent-lit corridors, abandoned malls, eerie emptiness, between-places feeling, unnerving silence, familiar yet wrong",
+      "tilePrompt": "An empty fluorescent-lit hotel corridor stretching into infinity with faded carpet and identical doors in the Liminal Space aesthetic. Eerie, silent, familiar yet deeply unsettling."
+    },
+    {
+      "id": "dark-academia",
+      "shortName": "dkac",
+      "name": "Dark Academia",
+      "category": "digital",
+      "promptHints": "old libraries with leather books, candlelit studies, autumn tones, classical architecture, scholarly atmosphere, moody warm browns and golds",
+      "tilePrompt": "A moody candlelit library with towering bookshelves, leather-bound volumes, and warm amber light streaming through arched windows in the Dark Academia aesthetic. Scholarly, autumnal, contemplative."
+    },
+    {
+      "id": "cottagecore",
+      "shortName": "cotc",
+      "name": "Cottagecore",
+      "category": "digital",
+      "promptHints": "pastoral idyllic countryside, wildflower meadows, cozy stone cottage, warm baking scenes, soft morning light, gentle romanticized rural life",
+      "tilePrompt": "A charming stone cottage with a wildflower garden, warm bread cooling on the windowsill, and soft golden morning light in the Cottagecore aesthetic. Gentle, pastoral, warmly romantic."
+    },
+    {
+      "id": "wes-anderson",
+      "shortName": "wesa",
+      "name": "Wes Anderson",
+      "category": "cultural",
+      "promptHints": "symmetrical centered composition, pastel color palette, whimsical vintage aesthetic, flat frontal framing, meticulously arranged set design, quirky retro typography, muted pinks yellows and teals",
+      "tilePrompt": "Full-bleed Wes Anderson aesthetic filling the entire canvas. Perfectly symmetrical composition, pastel color blocks in muted pink, yellow, teal and lavender, flat frontal perspective, meticulous geometric arrangement, vintage wallpaper texture, whimsical retro warmth. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "spider-verse",
+      "shortName": "spvs",
+      "name": "Spider-Verse",
+      "category": "cultural",
+      "promptHints": "comic halftone dots, chromatic aberration, Ben-Day printing, bold outlines, smeared motion lines, offset CMYK registration, dynamic angles, mixed media comic panels, glitch-pop energy",
+      "tilePrompt": "Full-bleed Spider-Verse comic print aesthetic filling the entire canvas. Dense halftone Ben-Day dots, offset CMYK registration misalignment, chromatic aberration, bold black ink outlines, smeared motion lines, vibrant red blue and pink ink splatter, comic book printing texture. Edge to edge, no frame, no border, no characters."
+    },
+    {
+      "id": "gta-rockstar",
+      "shortName": "gtar",
+      "name": "GTA / Rockstar",
+      "category": "cultural",
+      "promptHints": "Grand Theft Auto loading screen illustration style, saturated stylized realism, bold painterly brush strokes, high contrast pop color, urban gritty atmosphere, stylized character art, sun-bleached palette",
+      "tilePrompt": "Full-bleed GTA Rockstar illustration aesthetic filling the entire canvas. Bold saturated painterly brush strokes, stylized realism with high contrast pop color, sun-bleached warm tones, gritty urban texture, loose expressive oil painting quality, Vice City color palette of hot pink orange and teal. Edge to edge, no frame, no border, no characters, no text."
+    },
+    {
+      "id": "blade-runner",
+      "shortName": "bldr",
+      "name": "Blade Runner",
+      "category": "cultural",
+      "promptHints": "rain-soaked neon dystopia, towering megastructures in smog, Vangelis synth atmosphere, smoky atmospheric haze, holographic light spill, cyan and orange palette, heavy film grain, retrofuturistic noir",
+      "tilePrompt": "Full-bleed Blade Runner aesthetic filling the entire canvas. Rain-soaked neon reflections on wet surfaces, smoky atmospheric haze, cyan and deep orange color palette, holographic light diffusion through smog, heavy cinematic film grain texture, dark dystopian mood. Edge to edge, no frame, no border, no characters."
+    },
+    {
+      "id": "hr-giger",
+      "shortName": "gigr",
+      "name": "HR Giger",
+      "category": "cultural",
+      "promptHints": "biomechanical horror, organic-mechanical fusion, ribbed skeletal structures, dark surrealist airbrush, industrial body horror, chrome and bone textures, Alien aesthetic, monochrome with metallic sheen",
+      "tilePrompt": "Full-bleed HR Giger biomechanical surface texture filling the entire canvas. Dark airbrush technique, organic-mechanical fusion of ribbed skeletal structures and chrome tubing, industrial body horror aesthetic, monochrome with subtle metallic bronze sheen, dense interlocking biomechanoid forms. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "lisa-frank",
+      "shortName": "lfnk",
+      "name": "Lisa Frank",
+      "category": "cultural",
+      "promptHints": "90s rainbow maximalism, iridescent holographic, neon gradient, saturated pink purple teal, sparkle and glitter, school supplies nostalgia, cosmic rainbow, airbrushed fantasy",
+      "tilePrompt": "Full-bleed Lisa Frank aesthetic filling the entire canvas. Explosive 90s rainbow gradient in neon pink purple teal and yellow, iridescent holographic shimmer, airbrushed fantasy glow, sparkle and star bursts, cosmic rainbow maximalism, saturated candy colors. Edge to edge, no frame, no border, no animals, no characters."
+    },
+    {
+      "id": "saul-bass",
+      "shortName": "bass",
+      "name": "Saul Bass",
+      "category": "cultural",
+      "promptHints": "mid-century movie poster design, bold geometric cutout shapes, limited two or three color palette, stark high contrast, paper cut collage, minimalist graphic design, Hitchcock title sequence aesthetic",
+      "tilePrompt": "Full-bleed Saul Bass graphic design aesthetic filling the entire canvas. Bold geometric cutout shapes in limited palette of black red and cream, stark high contrast, paper cut collage texture, angular fragmented forms, mid-century modernist graphic design, strong diagonal composition. Edge to edge, no frame, no border, no text."
+    },
+    {
+      "id": "keith-haring",
+      "shortName": "harg",
+      "name": "Keith Haring",
+      "category": "cultural",
+      "promptHints": "bold black outlines, radiant baby figures, dancing figures, barking dogs, thick uniform line weight, solid flat primary colors, subway art energy, movement and radiation lines, pop art activism",
+      "tilePrompt": "Full-bleed Keith Haring pop art pattern filling the entire canvas. Dense interlocking bold black outlined figures and shapes, thick uniform line weight, solid flat fields of red yellow blue and green, radiation and movement lines, energetic rhythmic pattern, subway art aesthetic. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "bob-ross",
+      "shortName": "bross",
+      "name": "Bob Ross",
+      "category": "cultural",
+      "promptHints": "happy little trees, wet-on-wet oil painting technique, serene mountain landscapes, calm reflective lakes, soft blended clouds, earthy natural palette, peaceful wilderness, gentle brush strokes, soothing atmosphere",
+      "tilePrompt": "Full-bleed Bob Ross wet-on-wet oil painting texture filling the entire canvas. Soft blended mountain peaks with snow, happy little evergreen trees, calm reflective lake, gentle cloud formations, earthy greens and warm sunset oranges, peaceful wilderness mood, visible palette knife and brush texture. Edge to edge, no frame, no border, no easel."
+    },
+    {
+      "id": "anime-manga",
+      "shortName": "anim",
+      "name": "Anime / Manga",
+      "category": "illustration",
+      "promptHints": "large expressive eyes, colorful dynamic hair, clean cel-shaded lines, dramatic action poses, exaggerated emotions, speed lines, vibrant colors",
+      "tilePrompt": "A dynamic anime character with large expressive eyes and colorful flowing hair in a dramatic action pose, clean cel-shaded lines and speed lines. Vibrant, energetic, Japanese animation style."
+    },
+    {
+      "id": "studio-ghibli",
+      "shortName": "ghbl",
+      "name": "Studio Ghibli",
+      "category": "illustration",
+      "promptHints": "magical realism, lush pastoral landscapes, detailed clouds, whimsical creatures, warm gentle atmosphere, hand-painted watercolor background feel, Miyazaki magic",
+      "tilePrompt": "A lush green hillside with a tiny magical creature sitting among wildflowers, fluffy cumulus clouds in a vast blue sky in the Studio Ghibli style. Warm, magical, hand-painted watercolor feel."
+    },
+    {
+      "id": "moebius-ligne-claire",
+      "shortName": "moeb",
+      "name": "Moebius / Ligne Claire",
+      "category": "illustration",
+      "promptHints": "clean uniform-weight outlines, flat even coloring, highly detailed environments, European comic style, sci-fi landscapes, intricate cross-hatching in backgrounds",
+      "tilePrompt": "A vast alien desert landscape with strange rock formations and a lone explorer, drawn with clean uniform-weight lines and flat even coloring in the Moebius/Ligne Claire style. Detailed, imaginative, European comic."
+    },
+    {
+      "id": "comic-book",
+      "shortName": "comc",
+      "name": "Comic Book",
+      "category": "illustration",
+      "promptHints": "bold black outlines, dynamic panel composition, halftone dot shading, saturated colors, dramatic foreshortening, action poses, speech bubble aesthetic",
+      "tilePrompt": "A dynamic superhero bursting through a wall with bold black outlines, halftone dot shading, and dramatic foreshortening in the classic Comic Book style. Saturated primary colors, explosive energy."
+    },
+    {
+      "id": "children-book",
+      "shortName": "chld",
+      "name": "Children's Book",
+      "category": "illustration",
+      "promptHints": "whimsical charming characters, soft rounded forms, warm inviting colors, gentle storytelling scenes, playful compositions, hand-drawn feel",
+      "tilePrompt": "A whimsical forest scene with a friendly fox and a rabbit having a tea party under a mushroom, soft rounded forms and warm gentle colors in a Children's Book illustration style. Charming, inviting."
+    },
+    {
+      "id": "concept-art",
+      "shortName": "cnpt",
+      "name": "Concept Art",
+      "category": "illustration",
+      "promptHints": "cinematic environment design, dramatic lighting and mood, painterly quick strokes, epic scale, atmospheric perspective, film production quality",
+      "tilePrompt": "An epic cinematic landscape of a floating ancient city above clouds with dramatic golden-hour lighting, atmospheric haze, and painterly strokes in the Concept Art style. Film production quality, awe-inspiring."
+    },
+    {
+      "id": "botanical-illustration",
+      "shortName": "botn",
+      "name": "Botanical Illustration",
+      "category": "illustration",
+      "promptHints": "scientific precision, delicate watercolor rendering, detailed plant anatomy, labeled specimens, white background, natural history plate aesthetic",
+      "tilePrompt": "Full-bleed botanical illustration filling the entire canvas. Lush flowering roses, buds, stems, and leaves rendered in precise scientific watercolor covering every inch. Edge to edge, no frame, no border, no desk, no paper edge visible. Natural history plate aesthetic."
+    },
+    {
+      "id": "editorial-illustration",
+      "shortName": "edit",
+      "name": "Editorial Illustration",
+      "category": "illustration",
+      "promptHints": "modern stylized compositions, metaphorical imagery, limited sophisticated palette, bold shapes, New Yorker magazine aesthetic, conceptual storytelling",
+      "tilePrompt": "Full-bleed editorial illustration filling the entire canvas. A figure climbing stairs of books toward a lightbulb, bold simplified shapes and limited sophisticated palette covering every inch. Edge to edge, no frame, no border, no magazine edge. Conceptual, stylish, modern."
+    },
+    {
+      "id": "fantasy-art",
+      "shortName": "fant",
+      "name": "Fantasy Art",
+      "category": "illustration",
+      "promptHints": "epic dragons and magical creatures, heroic figures, mystical glowing lighting, sword and sorcery, rich detailed environments, Frazetta/Vallejo power",
+      "tilePrompt": "A powerful dragon perched on a mountain peak overlooking a mystical valley with glowing magical energy in the Fantasy Art style. Epic, richly detailed, heroic, otherworldly lighting."
+    },
+    {
+      "id": "sci-fi-pulp",
+      "shortName": "sfpl",
+      "name": "Sci-Fi Pulp",
+      "category": "illustration",
+      "promptHints": "retro science fiction, chrome spaceships, alien landscapes, ray guns, dramatic poses, vintage pulp magazine cover aesthetic, bold colors",
+      "tilePrompt": "A retro sci-fi scene with a chrome rocket ship landing on an alien planet with two moons and strange vegetation in the Sci-Fi Pulp style. Dramatic, vintage magazine cover aesthetic, bold saturated colors."
+    },
+    {
+      "id": "romero-britto",
+      "shortName": "brit",
+      "name": "Romero Britto Pop",
+      "category": "illustration",
+      "promptHints": "bold black outlines filled with vibrant patterns, geometric shapes mixed with organic forms, bright optimistic colors, mixed pattern fills, neo-pop Brazilian art",
+      "tilePrompt": "A vibrant cat face composed of bold geometric shapes filled with different colorful patterns — stripes, dots, checks — with thick black outlines in the Romero Britto neo-pop style. Joyful, bold, celebratory."
+    },
+    {
+      "id": "kawaii",
+      "shortName": "kawa",
+      "name": "Kawaii",
+      "category": "illustration",
+      "promptHints": "adorable chibi characters, pastel soft colors, simple rounded forms, blushing cheeks, sparkle effects, cute food and animals, Japanese cute culture",
+      "tilePrompt": "An adorable collection of kawaii food characters — a smiling rice ball, blushing donut, and happy sushi — with pastel colors, sparkle effects, and tiny rounded forms. Cute Japanese illustration style."
+    },
+    {
+      "id": "ink-illustration",
+      "shortName": "inkl",
+      "name": "Ink Illustration",
+      "category": "illustration",
+      "promptHints": "black ink on white, intricate crosshatching, fine line detail, dramatic contrast, pen and ink technique, richly textured shadows",
+      "tilePrompt": "Full-bleed pen and ink illustration of a dense forest scene with intricate crosshatching, fine line detail creating rich shadows and textures. Black ink on white, dramatic contrast. Edge to edge, no frame, no border, no paper edge visible."
+    },
+    {
+      "id": "storybook-watercolor",
+      "shortName": "strw",
+      "name": "Storybook Watercolor",
+      "category": "illustration",
+      "promptHints": "soft transparent washes, dreamy fairytale atmosphere, gentle color bleeding, hand-painted warmth, whimsical details, nostalgic bedtime story feel",
+      "tilePrompt": "A dreamy watercolor fairytale scene of a tiny cottage nestled in a magical forest with glowing fireflies and soft color washes bleeding gently together. Whimsical, warm, bedtime story atmosphere."
+    },
+    {
+      "id": "street-art",
+      "shortName": "strt",
+      "name": "Street Art / Graffiti",
+      "category": "illustration",
+      "promptHints": "spray paint textures, bold murals, stencil art, urban walls, Banksy/Shepard Fairey aesthetic, political imagery, wheat paste, wild style lettering",
+      "tilePrompt": "A bold street art mural of a giant eye on a weathered brick wall with spray paint drips, stenciled elements, and vibrant graffiti lettering. Urban, raw, powerful, Banksy-inspired aesthetic."
+    },
+    {
+      "id": "cinematic-golden-hour",
+      "shortName": "cine",
+      "name": "Cinematic Golden Hour",
+      "category": "photography",
+      "promptHints": "warm golden-hour sunlight, cinematic wide aspect, shallow depth of field, lens flare, film color grading, atmospheric haze, movie still quality",
+      "tilePrompt": "Full-bleed cinematic golden hour photograph filling the entire canvas. Lone tree on golden hillside at sunset, warm golden-hour light with lens flare, shallow depth of field, atmospheric haze. Edge to edge, no frame, no border, no black bars, no letterbox. Film still quality, breathtaking."
+    },
+    {
+      "id": "film-noir-bw",
+      "shortName": "fnoi",
+      "name": "Film Noir B&W",
+      "category": "photography",
+      "promptHints": "high contrast black and white, venetian blind shadow patterns, dramatic low-key lighting, mysterious silhouettes, fedora and trenchcoat aesthetic, moody urban night",
+      "tilePrompt": "A high-contrast black and white scene of a mysterious figure in a fedora under a streetlamp, venetian blind shadows crossing the frame in the Film Noir style. Dramatic, moody, urban mystery."
+    },
+    {
+      "id": "kodachrome",
+      "shortName": "koda",
+      "name": "Kodachrome Vintage",
+      "category": "photography",
+      "promptHints": "warm saturated Kodachrome film colors, slightly faded vintage look, rich reds and greens, 1960s/70s photography aesthetic, nostalgic warmth, organic film grain",
+      "tilePrompt": "A vintage 1970s scene of a family road trip car parked at a scenic overlook, shot with warm saturated Kodachrome colors, gentle film grain, and nostalgic golden warmth. Authentically retro."
+    },
+    {
+      "id": "polaroid",
+      "shortName": "plrd",
+      "name": "Polaroid Instant",
+      "category": "photography",
+      "promptHints": "white Polaroid frame border, slightly faded colors, instant camera aesthetic, casual snapshot feeling, soft focus, warm tint, nostalgic personal moment",
+      "tilePrompt": "A single square Polaroid instant photograph centered on a flat surface. White Polaroid border frame with wider bottom strip. The photo inside shows a warm sun-faded beach scene with slightly washed-out vintage colors, soft focus, light leak in corner. Nostalgic instant camera aesthetic. One photo only."
+    },
+    {
+      "id": "tilt-shift",
+      "shortName": "tilt",
+      "name": "Tilt-Shift Miniature",
+      "category": "photography",
+      "promptHints": "selective focus creating miniature toy-like effect, extreme shallow depth of field, top-down or elevated angle, vibrant saturated colors, real scene looking like a model",
+      "tilePrompt": "An aerial view of a real city street that looks like a miniature toy model due to selective tilt-shift focus blur, with vibrant saturated colors and tiny-looking cars and people."
+    },
+    {
+      "id": "long-exposure",
+      "shortName": "lexp",
+      "name": "Long Exposure",
+      "category": "photography",
+      "promptHints": "motion blur light trails, silky smooth water, star trails, ethereal time-stretching effect, streaked headlights, ghostly movement",
+      "tilePrompt": "A coastal scene with silky smooth water flowing over rocks under a star-trail sky, light trails from a distant lighthouse in the Long Exposure style. Ethereal, time-stretched, magical."
+    },
+    {
+      "id": "infrared",
+      "shortName": "infr",
+      "name": "Infrared",
+      "category": "photography",
+      "promptHints": "white or pink foliage, dark sky, surreal otherworldly colors, false-color landscape, ethereal dreamlike quality, invisible light spectrum",
+      "tilePrompt": "A surreal landscape where all the trees have bright white foliage against a deep dark sky, with pink-tinted grass in the Infrared photography style. Otherworldly, ethereal, hauntingly beautiful."
+    },
+    {
+      "id": "double-exposure",
+      "shortName": "dblx",
+      "name": "Double Exposure",
+      "category": "photography",
+      "promptHints": "two layered images blended together, portrait merged with landscape, ghostly transparency, silhouette filled with texture, creative overlapping",
+      "tilePrompt": "A striking double exposure of a person's profile silhouette filled with a lush forest landscape, ghostly layered transparency where the face meets the trees. Creative, artistic, dreamlike."
+    },
+    {
+      "id": "cross-processed",
+      "shortName": "xpro",
+      "name": "Cross-Processed",
+      "category": "photography",
+      "promptHints": "shifted unusual color palette, high contrast, cyan/yellow or magenta/green color casts, punchy saturated tones, experimental film processing look",
+      "tilePrompt": "A street scene with dramatically shifted colors from cross-processing — cyan shadows, yellow highlights, high contrast, and punchy saturated tones. Experimental, vivid, distinctively processed."
+    },
+    {
+      "id": "drone-aerial",
+      "shortName": "dron",
+      "name": "Drone / Aerial",
+      "category": "photography",
+      "promptHints": "top-down bird's eye view, abstract patterns from above, miniature scale effect, geometric landscape patterns, vivid colors from altitude",
+      "tilePrompt": "A stunning top-down aerial view of turquoise ocean meeting a white sand beach with tiny umbrellas creating geometric patterns. Vivid colors, abstract natural patterns, bird's eye perspective."
+    },
+    {
+      "id": "brutalism",
+      "shortName": "brut",
+      "name": "Brutalism",
+      "category": "design",
+      "promptHints": "raw concrete textures, stark monolithic forms, bold oversized typography, heavy dark borders, no decorative elements, deliberately rough and confrontational",
+      "tilePrompt": "Full-bleed brutalist design composition filling the entire canvas. Raw concrete textures, massive bold black serif typography, heavy borders, harsh asymmetric blocks of color and text. Edge to edge, no frame, no border, no monitor, no screen, no device. Raw, confrontational, powerful."
+    },
+    {
+      "id": "neo-brutalism",
+      "shortName": "nbrt",
+      "name": "Neo-Brutalism",
+      "category": "design",
+      "promptHints": "bold black shadows and borders, bright vivid accent colors, raw unpolished feel with modern energy, thick outlines, visible grid structure, playfully harsh",
+      "tilePrompt": "A vibrant neo-brutalist card layout with thick black borders, bold drop shadows, bright yellow and pink accent colors, and chunky rounded elements. Playfully harsh, modern, energetic."
+    },
+    {
+      "id": "glassmorphism",
+      "shortName": "glas",
+      "name": "Glassmorphism",
+      "category": "design",
+      "promptHints": "frosted translucent glass panels, background blur effect, subtle white borders, vivid gradient backgrounds visible through frosted layers, luminous floating cards",
+      "tilePrompt": "Frosted glass UI cards floating over a vivid purple-to-blue gradient background, with background blur, subtle white borders, and soft luminous glow in the Glassmorphism style. Elegant, modern, ethereal."
+    },
+    {
+      "id": "neumorphism",
+      "shortName": "neum",
+      "name": "Neumorphism",
+      "category": "design",
+      "promptHints": "soft extruded shadows, embossed or debossed elements, monochrome surface, gentle light and dark shadow pairs, smooth plastic-like surfaces, subtle 3D depth",
+      "tilePrompt": "A soft neumorphic interface with gently embossed buttons and debossed input fields on a light gray surface, with paired light and dark shadows creating subtle 3D depth. Smooth, clean, tactile."
+    },
+    {
+      "id": "flat-design",
+      "shortName": "flat",
+      "name": "Flat Design",
+      "category": "design",
+      "promptHints": "solid flat colors with no shadows or gradients, simple geometric shapes, clean sans-serif typography, bold color palette, 2D illustration, minimal ornamentation",
+      "tilePrompt": "A clean flat design illustration of a workspace with a laptop, coffee cup, and plant — solid colors, no shadows, simple geometric shapes, and bold primary color palette. 2D, modern, minimal."
+    },
+    {
+      "id": "swiss-style",
+      "shortName": "swis",
+      "name": "Swiss / International",
+      "category": "design",
+      "promptHints": "strict grid-based layout, Helvetica typography, asymmetric balance, strong contrast, red and black palette, mathematical precision, modernist graphic design",
+      "tilePrompt": "Full-bleed Swiss International style composition filling the entire canvas. Strict grid layout, bold Helvetica typography, asymmetric red and black blocks covering the full surface. Edge to edge, no frame, no border, no poster edge. Modernist, authoritative, mathematical precision."
+    },
+    {
+      "id": "bauhaus",
+      "shortName": "bauh",
+      "name": "Bauhaus",
+      "category": "design",
+      "promptHints": "primary colors red yellow blue, basic geometric shapes, functional clean design, strong contrast, sans-serif typography, industrial aesthetic, form follows function",
+      "tilePrompt": "Full-bleed Bauhaus composition filling the entire canvas. Primary red, yellow, and blue geometric shapes — circles, triangles, rectangles — arranged across the full surface with bold sans-serif elements. Edge to edge, no frame, no border. Functional, iconic, modernist."
+    },
+    {
+      "id": "memphis-design",
+      "shortName": "memp",
+      "name": "Memphis Design",
+      "category": "design",
+      "promptHints": "squiggly lines, geometric shapes in clashing colors, 1980s postmodern, terrazzo patterns, bold playful forms, deliberately kitschy, Sottsass-inspired",
+      "tilePrompt": "A wild Memphis Design composition with squiggly lines, clashing geometric shapes in pink, yellow, and teal, terrazzo patterns, and deliberately playful kitsch. 1980s postmodern, bold, exuberant."
+    },
+    {
+      "id": "risograph",
+      "shortName": "riso",
+      "name": "Risograph",
+      "category": "design",
+      "promptHints": "halftone grain texture, limited 2-3 color overprint, misregistration effects, soy ink aesthetic, zine culture, visible dot patterns, indie print feel",
+      "tilePrompt": "A risograph-style illustration of a potted plant with limited fluorescent pink and blue ink overprinting, visible halftone grain, slight misregistration, and indie zine print texture. Lo-fi, warm, handmade."
+    },
+    {
+      "id": "material-design",
+      "shortName": "matd",
+      "name": "Material Design",
+      "category": "design",
+      "promptHints": "paper-like layered surfaces, subtle elevation shadows, bold saturated colors, clean iconography, Roboto typography, responsive motion principles, Google design language",
+      "tilePrompt": "A Material Design UI composition with layered paper-like cards casting subtle shadows, bold teal and orange accents, clean icons, and Roboto typography. Modern, clean, Google design language."
+    },
+    {
+      "id": "y2k",
+      "shortName": "y2k",
+      "name": "Y2K",
+      "category": "retro",
+      "promptHints": "glossy chrome and metallic surfaces, bubbly organic 3D shapes, silver and iridescent colors, early internet aesthetic, futuristic 2000s, liquid metal",
+      "tilePrompt": "A glossy Y2K composition with bubbly chrome 3D shapes, iridescent metallic surfaces, and liquid silver text floating in a digital void. Early 2000s futuristic, shiny, techno-optimistic."
+    },
+    {
+      "id": "frutiger-aero",
+      "shortName": "frug",
+      "name": "Frutiger Aero",
+      "category": "retro",
+      "promptHints": "glossy rounded UI elements, nature imagery blended with technology, blue sky and green grass, translucent glass panels, Windows Vista/7 era, optimistic tech-nature fusion",
+      "tilePrompt": "A glossy Frutiger Aero scene blending technology with nature — translucent glass panels floating over a bright green meadow under a blue sky with puffy clouds. 2006-era tech optimism, clean, fresh."
+    },
+    {
+      "id": "70s-psychedelic",
+      "shortName": "psyc",
+      "name": "70s Psychedelic",
+      "category": "retro",
+      "promptHints": "swirling acid colors, melting lettering, op-art patterns, mushroom imagery, tie-dye gradients, concert poster aesthetic, groovy flowing forms",
+      "tilePrompt": "A psychedelic 70s poster with swirling rainbow colors, melting bubble lettering, op-art patterns, and flowing organic forms radiating from a central eye. Groovy, trippy, concert poster aesthetic."
+    },
+    {
+      "id": "mid-century-modern",
+      "shortName": "mcm",
+      "name": "Mid-Century Modern",
+      "category": "retro",
+      "promptHints": "clean organic lines, atomic-age motifs, tapered legs, boomerang shapes, muted olive and mustard palette, Eames-era furniture aesthetic, retro-sophisticated",
+      "tilePrompt": "A mid-century modern interior with an Eames chair, boomerang coffee table, and starburst clock, in a muted olive, mustard, and teal palette. Clean atomic-age lines, 1950s sophisticated charm."
+    },
+    {
+      "id": "retro-futurism",
+      "shortName": "rtrf",
+      "name": "Retro Futurism",
+      "category": "retro",
+      "promptHints": "1950s/60s vision of the future, jet packs and flying cars, chrome and fins, Googie architecture, space-age optimism, atomic motifs, rocket ship aesthetic",
+      "tilePrompt": "A retro-futuristic scene of a 1950s family arriving at a Googie-style space station in their flying car, with chrome fins and rocket ships in the background. Optimistic, atomic-age, Space Age aesthetic."
+    },
+    {
+      "id": "vintage-pulp",
+      "shortName": "pulp",
+      "name": "Vintage Pulp",
+      "category": "retro",
+      "promptHints": "dramatic pulp magazine cover aesthetic, bold saturated colors, action-packed scenes, sensational composition, retro printing texture, adventure story feel",
+      "tilePrompt": "A dramatic vintage pulp magazine cover scene with a daring explorer discovering a hidden temple in the jungle, bold saturated colors and retro printing texture. Sensational, adventurous, thrilling."
+    },
+    {
+      "id": "90s-grunge",
+      "shortName": "grnj",
+      "name": "90s Grunge",
+      "category": "retro",
+      "promptHints": "dirty distressed textures, torn paper edges, xerox copy aesthetic, muted desaturated palette, alternative rock visuals, DIY zine feel, raw authenticity",
+      "tilePrompt": "A 90s grunge collage with distressed photocopied textures, torn paper edges, hand-scrawled text, and desaturated muted colors. DIY zine aesthetic, raw, alternative, authentically rough."
+    },
+    {
+      "id": "vhs-aesthetic",
+      "shortName": "vhs",
+      "name": "VHS Aesthetic",
+      "category": "retro",
+      "promptHints": "horizontal tracking lines, date/time stamp overlay, grainy video noise, color bleeding, tape warping effects, 1980s home video nostalgia",
+      "tilePrompt": "A VHS-style scene of a suburban backyard pool party with horizontal tracking lines, a glowing date stamp reading JUL 14 1987, grainy noise, and warm color bleeding. Nostalgic, home video, lo-fi warm."
+    },
+    {
+      "id": "retrowave-80s",
+      "shortName": "rw80",
+      "name": "Retrowave 80s",
+      "category": "retro",
+      "promptHints": "neon purple and pink palette, chrome text effects, geometric grid patterns, sunset gradients, laser beams, VHS cover aesthetic, Tron-like glow",
+      "tilePrompt": "A neon-soaked 80s composition with chrome lettering, geometric laser grids, a hot pink and purple sunset gradient, and glowing wireframe mountains. Tron-like, electric, totally radical."
+    },
+    {
+      "id": "atomic-age",
+      "shortName": "atom",
+      "name": "Atomic Age",
+      "category": "retro",
+      "promptHints": "starburst and atom motifs, boomerang shapes, pastel colors with bold accents, optimistic 1950s futurism, Sputnik-inspired forms, Space Race aesthetic",
+      "tilePrompt": "Full-bleed Atomic Age illustration filling the entire canvas. Starburst patterns, atom symbols, boomerang shapes in pastel turquoise and coral covering every inch. 1950s optimistic futurism, Space Race excitement. Edge to edge, no frame, no border, no text."
+    },
+    {
+      "id": "watercolor-loose",
+      "shortName": "wtrl",
+      "name": "Watercolor Loose",
+      "category": "technique",
+      "promptHints": "wet-on-wet flowing washes, spontaneous color bleeding, transparent luminous layers, white paper showing through, organic unpredictable edges",
+      "tilePrompt": "A loose watercolor landscape of mountains and a lake with spontaneous wet-on-wet washes, beautiful color bleeding where pigments meet, and white paper glowing through transparent layers. Free, flowing, luminous."
+    },
+    {
+      "id": "watercolor-botanical",
+      "shortName": "wtrb",
+      "name": "Watercolor Botanical",
+      "category": "technique",
+      "promptHints": "precise delicate watercolor washes, detailed botanical accuracy, soft gradients on petals, white background, natural history illustration style, scientific beauty",
+      "tilePrompt": "A precise botanical watercolor of a peony in full bloom with detailed petals, leaves, and stem on a clean white background. Delicate transparent washes, natural history illustration precision."
+    },
+    {
+      "id": "ink-wash-sumi",
+      "shortName": "sumi",
+      "name": "Ink Wash / Sumi-e",
+      "category": "technique",
+      "promptHints": "black sumi ink on rice paper, zen-inspired minimalism, expressive single brushstrokes, bamboo and mountain subjects, empty space as composition element",
+      "tilePrompt": "Zen-inspired sumi ink painting of bamboo stalks with a few bold expressive brushstrokes on textured rice paper, generous empty space as a compositional element. Meditative, minimal, profoundly simple."
+    },
+    {
+      "id": "pencil-sketch",
+      "shortName": "penc",
+      "name": "Pencil Sketch",
+      "category": "technique",
+      "promptHints": "graphite pencil on white paper, varied line weights, crosshatching for shadows, subtle tonal gradations, visible construction lines, hand-drawn authenticity",
+      "tilePrompt": "Full-bleed detailed pencil sketch of an old European street with varied line weights, crosshatched shadows, and subtle graphite tonal gradations. Hand-drawn, authentic, warmly rendered. Edge to edge, no frame, no border, no paper edge or desk visible."
+    },
+    {
+      "id": "charcoal-dramatic",
+      "shortName": "char",
+      "name": "Charcoal Dramatic",
+      "category": "technique",
+      "promptHints": "rich velvety blacks, smudged soft gradations, dramatic high-contrast lighting, expressive loose marks, textured paper surface, raw emotional power",
+      "tilePrompt": "A dramatic charcoal portrait with rich velvety blacks, smudged soft gradations, and intense high-contrast lighting revealing only half the face. Raw, emotional, powerfully expressive."
+    },
+    {
+      "id": "oil-impasto",
+      "shortName": "imps",
+      "name": "Oil Impasto",
+      "category": "technique",
+      "promptHints": "thick textured paint applied with palette knife, visible dimensional brushstrokes, rich buttery colors, sculptural surface quality, bold physical presence",
+      "tilePrompt": "Full-bleed vibrant landscape with thick impasto paint applied by palette knife, dimensional sculptural brushstrokes catching light, rich buttery colors of a field of sunflowers. Textured, physical, alive. Edge to edge, no frame, no border, no canvas edge visible."
+    },
+    {
+      "id": "acrylic-pour",
+      "shortName": "pour",
+      "name": "Acrylic Pour",
+      "category": "technique",
+      "promptHints": "fluid marble-like swirls, organic cell patterns, vivid jewel-tone colors mixing and flowing, abstract self-organizing patterns, liquid paint aesthetic",
+      "tilePrompt": "Full-bleed abstract acrylic pour painting filling the entire canvas. Flowing swirls of vivid teal, gold, and magenta creating organic cell patterns and marble-like veins covering every inch. Edge to edge, no frame, no border, no canvas edge. Fluid, mesmerizing, self-organizing beauty."
+    },
+    {
+      "id": "paper-collage",
+      "shortName": "coll",
+      "name": "Paper Collage",
+      "category": "technique",
+      "promptHints": "torn and cut paper layers, mixed textures and patterns, visible paper edges, found material mashup, Matisse cut-out energy, playful layering",
+      "tilePrompt": "A vibrant paper collage of a tropical bird made from torn colorful papers, magazine cutouts, and patterned materials with visible edges and layered textures. Playful, tactile, Matisse cut-out energy."
+    },
+    {
+      "id": "linocut-print",
+      "shortName": "lino",
+      "name": "Linocut Print",
+      "category": "technique",
+      "promptHints": "bold carved lines, high contrast black and white, handmade printing texture, slightly uneven ink distribution, woodcut-adjacent aesthetic, graphic power",
+      "tilePrompt": "Full-bleed bold linocut print of a fox in a forest with strong carved black lines, high contrast against white, slightly uneven hand-pressed ink texture. Graphic, handmade, powerful simplicity. Edge to edge, no frame, no border, no paper edge visible."
+    },
+    {
+      "id": "screen-print",
+      "shortName": "scrn",
+      "name": "Screen Print",
+      "category": "technique",
+      "promptHints": "flat layered colors, slight misregistration between layers, ink texture, limited color separations, poster aesthetic, Andy Warhol-esque repetition",
+      "tilePrompt": "Full-bleed screen print composition of colorful bottles with flat layered colors, slight misregistration between ink layers, and visible mesh texture. Limited palette, poster aesthetic, Warhol-esque charm. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "pastel-soft",
+      "shortName": "pstl",
+      "name": "Soft Pastel",
+      "category": "technique",
+      "promptHints": "chalky velvety texture, gentle blended colors, soft atmospheric quality, warm luminous pigments, delicate impressionistic feeling, paper grain showing",
+      "tilePrompt": "A soft pastel rendering of a sunset coastal scene with chalky velvety textures, gently blended warm colors, and paper grain showing through the luminous pigments. Atmospheric, gentle, impressionistic."
+    },
+    {
+      "id": "woodblock-print",
+      "shortName": "wdbl",
+      "name": "Woodblock Print",
+      "category": "technique",
+      "promptHints": "bold flat color areas, visible wood grain texture, strong outlines, limited color palette, traditional Japanese or European printmaking aesthetic",
+      "tilePrompt": "A woodblock print of a crane standing in a misty lake with bold flat color areas, visible wood grain texture, and strong outlines in a limited palette. Traditional printmaking, serene, graphic."
+    },
+    {
+      "id": "art-nouveau-pattern",
+      "shortName": "nvpt",
+      "name": "Art Nouveau Pattern",
+      "category": "decorative",
+      "promptHints": "flowing organic botanical patterns, sinuous whiplash curves, repeating floral tile motifs, gold and jewel accents, Mucha-style decorative borders",
+      "tilePrompt": "A seamless Art Nouveau pattern tile with flowing organic botanical curves, intertwining flowers and leaves in gold and deep emerald, sinuous whiplash lines creating an elegant repeating motif."
+    },
+    {
+      "id": "islamic-geometric",
+      "shortName": "islm",
+      "name": "Islamic Geometric",
+      "category": "decorative",
+      "promptHints": "intricate mathematical tessellations, star and polygon interlocking patterns, infinite repeating geometry, rich blue and gold, mesmerizing symmetry",
+      "tilePrompt": "An intricate Islamic geometric pattern with interlocking stars and polygons in rich cobalt blue and gold, mathematically precise tessellations creating mesmerizing infinite symmetry."
+    },
+    {
+      "id": "japanese-wave",
+      "shortName": "jpwv",
+      "name": "Japanese Wave Pattern",
+      "category": "decorative",
+      "promptHints": "seigaiha wave scales, traditional Japanese motifs, indigo blue on white, ocean and nature patterns, elegant repeating forms, wabi-sabi aesthetic",
+      "tilePrompt": "A traditional Japanese wave pattern (seigaiha) in indigo blue on cream, with overlapping concentric arcs creating an elegant oceanic rhythm. Serene, meditative, timeless Japanese design."
+    },
+    {
+      "id": "tribal-geometric",
+      "shortName": "trbl",
+      "name": "Tribal Geometric",
+      "category": "decorative",
+      "promptHints": "bold geometric patterns, earth tone palette, thick stripes and triangles, African or indigenous textile patterns, rhythmic repetition, cultural richness",
+      "tilePrompt": "Full-bleed tribal geometric pattern filling the entire canvas like a seamless tile. Bold thick stripes, triangles, and diamond shapes in earth tones — terracotta, black, ochre, and cream. Edge to edge, no frame, no border, no cloth, no fabric folds, no textile wrinkles. Flat seamless pattern. Rhythmic, powerful."
+    },
+    {
+      "id": "mandala",
+      "shortName": "mndl",
+      "name": "Mandala",
+      "category": "decorative",
+      "promptHints": "intricate circular symmetry, radiating petal layers, meditative sacred geometry, fine detailed linework, jewel-tone or monochrome palette",
+      "tilePrompt": "An intricate mandala with radiating layers of detailed petals, sacred geometry, and fine linework in jewel tones — deep purple, gold, teal — against a dark background. Meditative, symmetrical, luminous."
+    },
+    {
+      "id": "moroccan-tile",
+      "shortName": "mroc",
+      "name": "Moroccan Tile",
+      "category": "decorative",
+      "promptHints": "zellige tilework, vibrant geometric mosaic, star and cross patterns, Mediterranean blue and white, handmade tile irregularities, sunlit courtyard feeling",
+      "tilePrompt": "Full-bleed Moroccan zellige tile pattern with star and cross geometric mosaic in Mediterranean blue, turquoise, and white, with subtle handmade irregularities. Warm, exotic, seamless repeating pattern. Edge to edge, no frame, no border, no wall edge visible."
+    },
+    {
+      "id": "scandinavian-folk",
+      "shortName": "scnd",
+      "name": "Scandinavian Folk",
+      "category": "decorative",
+      "promptHints": "simple symmetrical folk motifs, Dala horse and rosemaling patterns, limited red blue and white palette, naive charming style, cozy hygge aesthetic",
+      "tilePrompt": "A charming Scandinavian folk art pattern with Dala horses, rosemaling floral scrolls, and symmetrical hearts in traditional red, blue, and white on a cream background. Cozy, naive, hygge warmth."
+    },
+    {
+      "id": "paisley-bohemian",
+      "shortName": "boh",
+      "name": "Paisley Bohemian",
+      "category": "decorative",
+      "promptHints": "rich swirling paisley motifs, bohemian textile richness, deep jewel-tone colors, layered ornate patterns, wanderlust and free-spirit aesthetic",
+      "tilePrompt": "Rich swirling paisley patterns in deep jewel tones — burgundy, sapphire, gold, and emerald — layered and ornate in a luxurious Bohemian textile design. Wanderlust, free-spirited, richly decorative."
+    },
+    {
+      "id": "da-vinci-sketch",
+      "shortName": "dvnc",
+      "name": "Da Vinci Technical Sketch",
+      "category": "creative",
+      "promptHints": "Leonardo da Vinci style technical drawings, sepia ink on aged parchment, anatomical studies, mirrored handwriting annotations, mechanical inventions, Renaissance genius notebook",
+      "tilePrompt": "A Leonardo da Vinci style technical sketch of a fantastical flying machine with detailed mechanical annotations, sepia ink on aged parchment, mirror-writing notes, and anatomical precision. Renaissance genius, hand-drawn, inventive."
+    },
+    {
+      "id": "made-of-sand",
+      "shortName": "sand",
+      "name": "Made of Sand",
+      "category": "creative",
+      "promptHints": "sculpted from sand, beach sand texture, wind-eroded forms, desert dune aesthetic, granular detail, golden sand particles, ephemeral sand castle quality",
+      "tilePrompt": "A majestic lion sculpted entirely from golden beach sand, with wind-eroded details, visible granular texture, and grains drifting away in the breeze. Ephemeral, beautiful, sun-lit sand sculpture."
+    },
+    {
+      "id": "underwater",
+      "shortName": "undr",
+      "name": "Underwater",
+      "category": "creative",
+      "promptHints": "submerged underwater scene, caustic light patterns rippling on surfaces, floating bubbles, coral and marine life, blue-green color wash, deep ocean atmosphere",
+      "tilePrompt": "A magical underwater scene with light caustics dancing across a coral reef, floating bubbles, colorful tropical fish, and shafts of sunlight filtering through the blue-green water. Serene, luminous, deep ocean beauty."
+    },
+    {
+      "id": "origami-paper",
+      "shortName": "orig",
+      "name": "Origami / Paper Craft",
+      "category": "creative",
+      "promptHints": "folded paper sculptures, crisp geometric folds, Japanese paper craft, visible crease lines, colorful paper textures, 3D paper construction",
+      "tilePrompt": "A beautiful origami forest scene with folded paper trees, animals, and flowers, all made from colorful paper with visible crisp folds and crease lines. Japanese paper craft, geometric, delicate."
+    },
+    {
+      "id": "knitted-yarn",
+      "shortName": "knit",
+      "name": "Knitted / Yarn",
+      "category": "creative",
+      "promptHints": "knitted yarn texture, cozy wool aesthetic, visible stitch patterns, chunky knit, warm fiber arts feel, hand-crafted textile warmth",
+      "tilePrompt": "A cozy scene of a mountain landscape created entirely from knitted yarn, with visible stitch patterns, chunky wool textures, and warm colors. Hand-crafted, tactile, warm fiber arts aesthetic."
+    },
+    {
+      "id": "crystal-ice",
+      "shortName": "crys",
+      "name": "Crystal / Ice",
+      "category": "creative",
+      "promptHints": "crystalline refractive surfaces, frozen ice sculpture, prismatic light splitting, transparent faceted forms, glacial blue glow, shimmering frost",
+      "tilePrompt": "A magnificent castle made entirely of clear crystal and ice, with light refracting through prismatic facets, frozen spires catching blue and violet light, and shimmering frost details. Glacial, magical, luminous."
+    },
+    {
+      "id": "stained-glass",
+      "shortName": "stgl",
+      "name": "Stained Glass",
+      "category": "creative",
+      "promptHints": "colorful glass panels with black leading lines, backlit jewel-tone translucency, Gothic cathedral window aesthetic, luminous colored light",
+      "tilePrompt": "Full-bleed stained glass artwork depicting a peacock with jewel-tone translucent glass panels in sapphire, ruby, and emerald separated by dark leading lines, glowing with backlit radiance. Edge to edge, no frame, no window frame, no wall visible."
+    },
+    {
+      "id": "neon-sign",
+      "shortName": "neon",
+      "name": "Neon Sign",
+      "category": "creative",
+      "promptHints": "glowing glass tube neon, dark background, buzzing electric light, bar sign aesthetic, pink and blue glow, retro signage, warm neon haze",
+      "tilePrompt": "A glowing neon sign in the shape of a flamingo against a dark wall, with vivid pink and blue neon tubes, electric buzzing glow, and warm light haze. Retro bar aesthetic, night-time charm."
+    },
+    {
+      "id": "claymation",
+      "shortName": "clay",
+      "name": "Claymation / Stop Motion",
+      "category": "creative",
+      "promptHints": "clay sculpture with fingerprint textures, stop-motion animation look, handmade imperfect charm, plasticine colors, Wallace & Gromit style, miniature sets",
+      "tilePrompt": "A charming claymation scene of a little dog in a cozy kitchen, with visible fingerprint textures in the clay, handmade miniature set pieces, and warm plasticine colors. Stop-motion charm, Wallace & Gromit style."
+    },
+    {
+      "id": "steampunk",
+      "shortName": "stmp",
+      "name": "Steampunk",
+      "category": "creative",
+      "promptHints": "Victorian machinery aesthetic, brass gears and copper pipes, steam-powered devices, clockwork mechanisms, goggles and top hats, industrial elegance",
+      "tilePrompt": "An elaborate steampunk airship made of brass gears, copper pipes, and Victorian woodwork, floating above a gaslit city with clockwork mechanisms visible. Industrial elegance, adventure, invention."
+    },
+    {
+      "id": "diorama-miniature",
+      "shortName": "dior",
+      "name": "Diorama / Miniature",
+      "category": "creative",
+      "promptHints": "tiny handcrafted model world, tilt-shift miniature look, visible craft materials, miniature figurines, dollhouse scale, museum diorama quality",
+      "tilePrompt": "A tiny diorama of a Japanese garden inside a glass jar, with miniature handcrafted trees, a tiny bridge over a pond, and moss-covered rocks. Visible craft materials, dollhouse scale, magical miniature world."
+    },
+    {
+      "id": "chalkboard",
+      "shortName": "chlk",
+      "name": "Chalkboard",
+      "category": "creative",
+      "promptHints": "white and colored chalk on dark green or black board, classroom aesthetic, hand-drawn diagrams, chalk dust texture, smudged edges, educational feel",
+      "tilePrompt": "An intricate solar system diagram drawn in white and colored chalk on a dark green chalkboard, with hand-drawn orbits, smudged edges, and chalk dust texture. Educational, nostalgic, hand-crafted."
+    },
+    {
+      "id": "holographic",
+      "shortName": "holo",
+      "name": "Holographic / Iridescent",
+      "category": "creative",
+      "promptHints": "rainbow iridescent surfaces, prism light effects, futuristic hologram projection, shifting spectral colors, metallic opalescent sheen, sci-fi display aesthetic",
+      "tilePrompt": "A futuristic holographic butterfly with rainbow iridescent wings, prismatic light splitting into spectral colors, floating above a dark surface with a sci-fi hologram glow. Otherworldly, shimmering, futuristic."
+    },
+    {
+      "id": "food-art",
+      "shortName": "food",
+      "name": "Made of Food",
+      "category": "creative",
+      "promptHints": "sculptures and scenes made from real food ingredients, edible art, food photography aesthetic, vibrant fresh ingredients, whimsical food arrangements",
+      "tilePrompt": "A whimsical cityscape made entirely of food — buildings of bread loaves, trees of broccoli, rivers of chocolate, and a sun of sliced orange. Fresh, colorful, playful food art photography."
+    },
+    {
+      "id": "embroidered",
+      "shortName": "embr",
+      "name": "Embroidered",
+      "category": "creative",
+      "promptHints": "thread on fabric texture, visible needlework stitches, cross-stitch or freeform embroidery, textile art, hoop frame, handcrafted thread painting",
+      "tilePrompt": "Full-bleed embroidered artwork filling the entire canvas. Colorful threads on cream linen forming floral scene with visible stitches, textured petals and leaves covering every inch. Edge to edge, no frame, no border, no hoop, no fabric edge. Handcrafted textile art texture."
+    },
+    {
+      "id": "mosaic-tile",
+      "shortName": "mosc",
+      "name": "Mosaic Tile",
+      "category": "creative",
+      "promptHints": "small tesserae pieces creating larger image, grouted gaps between tiles, Byzantine or modern mosaic aesthetic, glittering surfaces, broken tile art",
+      "tilePrompt": "A vibrant mosaic portrait of a woman's face composed of tiny colorful tesserae tiles with visible grouted gaps, glittering surfaces, and rich Byzantine-inspired color. Fragmented beauty, luminous."
+    },
+    {
+      "id": "lego-brick",
+      "shortName": "lego",
+      "name": "LEGO / Brick Built",
+      "category": "creative",
+      "promptHints": "visible LEGO-like brick studs, blocky construction, primary color plastic bricks, toy building block aesthetic, everything made of interlocking blocks",
+      "tilePrompt": "A charming cityscape built entirely from colorful LEGO-like bricks with visible studs, blocky buildings, tiny brick-built trees, and a blue baseplate river. Playful, nostalgic, creative construction."
+    },
+    {
+      "id": "made-of-flowers",
+      "shortName": "flwr",
+      "name": "Made of Flowers",
+      "category": "creative",
+      "promptHints": "forms and objects composed entirely of fresh flowers and petals, floral sculpture, botanical arrangement art, vibrant blooms creating shapes, garden beauty",
+      "tilePrompt": "A magnificent lion's head composed entirely of fresh flowers — mane of golden sunflowers, face of white roses, eyes of deep purple irises. Lush, vibrant, botanical sculpture art."
+    },
+    {
+      "id": "wireframe-3d",
+      "shortName": "wire",
+      "name": "Wireframe / 3D Mesh",
+      "category": "creative",
+      "promptHints": "visible polygon wireframe mesh, 3D modeling aesthetic, neon grid lines on dark background, topology visualization, technical CGI look, Tron-like",
+      "tilePrompt": "A glowing wireframe 3D mesh of a human head and shoulders, neon blue polygon lines on a dark background, visible topology and edge loops. Technical, futuristic, Tron-like CGI aesthetic."
+    },
+    {
+      "id": "blueprint",
+      "shortName": "blpr",
+      "name": "Blueprint / Technical",
+      "category": "creative",
+      "promptHints": "white lines on deep blue paper, technical architectural drawings, precise measurements and annotations, engineering schematic aesthetic, cross-section views",
+      "tilePrompt": "An architectural blueprint of a fantastical treehouse with precise white lines on deep blue paper, detailed measurements, cross-section views, and engineering annotations. Technical precision, imaginative design."
+    },
+    {
+      "id": "manga-shonen",
+      "shortName": "mngs",
+      "name": "Manga (Shonen)",
+      "category": "cultural",
+      "promptHints": "bold dynamic action lines, dramatic speed lines, intense expressions, high contrast black and white ink, screentone shading, explosive energy bursts, exaggerated poses, Japanese manga panel composition",
+      "tilePrompt": "A dramatic manga-style action scene of a warrior mid-leap with explosive speed lines radiating outward, bold black ink linework, screentone shading, high contrast, dynamic Japanese shonen manga composition."
+    },
+    {
+      "id": "manga-seinen",
+      "shortName": "mngn",
+      "name": "Manga (Seinen)",
+      "category": "cultural",
+      "promptHints": "detailed realistic manga art, heavy crosshatching, darker mature themes, intricate backgrounds, muted tones, Berserk-inspired detail, atmospheric shadows, gritty linework",
+      "tilePrompt": "Full-bleed seinen manga panel filling the entire canvas. Dark atmospheric cityscape at night with heavy crosshatching, intricate architectural detail, moody shadows, a lone figure in rain-soaked streets. Edge to edge, no frame, no border, no page edge. Gritty and mature."
+    },
+    {
+      "id": "spawn-mcfarlane",
+      "shortName": "spwn",
+      "name": "Spawn / McFarlane",
+      "category": "cultural",
+      "promptHints": "dramatic dark comic art, hyper-detailed cape and chains, extreme shadow contrast, Todd McFarlane style, intricate cross-hatching, gothic horror atmosphere, glowing green necroplasm energy, epic dramatic poses",
+      "tilePrompt": "Full-bleed dark gothic comic art filling the entire canvas. Anti-hero figure with massive flowing tattered cape and glowing green energy, perched on gargoyle overlooking rain-soaked city, Todd McFarlane style extreme cross-hatching and dramatic shadows. Edge to edge, no frame, no border, no text, no speech bubbles, no captions, no logos."
+    },
+    {
+      "id": "ren-stimpy",
+      "shortName": "rnst",
+      "name": "Ren & Stimpy",
+      "category": "cultural",
+      "promptHints": "grotesque close-up detail shots, exaggerated bulging veins, John Kricfalusi style, hyper-detailed gross-out moments, rubbery stretchy limbs, manic expressions, retro 1950s background styling, chaotic energy",
+      "tilePrompt": "A manic cartoon scene in Ren and Stimpy style with grotesque exaggerated close-up details, bulging veins, rubbery stretchy characters with wild manic expressions, retro 1950s background styling, chaotic slapstick energy."
+    },
+    {
+      "id": "south-park",
+      "shortName": "sprk",
+      "name": "South Park",
+      "category": "cultural",
+      "promptHints": "crude construction paper cutout style, flat geometric characters, simple shapes, limited animation aesthetic, bold solid colors, snowy mountain town backdrop, satirical cartoon",
+      "tilePrompt": "A snowy mountain town scene in South Park construction paper cutout style with simple geometric characters, flat bold colors, crude shapes, snow-capped mountains in the background, satirical cartoon aesthetic."
+    },
+    {
+      "id": "rick-morty",
+      "shortName": "rkmr",
+      "name": "Rick and Morty",
+      "category": "cultural",
+      "promptHints": "wobbly freehand outlines, drool details, sci-fi portal swirls, muted pastel backgrounds, alien creatures, interdimensional chaos, Dan Harmon Justin Roiland style, unsettling yet comedic",
+      "tilePrompt": "A chaotic interdimensional scene in Rick and Morty style with a swirling green portal, bizarre alien creatures, wobbly freehand outlines, muted pastel backgrounds, drool details, sci-fi lab equipment everywhere."
+    },
+    {
+      "id": "adventure-time",
+      "shortName": "advt",
+      "name": "Adventure Time",
+      "category": "cultural",
+      "promptHints": "soft rounded shapes, candy-colored pastel palette, whimsical fantasy landscape, simple bean-shaped characters, Pendleton Ward style, magical post-apocalyptic world, gentle linework",
+      "tilePrompt": "A whimsical candy-colored fantasy landscape in Adventure Time style with soft rounded shapes, a treehouse on rolling green hills, pastel sky with cotton candy clouds, simple cute characters, magical post-apocalyptic world."
+    },
+    {
+      "id": "dragon-ball",
+      "shortName": "drgb",
+      "name": "Dragon Ball",
+      "category": "cultural",
+      "promptHints": "Akira Toriyama style, spiky hair, power aura energy, dynamic fighting poses, ki blast effects, bold clean linework, vibrant saturated colors, muscle definition, dramatic sky backdrop",
+      "tilePrompt": "A powerful warrior with spiky glowing hair charging a massive energy blast, surrounded by crackling power aura, in Akira Toriyama Dragon Ball style with bold clean linework, vibrant colors, dramatic cloudy sky, rocks floating upward."
+    },
+    {
+      "id": "one-piece",
+      "shortName": "onpc",
+      "name": "One Piece",
+      "category": "cultural",
+      "promptHints": "Eiichiro Oda style, exaggerated proportions, wild hair, huge grins, bold black outlines, vibrant ocean adventure scenes, rubber-like stretchy action, pirate ships and tropical islands",
+      "tilePrompt": "Full-bleed One Piece manga art filling the entire canvas. Eiichiro Oda style with exaggerated joyful characters with huge grins and wild rubber-like proportions, bold thick black outlines, vibrant saturated colors, pirate adventure scene with ocean and tropical island. Edge to edge, no frame, no border, no text, no speech bubbles."
+    },
+    {
+      "id": "akira",
+      "shortName": "akra",
+      "name": "Akira / Neo-Tokyo",
+      "category": "cultural",
+      "promptHints": "Katsuhiro Otomo style, hyper-detailed futuristic cityscape, red motorcycle light trails, neon kanji signs, cyberpunk dystopia, dramatic perspective, cinematic widescreen composition, 1980s anime aesthetic",
+      "tilePrompt": "A futuristic Neo-Tokyo cityscape at night in Akira style, neon signs with kanji, a red motorcycle leaving light trails on a highway, hyper-detailed buildings, dramatic low-angle perspective, 1980s anime cyberpunk aesthetic."
+    },
+    {
+      "id": "tim-burton",
+      "shortName": "tmbr",
+      "name": "Tim Burton / Gothic Whimsy",
+      "category": "cultural",
+      "promptHints": "spindly elongated figures, spiral motifs, black and white striped patterns, pale faces with dark eyes, German Expressionist shadows, whimsical macabre, crooked architecture, purple and green accents",
+      "tilePrompt": "A crooked haunted hillside village in Tim Burton style with spindly elongated houses, spiral motifs, black and white striped patterns, German Expressionist shadows, a pale moon, whimsical macabre atmosphere with purple and green accents."
+    },
+    {
+      "id": "marvel-kirby",
+      "shortName": "krby",
+      "name": "Marvel / Kirby Cosmic",
+      "category": "cultural",
+      "promptHints": "Jack Kirby cosmic style, Kirby crackle energy, bold dynamic compositions, cosmic abstract backgrounds, heroic muscular figures, heavy black inks, four-color printing palette, cosmic scale grandeur",
+      "tilePrompt": "Full-bleed Jack Kirby cosmic comic art filling the entire canvas. Heroic muscular figure against vast abstract space with Kirby crackle energy dots, bold dynamic composition, heavy black inks, four-color palette. Edge to edge, no frame, no border, no text, no speech bubbles, no captions, no logos."
+    },
+    {
+      "id": "beavis-butthead",
+      "shortName": "bvbh",
+      "name": "Beavis and Butt-Head",
+      "category": "cultural",
+      "promptHints": "crude scratchy animation style, ugly intentionally bad drawing, Mike Judge style, suburban wasteland backdrop, AC/DC and Metallica t-shirts, slouching on couch, deliberately rough linework, 1990s MTV aesthetic",
+      "tilePrompt": "Two crude cartoon figures slouching on a ratty couch watching TV in a messy suburban living room, Beavis and Butt-Head Mike Judge style with deliberately rough scratchy linework, 1990s MTV aesthetic, junk food scattered around."
+    },
+    {
+      "id": "spongebob",
+      "shortName": "spng",
+      "name": "SpongeBob",
+      "category": "cultural",
+      "promptHints": "bright underwater world, clean rounded shapes, exaggerated squash and stretch, Stephen Hillenburg style, bold primary colors, undersea flowers and bubbles, pineapple houses, cheerful absurdist humor",
+      "tilePrompt": "A colorful underwater town in SpongeBob style with pineapple and Easter Island head houses, bright primary colors, undersea flowers and floating bubbles, clean rounded shapes, cheerful absurdist aesthetic, jellyfish in a bright blue ocean."
+    },
+    {
+      "id": "samurai-jack",
+      "shortName": "smjk",
+      "name": "Samurai Jack",
+      "category": "cultural",
+      "promptHints": "Genndy Tartakovsky style, geometric angular shapes, dramatic negative space, minimal dialogue scenes, bold color blocking, cinematic widescreen composition, stark silhouettes, East-meets-West aesthetic",
+      "tilePrompt": "A lone samurai silhouetted against a massive red sun in Samurai Jack Genndy Tartakovsky style, geometric angular shapes, bold color blocking, vast negative space, cinematic widescreen composition, minimal detail, stark dramatic contrast."
+    },
+    {
+      "id": "cowboy-bebop",
+      "shortName": "cwbb",
+      "name": "Cowboy Bebop",
+      "category": "cultural",
+      "promptHints": "Shinichiro Watanabe style, jazz-infused noir atmosphere, 1970s retro-futurism, muted earth tones with neon accents, cool effortless character poses, space western aesthetic, cinematic framing, melancholy mood",
+      "tilePrompt": "A retro-futuristic spaceship interior with a cool character lounging in a worn leather chair in Cowboy Bebop style, muted earth tones with neon accents, jazz noir atmosphere, 1970s retro-futurism, cigarette smoke curling, cinematic framing."
+    },
+    {
+      "id": "looney-tunes",
+      "shortName": "lney",
+      "name": "Looney Tunes",
+      "category": "cultural",
+      "promptHints": "classic Warner Bros cartoon style, exaggerated slapstick poses, painted desert and forest backgrounds, rubber hose animation, ACME products, dynamite explosions with stars, bold ink outlines, 1940s golden age animation",
+      "tilePrompt": "A chaotic desert scene in classic Looney Tunes style with painted mesas, an anvil falling from the sky, ACME dynamite with fuse lit, dust clouds, rubber hose animation style, bold ink outlines, golden age Warner Bros cartoon aesthetic."
+    },
+    {
+      "id": "gorillaz",
+      "shortName": "grlz",
+      "name": "Gorillaz / Jamie Hewlett",
+      "category": "cultural",
+      "promptHints": "Jamie Hewlett art style, urban street culture, angular stylized characters, muted tones with vivid accent pops, Tank Girl aesthetic influences, hip-hop graffiti culture, moody atmospheric backgrounds, cool detached expressions",
+      "tilePrompt": "A group of stylized angular characters in Jamie Hewlett Gorillaz art style standing in front of a graffiti-covered urban building, muted tones with vivid pink and green accent pops, moody atmospheric sky, hip-hop street culture aesthetic."
+    },
+    {
+      "id": "junji-ito",
+      "shortName": "jnji",
+      "name": "Junji Ito / Horror Manga",
+      "category": "cultural",
+      "promptHints": "Junji Ito horror manga style, intricate obsessive spiral patterns, body horror distortion, hyper-detailed crosshatching, wide terrified eyes, uncanny valley faces, claustrophobic compositions, black and white ink, creeping dread atmosphere",
+      "tilePrompt": "A dark horror manga scene of a mysterious spiraling tunnel carved into a cliff face with obsessive spiral patterns everywhere, hyper-detailed crosshatching, a lone figure staring in frozen terror, Junji Ito style black and white ink, creeping dread atmosphere."
+    },
+    {
+      "id": "archer-spy",
+      "shortName": "arch",
+      "name": "Archer / Spy Animation",
+      "category": "cultural",
+      "promptHints": "mid-century modern spy animation style, flat cel-shaded characters with sharp angular features, 1960s retro interior design, martini glasses and tuxedos, bold graphic shadows, limited color palette with teal and burgundy accents, deadpan comedy aesthetic",
+      "tilePrompt": "A stylish 1960s spy office interior in a modern animation style, mid-century modern furniture, flat cel-shaded rendering with bold graphic shadows, martini on a desk, teal and burgundy color palette, retro spy thriller aesthetic, angular art deco details."
+    },
+    {
+      "id": "simpsons",
+      "shortName": "simp",
+      "name": "Simpsons",
+      "category": "illustration",
+      "promptHints": "yellow-skinned characters, bulging round white eyes with black pupils, overbite mouths, thick black outlines, four fingers per hand, bright saturated colors, slightly top-heavy proportions, cel-shaded flat coloring, Springfield cartoon style",
+      "tilePrompt": "A busy Springfield street scene in Simpsons cartoon style, yellow-skinned characters with bulging eyes and overbites, thick black outlines, bright saturated colors, flat cel-shaded coloring, overhead slightly isometric view of a crowd of diverse cartoon townspeople"
+    },
+    {
+      "id": "cel-shaded-3d",
+      "shortName": "cel3",
+      "name": "Cel-Shaded 3D",
+      "category": "digital",
+      "promptHints": "toon-shaded 3D rendering, bold black outlines on 3D geometry, flat color bands with hard shadow edges, Wind Waker and Jet Set Radio aesthetic, vibrant cartoon colors, clean vector-like edges on polygonal forms",
+      "tilePrompt": "Full-bleed cel-shaded 3D scene of a vibrant coastal village with colorful cartoon buildings, bold black outlines on all geometry, flat color bands with hard shadow edges, Wind Waker aesthetic, bright blue ocean, puffy white clouds, clean toon rendering. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "ps1-lowpoly",
+      "shortName": "ps1",
+      "name": "PS1 Low-Poly",
+      "category": "digital",
+      "promptHints": "early PlayStation 1 era 3D graphics, low polygon count, warped affine texture mapping, vertex jittering, dithered textures, fog distance rendering, 1996 nostalgia, jagged angular geometry",
+      "tilePrompt": "Full-bleed PlayStation 1 era low-poly 3D scene of a mysterious foggy temple entrance, jagged angular geometry, warped textures with visible pixel dithering, PS1-style vertex jittering, limited draw distance with thick fog, 1996 retro game aesthetic. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "snes-16bit",
+      "shortName": "snes",
+      "name": "SNES 16-Bit RPG",
+      "category": "digital",
+      "promptHints": "Super Nintendo 16-bit sprite art, richly detailed tile-based backgrounds, Chrono Trigger and Final Fantasy VI aesthetic, warm saturated palette, Mode 7 parallax depth, top-down RPG overworld, pixel-perfect sprite detail",
+      "tilePrompt": "Full-bleed 16-bit SNES RPG overworld scene with a lush forest village, detailed tile-based backgrounds, richly colored sprite art, Chrono Trigger aesthetic, warm saturated palette, tiny characters on cobblestone paths, tavern with glowing windows, pixel-perfect detail. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "gameboy-green",
+      "shortName": "gboy",
+      "name": "Game Boy Green",
+      "category": "retro",
+      "promptHints": "original Game Boy 4-shade green monochrome, darkest green to lightest green, chunky 8-bit pixels, 160x144 resolution feel, dot matrix screen texture, Nintendo handheld nostalgia, simple sprite outlines",
+      "tilePrompt": "Full-bleed original Game Boy style scene in 4-shade green monochrome palette, a forest path with chunky 8-bit pixel trees and a small character, dot matrix screen texture, darkest green shadows to lightest green highlights, retro Nintendo handheld aesthetic. Edge to edge, no frame, no border, no device visible."
+    },
+    {
+      "id": "voxel-craft",
+      "shortName": "voxl",
+      "name": "Voxel Craft",
+      "category": "digital",
+      "promptHints": "blocky voxel world, cubic 3D blocks, Minecraft-inspired aesthetic, procedural terrain, bright saturated block colors, cubic trees and clouds, sunlit blocky landscape, grid-aligned geometry",
+      "tilePrompt": "Full-bleed voxel craft scene of a sunlit blocky landscape with cubic trees, rolling grass-block hills, a cozy block cottage with smoke from chimney, bright saturated colors, Minecraft-inspired aesthetic, cubic clouds in a blue sky. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "dark-fantasy-game",
+      "shortName": "dkfn",
+      "name": "Dark Fantasy Game",
+      "category": "digital",
+      "promptHints": "grim dark fantasy video game aesthetic, gothic ruins and fog, desaturated muted palette with ember accents, towering decayed architecture, oppressive atmosphere, Souls-like medieval horror, volumetric fog, dramatic scale",
+      "tilePrompt": "Full-bleed dark fantasy game scene of a crumbling gothic cathedral entrance shrouded in fog, desaturated muted palette with glowing amber ember accents, towering decayed stone architecture, oppressive atmosphere, Souls-like medieval horror aesthetic, dramatic scale. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "exploded-blueprint",
+      "shortName": "xblu",
+      "name": "Exploded Blueprint",
+      "category": "design",
+      "promptHints": "technical exploded view diagram, parts floating apart showing internal assembly, white or blueprint-blue line art, precise engineering illustration, isometric projection, labeled components, patent drawing aesthetic",
+      "tilePrompt": "Full-bleed exploded blueprint diagram filling the entire canvas. Technical isometric exploded view of a GPU graphics card with parts floating apart showing PCB, heatsink fins, fan assembly, VRAM chips, VRM modules, and backplate, precise white line art on deep blueprint blue background, engineering illustration aesthetic. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "miniature-diorama",
+      "shortName": "dior",
+      "name": "Miniature Diorama",
+      "category": "creative",
+      "promptHints": "tilt-shift miniature scene, tiny handcrafted world, warm cozy lighting, top-down three-quarter view, model village aesthetic, intricate small details, dollhouse scale, shallow depth of field, Christmas village or fairy garden feel",
+      "tilePrompt": "Full-bleed miniature diorama scene filling the entire canvas. Top-down three-quarter view of a tiny cozy village with miniature houses, warm glowing windows, tiny trees and snow, tilt-shift shallow depth of field, handcrafted model aesthetic, intricate small details. Edge to edge, no frame, no border, no table edge."
+    },
+    {
+      "id": "miami-aesthetic",
+      "shortName": "miam",
+      "name": "Miami Aesthetic",
+      "category": "photography",
+      "promptHints": "Miami Vice pastel palette, flamingo pink and turquoise and coral and mint, Art Deco geometric patterns, chrome accents, tropical palm frond motifs, neon glow, warm saturated sunset gradients, retro-luxe tropical glamour, South Beach design language",
+      "tilePrompt": "Full-bleed Miami aesthetic filling the entire canvas. Pastel Art Deco geometric patterns and tropical motifs in flamingo pink, coral, turquoise and mint, chrome accents catching golden light, palm frond silhouettes, warm saturated sunset gradient washes, retro-luxe tropical glamour mood, Miami Vice color palette. Edge to edge, no frame, no border, no buildings, no street scene."
+    },
+    {
+      "id": "new-york-luxury",
+      "shortName": "nylx",
+      "name": "New York Classic Luxury",
+      "category": "photography",
+      "promptHints": "classic New York luxury, black and gold palette, polished marble textures, Art Deco geometric precision, old money sophistication, ivory and champagne accents, sharp clean lines, dramatic contrast, rich dark tones, timeless opulence",
+      "tilePrompt": "Full-bleed New York classic luxury aesthetic filling the entire canvas. Rich black and gold Art Deco geometric patterns, polished marble textures, sophisticated ivory and champagne accents, sharp clean lines, dramatic contrast, old money elegance and timeless opulence mood, dark rich tones with warm gold highlights. Edge to edge, no frame, no border, no buildings, no interior scene."
+    },
+    {
+      "id": "lauderdale",
+      "shortName": "laud",
+      "name": "Lauderdale",
+      "category": "photography",
+      "promptHints": "Fort Lauderdale beach aesthetic, turquoise Intracoastal waterways, white sand beaches, yacht lifestyle, tropical palms, laid-back coastal luxury, golden hour beach light, Venice of America, pastel waterfront condos",
+      "tilePrompt": "Full-bleed Fort Lauderdale beach aesthetic filling the entire canvas. Turquoise ocean lapping white sand beach, swaying coconut palms, laid-back coastal luxury atmosphere, golden hour warm light, pastel-colored waterfront buildings in background, yacht masts in distance, tropical paradise vibes. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "ed-hardy",
+      "shortName": "edhy",
+      "name": "Ed Hardy",
+      "category": "cultural",
+      "promptHints": "tattoo art fashion, skulls and roses and flames, tiger and eagle motifs, bold black outlines with vibrant fill, rhinestone sparkle, 2000s maximalist streetwear, vintage Americana tattoo flash",
+      "tilePrompt": "Full-bleed Ed Hardy tattoo art aesthetic filling the entire canvas. Dense interlocking tattoo flash motifs of skulls, roses, flames, and sacred hearts, bold black outlines with vibrant red gold and green fill, vintage Americana tattoo style, maximalist ornate pattern. Edge to edge, no frame, no border, no clothing."
+    },
+    {
+      "id": "takashi-murakami",
+      "shortName": "mrkm",
+      "name": "Takashi Murakami",
+      "category": "cultural",
+      "promptHints": "superflat art movement, smiling flowers with faces, anime meets fine art, bold flat colors, repeating floral pattern, pop art maximalism, rainbow palette, Japanese contemporary art",
+      "tilePrompt": "Full-bleed Takashi Murakami superflat aesthetic filling the entire canvas. Dense repeating pattern of smiling cartoon flowers with faces in rainbow colors, bold flat colors with no gradients, anime meets pop art, maximalist floral field, superflat Japanese contemporary art style. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "kaws",
+      "shortName": "kaws",
+      "name": "KAWS",
+      "category": "cultural",
+      "promptHints": "XX eyes motif, companion figure aesthetic, pop art meets street art, bold flat colors, clean graphic lines, vinyl toy aesthetic, pastel and primary color palette, contemporary art collectible",
+      "tilePrompt": "Full-bleed KAWS aesthetic filling the entire canvas. Abstract pattern of XX eye motifs and bold graphic shapes, clean flat colors in pastel pink blue and grey, vinyl toy surface texture, pop art meets street art, contemporary graphic art pattern. Edge to edge, no frame, no border, no figures."
+    },
+    {
+      "id": "banksy",
+      "shortName": "bnks",
+      "name": "Banksy",
+      "category": "cultural",
+      "promptHints": "stencil street art, high contrast black and white with one color accent, weathered wall texture, social commentary aesthetic, spray paint drips, urban decay backdrop, subversive pop art",
+      "tilePrompt": "Full-bleed Banksy stencil art aesthetic filling the entire canvas. Weathered concrete wall texture with high contrast black stencil shapes, spray paint drips and overspray, one accent color of red, urban decay patina, gritty street art surface quality. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "basquiat",
+      "shortName": "basq",
+      "name": "Basquiat",
+      "category": "cultural",
+      "promptHints": "neo-expressionist raw energy, crown motifs, scratchy handwritten text, crude anatomical drawings, bold primary colors on rough surface, graffiti meets fine art, chaotic layered composition",
+      "tilePrompt": "Full-bleed Basquiat neo-expressionist aesthetic filling the entire canvas. Dense chaotic layered composition of crown motifs, crude scratchy marks, anatomical sketches, bold primary colors on raw canvas texture, graffiti-style energy, crossed-out text fragments, raw expressive paint strokes. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "shepard-fairey",
+      "shortName": "obey",
+      "name": "Shepard Fairey / OBEY",
+      "category": "cultural",
+      "promptHints": "propaganda poster aesthetic, bold red black and cream palette, halftone screen printing, strong geometric composition, Andre the Giant OBEY motif, political poster art, Hope poster style, revolutionary graphic design",
+      "tilePrompt": "Full-bleed Shepard Fairey propaganda poster aesthetic filling the entire canvas. Bold geometric shapes in limited palette of red black and cream, halftone screen print texture, revolutionary poster design language, strong radiating composition, political graphic art style. Edge to edge, no frame, no border, no text, no faces."
+    },
+    {
+      "id": "yayoi-kusama",
+      "shortName": "kusm",
+      "name": "Yayoi Kusama",
+      "category": "cultural",
+      "promptHints": "infinity dots, obsessive polka dot pattern, bold primary colors with dense dot coverage, psychedelic repetition, vibrant maximalist color fields, organic dotted forms",
+      "tilePrompt": "Full-bleed extreme close-up macro texture of dense obsessive polka dot pattern filling the entire canvas. Layered circles in bold red yellow black and vibrant blue, dots of varying sizes overlapping in psychedelic repetition, flat graphic color fields with no depth or perspective, maximalist dot coverage on every surface. Edge to edge, no frame, no border, no objects, no room, no furniture."
+    },
+    {
+      "id": "stranger-things",
+      "shortName": "strt",
+      "name": "Stranger Things / 80s Horror",
+      "category": "cultural",
+      "promptHints": "80s horror movie poster aesthetic, painted illustration style, Upside Down red glow, dark atmospheric fog, retro neon typography, VHS era horror, Drew Struzan style painted poster, supernatural eerie lighting",
+      "tilePrompt": "Full-bleed 80s horror movie poster aesthetic filling the entire canvas. Dark atmospheric fog with eerie red and blue supernatural glow, painted illustration texture with visible brush strokes, VHS era horror mood, flickering Christmas lights in darkness, Stranger Things Upside Down color palette of deep red and dark blue. Edge to edge, no frame, no border, no text, no characters."
+    },
+    {
+      "id": "the-matrix",
+      "shortName": "mtrx",
+      "name": "The Matrix",
+      "category": "cultural",
+      "promptHints": "green digital rain code, phosphor green on black, falling characters, bullet time frozen motion, leather and chrome, cyber noir, digital reality glitch, monochrome green palette",
+      "tilePrompt": "Full-bleed Matrix digital rain aesthetic filling the entire canvas. Cascading green phosphor characters on deep black background, varying opacity and focus depth, digital code rain pattern, CRT monitor glow, green monochrome palette, cyberpunk data stream. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "mad-max",
+      "shortName": "mmax",
+      "name": "Mad Max / Fury Road",
+      "category": "cultural",
+      "promptHints": "post-apocalyptic desert punk, rust and chrome, war paint, sun-scorched wasteland, orange dust storms, salvaged metal and leather, high-octane chaos, Fury Road aesthetic",
+      "tilePrompt": "Full-bleed Mad Max desert punk aesthetic filling the entire canvas. Sun-scorched rust and chrome metal textures, orange dust storm haze, salvaged corroded steel plates and rivets, war paint smears, post-apocalyptic wasteland patina, intense burnt orange and metallic palette. Edge to edge, no frame, no border, no vehicles, no characters."
+    },
+    {
+      "id": "barbie",
+      "shortName": "barb",
+      "name": "Barbie",
+      "category": "cultural",
+      "promptHints": "hot pink maximalism, Barbie dreamhouse aesthetic, plastic glossy texture, bubblegum pink and white, sparkle and glitter, retro-modern glamour, playful feminine luxury, monochrome pink world",
+      "tilePrompt": "Full-bleed Barbie hot pink aesthetic filling the entire canvas. Glossy plastic texture in monochrome hot pink, sparkle and glitter accents, bubblegum dreamhouse geometric patterns, retro-modern glamour, playful feminine maximalism, pink gradient with white highlights. Edge to edge, no frame, no border, no dolls."
+    },
+    {
+      "id": "kubrick",
+      "shortName": "kubr",
+      "name": "Kubrick",
+      "category": "cultural",
+      "promptHints": "one-point perspective symmetry, cold calculated composition, wide angle distortion, unsettling color palettes, clinical precision, carpet pattern obsession, Shining corridor aesthetic, 2001 monolith minimalism",
+      "tilePrompt": "Full-bleed Kubrick aesthetic filling the entire canvas. Perfect one-point perspective symmetry, geometric carpet pattern in deep red and orange hexagons, cold clinical fluorescent lighting, wide angle distortion, unsettling hotel corridor color palette, obsessive geometric precision. Edge to edge, no frame, no border."
+    },
+    {
+      "id": "key-west-quilt",
+      "shortName": "kwqt",
+      "name": "Key West Quilt",
+      "category": "decorative",
+      "promptHints": "tropical patchwork quilt, bold sun-washed cotton, hand-stitched geometric piecing, vibrant coral turquoise lime yellow, island folk art motifs, applique layering, warm Caribbean color palette, vintage fabric texture",
+      "tilePrompt": "Full-bleed extreme close-up macro texture of a Key West tropical patchwork quilt filling the entire canvas. Hand-stitched geometric piecing in vibrant coral, turquoise, lime green, and sunny yellow cotton. Visible quilting stitch lines, applique layered tropical motifs, sun-washed fabric texture, folk art patchwork geometry, warm Caribbean color palette. Edge to edge, no frame, no border, no bed, no furniture, no room."
+    },
+    {
+      "id": "faceted-gem",
+      "shortName": "fgem",
+      "name": "Faceted Gem",
+      "category": "design",
+      "promptHints": "faceted crystal gemstone, brilliant-cut refractions, prismatic light dispersion, polished mineral surface, sharp geometric facets, luminous transparency, jewel-toned saturation, precious stone luster",
+      "tilePrompt": "Full-bleed extreme close-up macro of faceted gemstone surfaces filling the entire canvas. Brilliant-cut crystal refractions, prismatic rainbow light dispersion through polished mineral planes, sharp geometric facet edges catching light, luminous transparency and depth, jewel-toned saturation with deep rich hues, precious stone luster and internal fire, diamond-like brilliance on angular surfaces. Edge to edge, no frame, no border, no jewelry, no ring, no setting, no hand, no display."
+    },
+    {
+      "id": "grainy-gradient",
+      "shortName": "grng",
+      "name": "Grainy Gradient",
+      "category": "technique",
+      "promptHints": "dynamic gradient mesh, organic amorphous color blobs, analog film grain overlay, risograph printing texture, bold saturated color transitions, aurora-like color pooling, full-bleed gradient wash, warm paper grain, flowing overlapping shapes",
+      "tilePrompt": "Full-bleed dynamic gradient mesh filling the entire canvas. Organic amorphous color blobs pooling and overlapping like aurora borealis — deep magenta bleeding into electric teal, warm amber dissolving into indigo. Analog film grain texture throughout like risograph printing on textured paper. Bold saturated color transitions with soft feathered edges. Flowing shapes that are neither geometric nor figurative, just pure color movement. Subtle warm paper grain adds tactile warmth. Edge to edge, no frame, no border, no text, no logo, no canvas."
+    }
+  ]
+}
