@@ -7,13 +7,13 @@ Shared reference for all gemskills. Last verified: **February 2026**.
 | Model ID | Name | Use Case | Context |
 |---|---|---|---|
 | `gemini-3.1-pro-preview` | Gemini 3.1 Pro | Complex reasoning, text, code, agentic workflows | 1M tokens |
-| `gemini-3-flash-preview` | Gemini 3 Flash | Fast balanced text/multimodal | 1M tokens |
-| `gemini-3-pro-image-preview` | Nano Banana Pro | Image generation AND editing | 1M tokens |
+| `gemini-3.5-flash` | Gemini 3 Flash | Fast balanced text/multimodal | 1M tokens |
+| `gemini-3-pro-image` | Nano Banana Pro | Image generation AND editing | 1M tokens |
 | `veo-3.1-generate-preview` | Veo 3.1 | Video generation (text/image-to-video) | N/A |
 
 **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) is the latest reasoning model with improved software engineering, agentic tool use, and animated SVG generation. Replaces `gemini-3-pro-preview`.
 
-**Nano Banana Pro** (`gemini-3-pro-image-preview`) is Google's official branding for their professional image generation/editing model with thinking capabilities.
+**Nano Banana Pro** (`gemini-3-pro-image`) is Google's official branding for their professional image generation/editing model with thinking capabilities.
 
 **Veo 3.1** (`veo-3.1-generate-preview`) is Google's video generation model with native audio, 720p/1080p/4K resolution, and 4-8 second clips. Uses async long-running operations (11s-6min latency).
 
@@ -21,7 +21,7 @@ Shared reference for all gemskills. Last verified: **February 2026**.
 
 All models below Gemini 3 are legacy and deprecated:
 - `gemini-2.5-flash`, `gemini-2.5-pro` - Deprecated
-- `gemini-2.5-flash-image` - Deprecated (use `gemini-3-pro-image-preview`)
+- `gemini-2.5-flash-image` - Deprecated (use `gemini-3-pro-image`)
 - `gemini-2.0-*`, `gemini-1.5-*` - Deprecated
 
 ## Self-Correcting Instruction
@@ -56,6 +56,6 @@ gemskills supports pinning models via environment variables:
 | Variable | Default | Description |
 |---|---|---|
 | `GEMINI_TEXT_MODEL` | `gemini-3.1-pro-preview` | Text/reasoning model |
-| `GEMINI_FLASH_MODEL` | `gemini-3-flash-preview` | Fast multimodal model |
-| `GEMINI_IMAGE_MODEL` | `gemini-3-pro-image-preview` | Image gen/edit model |
+| `GEMINI_FLASH_MODEL` | `gemini-3.5-flash` | Fast multimodal model |
+| `GEMINI_IMAGE_MODEL` | `gemini-3-pro-image` | Image gen/edit model |
 | `GEMINI_VIDEO_MODEL` | `veo-3.1-generate-preview` | Video generation model |

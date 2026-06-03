@@ -64,7 +64,7 @@ export const initialState: DeckState = {
 	initialized: false,
 	models: {
 		text: "gemini-3.1-pro-preview",
-		image: "gemini-3.1-flash-image-preview",
+		image: "gemini-3.1-flash-image",
 		video: "veo-3.1-generate-preview",
 	},
 }

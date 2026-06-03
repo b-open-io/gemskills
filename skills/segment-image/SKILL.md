@@ -45,6 +45,6 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/segment-image/s
 
 ## Model
 
-Uses `gemini-3-flash-preview` (Gemini 3 Flash) for image segmentation.
+Uses `gemini-3.5-flash` (Gemini 3 Flash) for image segmentation.
 
 > Last verified: February 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`. See the ask-gemini skill's `references/gemini-api.md` for current models and Google's official `gemini-api-dev` skill for the canonical source.

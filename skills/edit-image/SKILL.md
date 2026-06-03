@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "edit an image", "m
 
 # Edit Image
 
-Edit images using Nano Banana Pro (`gemini-3-pro-image-preview`).
+Edit images using Nano Banana Pro (`gemini-3-pro-image`).
 
 ## When to Use
 
@@ -73,6 +73,6 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/edit-image/scri
 
 ## Model
 
-Uses `gemini-3-pro-image-preview` - **Nano Banana Pro**, Google's professional image generation and editing model. No Vertex AI credentials required.
+Uses `gemini-3-pro-image` - **Nano Banana Pro**, Google's professional image generation and editing model. No Vertex AI credentials required.
 
 > Last verified: February 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`. See the ask-gemini skill's `references/gemini-api.md` for current models and Google's official `gemini-api-dev` skill for the canonical source.

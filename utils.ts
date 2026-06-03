@@ -59,8 +59,8 @@ export interface GeminiSegmentResult {
 
 // Default models - override via environment variables
 const DEFAULT_TEXT_MODEL = 'gemini-3.1-pro-preview';
-const DEFAULT_FLASH_MODEL = 'gemini-3-flash-preview';
-const DEFAULT_IMAGE_MODEL = 'gemini-3.1-flash-image-preview';
+const DEFAULT_FLASH_MODEL = 'gemini-3.5-flash';
+const DEFAULT_IMAGE_MODEL = 'gemini-3.1-flash-image';
 const DEFAULT_VIDEO_MODEL = 'veo-3.1-generate-preview';
 const DEFAULT_SVG_MODEL = 'arrow-preview';
 
@@ -75,13 +75,13 @@ export type ImageModelCapabilities = {
 };
 
 export const IMAGE_MODEL_CAPABILITIES: Record<string, ImageModelCapabilities> = {
-  'gemini-3.1-flash-image-preview': {
+  'gemini-3.1-flash-image': {
     imageSizeValues: ['512', '1K', '2K', '4K'],
     aspectRatioValues: ['1:1', '1:4', '4:1', '1:8', '8:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
     maxInputImages: 14,
     knownBugs: ['imageSize 512 silently ignored, always returns 1K'],
   },
-  'gemini-3-pro-image-preview': {
+  'gemini-3-pro-image': {
     imageSizeValues: ['1K', '2K', '4K'],
     aspectRatioValues: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
     maxInputImages: 14,

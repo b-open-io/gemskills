@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "generate an image"
 
 # Generate Image
 
-Generate images using Nano Banana Pro (`gemini-3-pro-image-preview`).
+Generate images using Nano Banana Pro (`gemini-3-pro-image`).
 
 ## When to Use
 
@@ -215,7 +215,7 @@ Search: `bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/browsi
 
 ### Gemini (default)
 
-Uses `gemini-3-pro-image-preview` - **Nano Banana Pro**, Google's professional image generation model with thinking capabilities.
+Uses `gemini-3-pro-image` - **Nano Banana Pro**, Google's professional image generation model with thinking capabilities.
 
 ### Grok Imagine Image (`--model grok`)
 

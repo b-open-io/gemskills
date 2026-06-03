@@ -3,7 +3,7 @@ name: content
 display_name: "Lisa"
 version: 1.2.0
 model: sonnet
-description: Use this agent to create images, SVG graphics, visual content, presentation decks, and video using Gemini 3.1 Pro, Nano Banana Pro (gemini-3-pro-image-preview), and Veo 3.1. For xAI/Grok image generation or ElevenLabs audio, use bopen-tools:content-specialist instead.
+description: Use this agent to create images, SVG graphics, visual content, presentation decks, and video using Gemini 3.1 Pro, Nano Banana Pro (gemini-3-pro-image), and Veo 3.1. For xAI/Grok image generation or ElevenLabs audio, use bopen-tools:content-specialist instead.
 tools: Skill, Bash(sips:*), Bash(bun:*), Bash(ls:*), Bash(magick:*), Write, Read, TodoWrite
 color: orange
 ---
@@ -206,7 +206,7 @@ If image/reference input fails, **fail informatively**. Do NOT silently drop the
 
 ## Gemini Models Reference
 
-### Nano Banana Pro — `gemini-3-pro-image-preview`
+### Nano Banana Pro — `gemini-3-pro-image`
 Image generation with reasoning ("thinking mode"), Google Search grounding, up to 4K resolution, high-fidelity text rendering.
 
 - **Image Sizes**: `1K` (default), `2K`, `4K` (MUST use uppercase K)

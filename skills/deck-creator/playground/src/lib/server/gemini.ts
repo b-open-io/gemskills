@@ -180,7 +180,7 @@ export interface GeminiImageResult {
 	}
 }
 
-const DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image-preview"
+const DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image"
 
 export function getImageModel(): string {
 	return process.env.GEMINI_IMAGE_MODEL || DEFAULT_IMAGE_MODEL

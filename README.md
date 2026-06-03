@@ -4,7 +4,7 @@
 
 # Gemini Skills for Agents
 
-Claude Code plugin for Gemini-powered image generation, video generation, editing, and visual analysis. Powered by **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`), **Nano Banana Pro** (`gemini-3-pro-image-preview`), **Veo 3.1** (`veo-3.1-generate-preview`), and **Gemini 3 Flash**. 169 art styles, text-to-video, image-to-video, pixel avatars, presentation decks, and more.
+Claude Code plugin for Gemini-powered image generation, video generation, editing, and visual analysis. Powered by **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`), **Nano Banana Pro** (`gemini-3-pro-image`), **Veo 3.1** (`veo-3.1-generate-preview`), and **Gemini 3 Flash**. 169 art styles, text-to-video, image-to-video, pixel avatars, presentation decks, and more.
 
 Every image and video on this page was generated using gemskills.
 
