@@ -33,10 +33,35 @@ bunx skills add b-open-io/gemskills --skill generate-svg
 bunx skills add b-open-io/gemskills --skill section-dividers
 bunx skills add b-open-io/gemskills --skill deck-creator
 bunx skills add b-open-io/gemskills --skill ask-gemini
+bunx skills add b-open-io/gemskills --skill setup
 ```
 </details>
 
-**Requirements**: `GEMINI_API_KEY` ([get one here](https://aistudio.google.com/apikey)) and optionally `REPLICATE_API_TOKEN` for icon background removal ([get one here](https://replicate.com/account/api-tokens))
+**Requirements**: `GEMINI_API_KEY` ([get one](https://aistudio.google.com/apikey)) is the baseline and powers every skill.
+
+Optional keys unlock additional providers for image/video/edit:
+
+| Key | Unlocks | Get one |
+|-----|---------|---------|
+| `GEMINI_API_KEY` | Gemini Nano Banana Pro images, Veo 3.1 video, all 169 styles (default) | [aistudio.google.com](https://aistudio.google.com/apikey) |
+| `OPENAI_API_KEY` | OpenAI **`gpt-image-2`** image generation + masked editing | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `XAI_API_KEY` | xAI **Grok Imagine** image + **`grok-imagine-video-1.5`** video | [console.x.ai](https://console.x.ai) |
+| `REPLICATE_API_TOKEN` | Icon background removal; Veo reference-image / last-frame video | [replicate.com](https://replicate.com/account/api-tokens) |
+
+### Providers & auto-pick
+
+`generate-image`, `generate-video`, and `edit-image` accept `--provider gemini|openai|xai`.
+Omit it and gemskills **auto-picks the best provider whose key is present and that
+supports the request** — e.g. plain image → `gpt-image-2`, video → `grok-imagine-video-1.5`,
+but anything needing **style tiles, reference images, transparency, or negative
+prompts routes to Gemini** (the only provider that supports them).
+
+Set your own defaults interactively with **`/gemskills:setup`** (or the `setup`
+skill), or pin them via env (`GEMSKILLS_IMAGE_PROVIDER`, `GEMSKILLS_VIDEO_PROVIDER`,
+`GEMSKILLS_EDIT_PROVIDER`) or a `.gemskills.json` (project) / `~/.config/gemskills/config.json`
+(global) file. Per-provider prompt templates live in `providers/prompts/` and are
+tuned independently. Keys are read from one canonical env var each — gemskills
+never falls back to alternate names; a missing key fails loudly.
 
 ---
 

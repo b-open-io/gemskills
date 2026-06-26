@@ -23,8 +23,11 @@ const { resolvePluginRoot } = await import(resolve(import.meta.dir, "../../../re
   throw new Error("Cannot find gemskills. Set GEMSKILLS_ROOT or: claude plugin install gemskills@b-open-io");
 });
 const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
-const { callGeminiVideo, callGeminiImage, callReplicateVeo, callReplicateGrokVideo } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
+const { callGeminiVideo, callGeminiImage, callReplicateVeo } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 const { getApiKey, getReplicateApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
+const { xaiVideo, xaiImage } = await import(resolve(PLUGIN_ROOT, "providers/xai.ts")) as typeof import("../../../providers/xai");
+const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
+type VideoCapability = import("../../../providers/types").Capability;
 type Style = import("../../../shared").Style;
 type StylesRegistry = import("../../../shared").StylesRegistry;
 
@@ -71,14 +74,17 @@ if (!prompt) {
   console.error("  --negative <text>    Negative prompt");
   console.error("  --seed <n>           Random seed");
   console.error("  --output <path>      Output .mp4 path");
-  console.error("  --model <name>       veo (default), replicate-veo (Replicate Veo 3.1), or grok");
+  console.error("  --provider <name>    gemini (Veo) | xai (Grok Imagine). Omit to auto-pick by available keys.");
+  console.error("                       (--model is a legacy alias: veo/replicate-veo→gemini, grok→xai)");
+  console.error("  --oneshot            xAI only: direct text-to-video on grok-imagine-video (v1),");
+  console.error("                       instead of the default auto-frame → grok-imagine-video-1.5 i2v");
   console.error("  --no-audio           Disable audio generation (Replicate Veo only)");
-  console.error("  --auto-image         With --style, auto-generate styled image first");
+  console.error("  --auto-image         With --style, auto-generate styled image first (Veo)");
   process.exit(1);
 }
 
 const validAspects = ["16:9", "9:16"];
-const validResolutions = ["720p", "1080p", "4k"];
+const validResolutions = ["480p", "720p", "1080p", "4k"]; // 480p = xAI only
 const validDurations = ["4", "6", "8"];
 
 // Validate options
@@ -146,16 +152,71 @@ if (booleans.has("auto-image") && styleId && !inputImage) {
 
 const outputPath = flags.output || generateTimestampFilename(prompt.split(" ").slice(0, 4).join(" "), "mp4");
 
-// Auto-select model: if --ref or --last-frame provided, use replicate-veo automatically
 const refPaths = multi.ref || [];
 const lastFramePath = flags["last-frame"];
-let modelChoice = flags.model || "veo";
-if ((refPaths.length > 0 || lastFramePath) && modelChoice === "veo") {
-  console.error("Auto-selecting --model replicate-veo (reference images or last frame require Replicate)");
-  modelChoice = "replicate-veo";
+
+// Resolve provider. Legacy --model aliases: veo/replicate-veo → gemini, grok → xai.
+let explicit = flags.provider || flags.model;
+if (explicit === "veo" || explicit === "replicate-veo") explicit = "gemini";
+if (explicit === "grok") explicit = "xai";
+
+// Reference images / last-frame interpolation are Veo-only (via Replicate) →
+// force gemini when requested without an explicit override.
+const wantsVeoAdvanced = refPaths.length > 0 || lastFramePath;
+if (wantsVeoAdvanced && !explicit) {
+  console.error("Reference images / last frame require Veo — using --provider gemini.");
+  explicit = "gemini";
 }
 
-if (modelChoice === "replicate-veo") {
+const caps: VideoCapability[] = [inputImage ? "i2v" : "t2v"];
+const { provider, source } = await resolveProvider("video", { explicit, caps });
+console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
+
+if (provider === "xai") {
+  // grok-imagine-video-1.5 is image-to-video only (highest quality); v1 does t2v.
+  const oneshot = booleans.has("oneshot");
+  const duration = flags.duration ? parseInt(flags.duration) : undefined;
+  let resolution = flags.resolution;
+  if (resolution === "4k") { console.error("Note: xAI has no 4k; using 1080p."); resolution = "1080p"; }
+
+  let framePath = inputPath; // explicit --input start frame → direct i2v
+
+  if (!framePath && !oneshot) {
+    // Default "video from a prompt": make a start frame, then i2v with 1.5.
+    console.error("Generating start frame for image-to-video (grok-imagine-video-1.5)...");
+    framePath = generateTimestampFilename("xai-frame", "png");
+    const framePrompt = `${finalPrompt}. Single frame, detailed and vivid composition.`;
+    if (process.env.GEMINI_API_KEY) {
+      // Prefer a Gemini frame (supports style tiles) when available.
+      const apiKey = getApiKey();
+      const imgOpts: any = { imageSize: "1K", aspectRatio: flags.aspect === "9:16" ? "9:16" : "16:9" };
+      const loaded = styleId ? await loadStyle(styleId) : null;
+      let p = framePrompt;
+      if (loaded?.tileImage) {
+        imgOpts.inputImages = [loaded.tileImage];
+        p = `Match the artistic style, palette, textures, and technique from the reference image — do not copy its subject. ${p}`;
+      }
+      const r = await callGeminiImage(apiKey, p, imgOpts);
+      if (r.images.length) await saveImage(r.images[0].data, r.images[0].mimeType, framePath);
+      else { console.error("  Frame gen returned nothing; falling back to xAI image."); framePath = undefined; }
+    }
+    if (!framePath) {
+      framePath = generateTimestampFilename("xai-frame", "png");
+      await xaiImage(framePrompt, { outputPath: framePath });
+    }
+    console.error(`  Start frame: ${framePath}\n`);
+  }
+
+  const result = await xaiVideo(finalPrompt, {
+    image: framePath, // undefined → text-to-video on v1 (oneshot)
+    duration,
+    aspectRatio: flags.aspect,
+    resolution,
+    outputPath,
+  });
+  if (result.costUsd != null) console.error(`Cost: ~$${result.costUsd.toFixed(2)}`);
+  console.log(result.path);
+} else if (provider === "gemini" && wantsVeoAdvanced) {
   // Replicate Veo 3.1 — supports image, reference_images, last_frame
   const replicateKey = getReplicateApiKey();
   const inputPath2 = multi.input?.[0];
@@ -170,16 +231,6 @@ if (modelChoice === "replicate-veo") {
     generateAudio: booleans.has("no-audio") ? false : undefined,
     negativePrompt: flags.negative || undefined,
     seed: flags.seed ? parseInt(flags.seed) : undefined,
-    outputPath,
-  });
-  console.log(result.videoPath);
-} else if (modelChoice === "grok") {
-  // Grok Imagine Video via Replicate — supports text-to-video and video input
-  const replicateKey = getReplicateApiKey();
-  const videoInputPath = flags.video;
-  const result = await callReplicateGrokVideo(replicateKey, finalPrompt, {
-    aspectRatio: flags.aspect || undefined,
-    videoInput: videoInputPath || undefined,
     outputPath,
   });
   console.log(result.videoPath);

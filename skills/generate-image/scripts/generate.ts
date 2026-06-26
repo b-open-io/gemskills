@@ -23,9 +23,13 @@ const { resolvePluginRoot } = await import(resolve(import.meta.dir, "../../../re
   throw new Error("Cannot find gemskills. Set GEMSKILLS_ROOT or: claude plugin install gemskills@b-open-io");
 });
 const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
-const { callGeminiImage, callReplicateImage, validateImageOptions, getImageModel } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
+const { callGeminiImage, validateImageOptions, getImageModel } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
-const { getApiKey, getReplicateApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
+const { getApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
+const { openaiImage } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { xaiImage } = await import(resolve(PLUGIN_ROOT, "providers/xai.ts")) as typeof import("../../../providers/xai");
+const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
+type Capability = import("../../../providers/types").Capability;
 type Style = import("../../../shared").Style;
 type StylesRegistry = import("../../../shared").StylesRegistry;
 
@@ -70,7 +74,8 @@ if (!prompt) {
   console.error("  --count <n>       Number of images (1-4)");
   console.error("  --seed <n>        Random seed");
   console.error("  --output <path>   Output file path");
-  console.error("  --model <name>    gemini (default) or grok (Replicate)");
+  console.error("  --provider <name> gemini | openai | xai (default: auto-pick by available keys)");
+  console.error("                    (--model is a legacy alias; 'grok' maps to xai)");
   process.exit(1);
 }
 
@@ -116,12 +121,14 @@ if (inputPaths.length > 0) {
 }
 
 let finalPrompt = prompt;
+let styleHints = ""; // textual style hints, reused by non-Gemini providers (no tile)
 const styleId = flags.style;
 if (styleId) {
   const loaded = await loadStyle(styleId);
   if (loaded) {
     const { style, tileImage } = loaded;
     console.error(`Applying style: ${style.name}`);
+    styleHints = style.promptHints;
     finalPrompt = `${style.promptHints}, ${prompt}`;
 
     if (tileImage) {
@@ -134,10 +141,39 @@ if (styleId) {
   }
 }
 
-const modelChoice = flags.model || "gemini";
+// Derive the capabilities THIS request needs, then resolve the provider.
+const caps: Capability[] = [];
+if (styleId) caps.push("styleTile");
+if (inputPaths.length > 0) caps.push("multiRef");
+if (flags.negative) caps.push("negative");
 
-// Validate options against model capabilities before making any API call
-if (modelChoice !== "grok") {
+// --provider is preferred; --model is a legacy alias (grok → xai).
+let explicit = flags.provider || flags.model;
+if (explicit === "grok") explicit = "xai";
+
+const { provider, source } = await resolveProvider("image", { explicit, caps });
+console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
+
+const descriptor = prompt.split(" ").slice(0, 4).join(" ");
+const count = options.numberOfImages;
+
+/** Build a prompt for providers that lack style tiles / negative params. */
+function plainPrompt(): string {
+  let p = styleHints ? `${styleHints}, ${prompt}` : prompt;
+  if (flags.negative) p += `\n\nAvoid: ${flags.negative}.`;
+  return p;
+}
+
+/** Warn when an explicitly chosen non-Gemini provider can't honor a feature. */
+function warnUnsupported(name: string) {
+  const lost: string[] = [];
+  if (styleId) lost.push("style tile (text hints kept)");
+  if (inputPaths.length > 0) lost.push("reference images");
+  if (flags.negative) lost.push("native negative prompt (folded into text)");
+  if (lost.length) console.error(`Note: ${name} ignores: ${lost.join(", ")}. Use --provider gemini for these.\n`);
+}
+
+if (provider === "gemini") {
   const imageModel = getImageModel();
   const validationError = validateImageOptions(imageModel, {
     imageSize: options.imageSize,
@@ -148,28 +184,16 @@ if (modelChoice !== "grok") {
     console.error(`Error: ${validationError}`);
     process.exit(1);
   }
-}
-
-if (modelChoice === "grok") {
-  const replicateKey = getReplicateApiKey();
-  const outputPath = flags.output || generateTimestampFilename(prompt.split(" ").slice(0, 4).join(" "), "jpg");
-  const savedPath = await callReplicateImage(replicateKey, finalPrompt, { outputPath });
-  console.log(`✓ Saved: ${savedPath}`);
-} else {
   const apiKey = getApiKey();
   console.error("Generating image...\n");
   const result: GeminiImageResult = await callGeminiImage(apiKey, finalPrompt, options);
 
-  if (result.text) {
-    console.log(`Model comment: ${result.text}\n`);
-  }
+  if (result.text) console.log(`Model comment: ${result.text}\n`);
 
   if (result.images.length === 0) {
     console.error("Error: No images returned. The prompt was likely blocked by the content filter.");
     console.error("Try rephrasing — avoid named IP (e.g. 'Simpsons'), real people, or violent/explicit content.");
-    if (result.text) {
-      console.error(`Model response: ${result.text}`);
-    }
+    if (result.text) console.error(`Model response: ${result.text}`);
     process.exit(1);
   }
 
@@ -180,10 +204,34 @@ if (modelChoice === "grok") {
       outputPath && result.images.length > 1
         ? outputPath.replace(/(\.\w+)$/, `_${i + 1}$1`)
         : outputPath;
-    const descriptor = prompt.split(" ").slice(0, 4).join(" ");
     const savedPath = await saveImage(img.data, img.mimeType, finalPath, descriptor);
     console.log(`✓ Saved: ${savedPath}`);
   }
+} else if (provider === "openai") {
+  warnUnsupported("openai");
+  const qualityMap: Record<string, "low" | "medium" | "high"> = { "1K": "low", "2K": "medium", "4K": "high" };
+  const out = flags.output || generateTimestampFilename(descriptor, "png");
+  const res = await openaiImage(plainPrompt(), {
+    aspect: flags.aspect,
+    quality: flags.size ? qualityMap[flags.size] : "auto",
+    n: count,
+    outputPath: out,
+  });
+  for (const p of res.paths) console.log(`✓ Saved: ${p}`);
+  if (res.costUsd != null) console.error(`Cost: ~$${res.costUsd.toFixed(4)}`);
+} else {
+  // xai
+  warnUnsupported("xai");
+  const resMap: Record<string, string> = { "1K": "1k", "2K": "2k", "4K": "2k" };
+  const out = flags.output || generateTimestampFilename(descriptor, "jpg");
+  const res = await xaiImage(plainPrompt(), {
+    aspectRatio: flags.aspect,
+    resolution: flags.size ? resMap[flags.size] : undefined,
+    n: count,
+    outputPath: out,
+  });
+  for (const p of res.paths) console.log(`✓ Saved: ${p}`);
+  if (res.costUsd != null) console.error(`Cost: ~$${res.costUsd.toFixed(4)}`);
 }
 
 // Output only the path - do not read the image back into context.

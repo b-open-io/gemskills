@@ -51,9 +51,10 @@ export function getApiKey(): string {
 }
 
 export function getReplicateApiKey(): string {
-  const apiKey = process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY;
+  // Canonical name only — no fallback to alternate env var names (repo policy).
+  const apiKey = process.env.REPLICATE_API_TOKEN;
   if (!apiKey) {
-    console.error("Error: REPLICATE_API_TOKEN (or REPLICATE_API_KEY) environment variable is not set.");
+    console.error("Error: REPLICATE_API_TOKEN environment variable is not set.");
     console.error("\nGet an API token from: https://replicate.com/account/api-tokens");
     process.exit(1);
   }
@@ -61,9 +62,10 @@ export function getReplicateApiKey(): string {
 }
 
 export function getQuiverApiKey(): string {
-  const apiKey = process.env.QUIVERAI_API_KEY || process.env.QUIVER_API_KEY;
+  // Canonical name only — no fallback to alternate env var names (repo policy).
+  const apiKey = process.env.QUIVERAI_API_KEY;
   if (!apiKey) {
-    console.error("Error: QUIVERAI_API_KEY (or QUIVER_API_KEY) environment variable is not set.");
+    console.error("Error: QUIVERAI_API_KEY environment variable is not set.");
     console.error("\nGet an API key from: https://quiver.ai");
     process.exit(1);
   }

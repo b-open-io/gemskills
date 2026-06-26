@@ -105,7 +105,7 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/
 - `--guidance <n>` - Guidance scale
 - `--seed <n>` - Random seed for reproducibility
 - `--output <path>` - Output path
-- `--model <name>` - `gemini` (default) or `grok` (Grok Imagine Image via Replicate)
+- `--provider <name>` - `gemini`, `openai`, or `xai`. Omit to **auto-pick** the best available provider for the request (see Models). `--model` is a legacy alias; `grok` maps to `xai`.
 
 ### Examples
 
@@ -211,24 +211,45 @@ When generating images, proactively suggest relevant styles:
 Browse all: `bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/browsing-styles/scripts/list_styles.ts --table`
 Search: `bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/browsing-styles/scripts/list_styles.ts --search "watercolor"`
 
-## Models
+## Models & Providers
 
-### Gemini (default)
+Three providers, selected with `--provider` or **auto-picked** when omitted.
 
-Uses `gemini-3-pro-image` - **Nano Banana Pro**, Google's professional image generation model with thinking capabilities.
+| Provider | Model | Key | Strengths | Can't do |
+|----------|-------|-----|-----------|----------|
+| `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, negative prompts, **transparency**, 1K/2K/4K | — |
+| `openai` | `gpt-image-2` | `OPENAI_API_KEY` | Best **in-image text**, dense prompt understanding, custom sizes | No transparency, no style tiles/refs, no negative param |
+| `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no tiles/refs/negative |
 
-### Grok Imagine Image (`--model grok`)
+### Auto-pick (default when `--provider` is omitted)
 
-Uses `xai/grok-imagine-image` via Replicate. Requires `REPLICATE_API_TOKEN` (or `REPLICATE_API_KEY`). Text-to-image only (no reference images or style tiles). This is a **last-resort fallback** — Gemini produces better results including likeness. Only use when:
-- Content is blocked by Gemini's safety filters
-- The user specifically requests it
+The script chooses the **best provider whose key is present and that supports
+what the request needs**. Ranking for plain text-to-image is `openai > gemini > xai`.
+Capability gating overrides ranking: if the request uses `--style`, `--input`
+(reference images), or `--negative`, it routes to **Gemini** (the only provider
+that supports those), regardless of ranking. A user can pin a default with
+`/gemskills:setup` (writes `.gemskills.json` / global config) or
+`GEMSKILLS_IMAGE_PROVIDER`.
+
+When a non-Gemini provider is chosen, style **tile images** and reference images
+are dropped (the textual style hints are still applied) and `--negative` is
+folded into the prompt as an `Avoid: …` clause.
+
+### Prompt templates (tune per provider)
+
+Each provider parses prompts differently. **After the provider is resolved, read
+the matching guide and rewrite the prompt to it:**
+- `providers/prompts/image.gemini.md`
+- `providers/prompts/image.openai.md`
+- `providers/prompts/image.xai.md`
 
 ```bash
-# Grok image generation
-bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "A medieval girl standing on a futuristic hoverpod" --model grok --output hoverpod.jpg
+# Force a provider
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "neon city street, rain" --provider openai --size 4K
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "watercolor fox" --provider xai
 ```
 
-> Last verified: March 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`. See the ask-gemini skill's `references/gemini-api.md` for current models and Google's official `gemini-api-dev` skill for the canonical source.
+> Models verified live: June 2026 (`gpt-image-2`, `grok-imagine-image-quality`, `gemini-3-pro-image`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
 ## Reference Files
 
