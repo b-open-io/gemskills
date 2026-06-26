@@ -218,22 +218,27 @@ Three providers, selected with `--provider` or **auto-picked** when omitted.
 | Provider | Model | Key | Strengths | Can't do |
 |----------|-------|-----|-----------|----------|
 | `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, negative prompts, **transparency**, 1K/2K/4K | — |
-| `openai` | `gpt-image-2` | `OPENAI_API_KEY` | Best **in-image text**, dense prompt understanding, custom sizes | No transparency, no style tiles/refs, no negative param |
-| `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no tiles/refs/negative |
+| `openai` | `gpt-image-2` | `OPENAI_API_KEY` | Best **in-image text**, dense prompt understanding, custom sizes, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No transparency, no style tiles, no negative param |
+| `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no img2img/tiles/negative |
 
 ### Auto-pick (default when `--provider` is omitted)
 
 The script chooses the **best provider whose key is present and that supports
-what the request needs**. Ranking for plain text-to-image is `openai > gemini > xai`.
-Capability gating overrides ranking: if the request uses `--style`, `--input`
-(reference images), or `--negative`, it routes to **Gemini** (the only provider
-that supports those), regardless of ranking. A user can pin a default with
-`/gemskills:setup` (writes `.gemskills.json` / global config) or
-`GEMSKILLS_IMAGE_PROVIDER`.
+what the request needs**. Ranking is `openai > gemini > xai`.
 
-When a non-Gemini provider is chosen, style **tile images** and reference images
-are dropped (the textual style hints are still applied) and `--negative` is
-folded into the prompt as an `Avoid: …` clause.
+`--input` (img2img / reference images) is supported by **both openai and gemini**
+— openai routes it through the `gpt-image-2` edits endpoint, gemini through Nano
+Banana Pro (which also supports style tiles + up to 14 refs). So img2img
+auto-picks openai when its key is present; pass `--provider gemini` for Gemini's
+style-tile / multi-ref compositing.
+
+Capability gating still forces **Gemini** when the request uses `--style` (style
+tiles) or `--negative` (a true negative parameter) — only Gemini supports those.
+Pin a default with `/gemskills:setup` or `GEMSKILLS_IMAGE_PROVIDER`.
+
+When openai is chosen with a `--style`, the style **tile image** is dropped (the
+textual hints are still applied) and `--negative` is folded into the prompt as an
+`Avoid: …` clause. xAI additionally drops reference images (text-to-image only).
 
 ### Prompt templates (tune per provider)
 

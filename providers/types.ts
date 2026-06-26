@@ -38,11 +38,12 @@ export type Capability =
  */
 export const CAPABILITIES: Record<Task, Record<Provider, Capability[]>> = {
   image: {
-    // multiRef/styleTile/transparent/negative are Gemini-only in the
-    // text-to-image path. OpenAI's reference-image support lives on the EDIT
-    // endpoint (see edit task below), not generations.
+    // multiRef = image-to-image / reference images. Gemini does this on the
+    // generations path; OpenAI does it via the EDIT endpoint (the generate-image
+    // skill routes openai img2img through openaiEdit). xAI image is text-only.
+    // styleTile/transparent/negative remain Gemini-only.
     gemini: ["transparent", "negative", "styleTile", "multiRef"],
-    openai: [],
+    openai: ["multiRef"],
     xai: [],
   },
   edit: {

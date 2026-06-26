@@ -26,7 +26,7 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiImage, validateImageOptions, getImageModel } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { getApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
-const { openaiImage } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { openaiImage, openaiEdit } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
 const { xaiImage } = await import(resolve(PLUGIN_ROOT, "providers/xai.ts")) as typeof import("../../../providers/xai");
 const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
 type Capability = import("../../../providers/types").Capability;
@@ -168,8 +168,9 @@ function plainPrompt(): string {
 function warnUnsupported(name: string) {
   const lost: string[] = [];
   if (styleId) lost.push("style tile (text hints kept)");
-  if (inputPaths.length > 0) lost.push("reference images");
   if (flags.negative) lost.push("native negative prompt (folded into text)");
+  // xAI image is text-only; OpenAI does image-to-image via its edits endpoint.
+  if (name === "xai" && inputPaths.length > 0) lost.push("reference images");
   if (lost.length) console.error(`Note: ${name} ignores: ${lost.join(", ")}. Use --provider gemini for these.\n`);
 }
 
@@ -210,13 +211,23 @@ if (provider === "gemini") {
 } else if (provider === "openai") {
   warnUnsupported("openai");
   const qualityMap: Record<string, "low" | "medium" | "high"> = { "1K": "low", "2K": "medium", "4K": "high" };
+  const quality = flags.size ? qualityMap[flags.size] : "auto";
   const out = flags.output || generateTimestampFilename(descriptor, "png");
-  const res = await openaiImage(plainPrompt(), {
-    aspect: flags.aspect,
-    quality: flags.size ? qualityMap[flags.size] : "auto",
-    n: count,
-    outputPath: out,
-  });
+  // Reference/input images → image-to-image via the edits endpoint (gpt-image-2
+  // generations can't take images; edits accepts up to 16).
+  const res = inputPaths.length > 0
+    ? await openaiEdit(plainPrompt(), {
+        images: inputPaths,
+        aspect: flags.aspect,
+        quality,
+        outputPath: out,
+      })
+    : await openaiImage(plainPrompt(), {
+        aspect: flags.aspect,
+        quality,
+        n: count,
+        outputPath: out,
+      });
   for (const p of res.paths) console.log(`✓ Saved: ${p}`);
   if (res.costUsd != null) console.error(`Cost: ~$${res.costUsd.toFixed(4)}`);
 } else {
