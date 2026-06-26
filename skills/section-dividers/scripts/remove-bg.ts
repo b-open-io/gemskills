@@ -12,11 +12,11 @@ if (!inputPath || !outputPath) {
 	process.exit(1);
 }
 
-const REPLICATE_API_TOKEN =
-	process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY;
+// Canonical name only — no fallback to alternate env var names (repo policy).
+const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
 if (!REPLICATE_API_TOKEN) {
 	console.error(
-		"Error: REPLICATE_API_TOKEN or REPLICATE_API_KEY environment variable not set",
+		"Error: REPLICATE_API_TOKEN environment variable not set",
 	);
 	process.exit(1);
 }

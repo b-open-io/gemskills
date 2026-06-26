@@ -71,8 +71,18 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/edit-image/scri
 - **Use negative prompts**: `--negative "blurry, distorted"` helps avoid unwanted artifacts
 - **Iterate**: Generate a few variations with `--count 2` and pick the best one
 
-## Model
+## Models & Providers
 
-Uses `gemini-3-pro-image` - **Nano Banana Pro**, Google's professional image generation and editing model. No Vertex AI credentials required.
+Default provider is **`gemini`** (`gemini-3-pro-image`, Nano Banana Pro) — best
+for conversational/semantic edits, transparency, style-consistent edits, and
+multi-image composition. No Vertex AI credentials required.
 
-> Last verified: February 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`. See the ask-gemini skill's `references/gemini-api.md` for current models and Google's official `gemini-api-dev` skill for the canonical source.
+Pass `--provider openai` to use **`gpt-image-2`** for masked inpainting and
+multi-image compositing (`--mask`, multiple `--input`). gpt-image-2 cannot
+output transparency, has no negative-prompt parameter, and no outpaint mode — so
+`--negative`, `--mode`, and transparent results stay on Gemini (auto-routed).
+
+After the provider is resolved, tune the prompt with the matching guide:
+`providers/prompts/edit.gemini.md` or `providers/prompts/edit.openai.md`.
+
+> Models verified live: June 2026 (`gemini-3-pro-image`, `gpt-image-2`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.

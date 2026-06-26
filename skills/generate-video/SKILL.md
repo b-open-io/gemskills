@@ -86,9 +86,10 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/
 - `--negative <text>` - Negative prompt (what to avoid)
 - `--seed <n>` - Random seed for reproducibility
 - `--output <path>` - Output `.mp4` path
-- `--model <name>` - `veo` (default, Gemini API), `replicate-veo` (Replicate Veo 3.1), or `grok` (third-tier fallback)
+- `--provider <name>` - `gemini` (Veo) or `xai` (Grok Imagine). Omit to **auto-pick** by available keys. `--model` is a legacy alias (`veo`/`replicate-veo`→`gemini`, `grok`→`xai`).
+- `--oneshot` - xAI only: direct text-to-video on `grok-imagine-video` (v1) instead of the default auto-frame → `grok-imagine-video-1.5` image-to-video
 - `--no-audio` - Disable audio generation (Replicate Veo only)
-- `--auto-image` - With `--style`, auto-generate a styled starting frame first
+- `--auto-image` - With `--style`, auto-generate a styled starting frame first (Veo)
 
 ### Examples
 
@@ -119,8 +120,14 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/
 # High resolution (Gemini API)
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/scripts/generate.ts "City skyline timelapse" --resolution 4k --duration 8 --output city.mp4
 
-# Grok fallback for content blocked by Veo safety filters
-bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/scripts/generate.ts "Famous person dancing" --model grok --output dance.mp4
+# xAI Grok Imagine — default path: auto-generate a frame, then animate with grok-imagine-video-1.5
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/scripts/generate.ts "neon koi swimming in a dark pond" --provider xai --resolution 720p --output koi.mp4
+
+# xAI one-shot text-to-video (grok-imagine-video v1) — faster/cheaper, lower quality
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/scripts/generate.ts "a paper crane rotating" --provider xai --oneshot --output crane.mp4
+
+# xAI image-to-video from your own frame (grok-imagine-video-1.5, up to 1080p)
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/scripts/generate.ts "the scene comes alive with wind" --provider xai --input frame.png --resolution 1080p --output alive.mp4
 ```
 
 ## Reference Images (Subject Consistency)
@@ -159,30 +166,36 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-video/
 - **Run as background task** - the script outputs only the file path to stdout
 - Auto-generated starting frames (via `--auto-image`) are saved as PNG files for reference
 
-## Models (Priority Order)
+## Models & Providers
 
-### 1. Veo 3.1 via Gemini API (`--model veo`, default)
+Two providers, selected with `--provider` or **auto-picked** when omitted
+(ranking for video is `xai > gemini`). When `--ref` or `--last-frame` is used,
+the request routes to Gemini/Veo automatically (those features are Veo-only).
 
-Uses `veo-3.1-generate-preview`. Primary model. Supports text-to-video, image-to-video, 720p/1080p/4K, negative prompts. Override model via `GEMINI_VIDEO_MODEL` env var.
+Tune prompts per provider — after the provider is resolved, read the matching
+guide: `providers/prompts/video.gemini.md` or `providers/prompts/video.xai.md`.
 
-### 2. Veo 3.1 via Replicate (`--model replicate-veo`)
+### gemini — Veo 3.1 (`GEMINI_API_KEY`)
 
-Uses `google/veo-3.1` on Replicate. Fallback when Gemini API is unavailable or when you need features only available on Replicate:
-- **Reference images** (`--ref`): 1-3 images for subject-consistent generation (R2V)
-- **Last frame** (`--last-frame`): Ending frame for interpolation between two images
-- **Image input** (`--input`): Starting frame (same as Gemini API)
-- Resolution: 720p or 1080p (no 4K)
-- Requires `REPLICATE_API_TOKEN`
+- **Gemini API** (default): `veo-3.1-generate-preview`. Text-to-video,
+  image-to-video, 720p/1080p/4K, native audio, negative prompts. Override via
+  `GEMINI_VIDEO_MODEL`.
+- **Replicate Veo** (advanced features, requires `REPLICATE_API_TOKEN`,
+  auto-selected by `--ref`/`--last-frame`): reference images for subject
+  consistency (R2V), last-frame interpolation, 720p/1080p.
 
-Auto-selected when `--ref` or `--last-frame` is used.
+### xai — Grok Imagine Video (`XAI_API_KEY`)
 
-### 3. Grok Imagine Video (`--model grok`)
+- **Default (text prompt)**: generate a start frame (Gemini if available, else
+  Grok Imagine image), then animate with **`grok-imagine-video-1.5`** — the
+  newest, highest-quality model (image-to-video only, up to 1080p, native audio).
+- **`--oneshot`**: direct text-to-video on **`grok-imagine-video`** (v1) — faster
+  and cheaper, lower quality.
+- **`--input <frame>`**: your own start frame → straight to `grok-imagine-video-1.5`.
+- Rate-limited to ~1 req/s at low tiers (the provider retries automatically).
+- Cost is reported per clip (xAI `cost_in_usd_ticks`).
 
-Uses `xai/grok-imagine-video` via Replicate. This is a **last-resort fallback** — Veo 3.1 produces better results including likeness. Text-to-video only (no image input). Only use when:
-- Content is blocked by Veo's safety filters
-- The user specifically requests it
-
-> Last verified: March 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
+> Models verified live: June 2026 (`veo-3.1-generate-preview`, `grok-imagine-video`, `grok-imagine-video-1.5`). `grok-imagine-video-1.5` is image-to-video ONLY — text-to-video on it is rejected by the API. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
 ## Reference Files
 

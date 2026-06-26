@@ -19,12 +19,12 @@ export async function removeBackground(
   inputPath: string,
   outputPath: string
 ): Promise<void> {
-  const REPLICATE_API_TOKEN =
-    process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY;
+  // Canonical name only — no fallback to alternate env var names (repo policy).
+  const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
 
   if (!REPLICATE_API_TOKEN) {
     throw new Error(
-      "REPLICATE_API_TOKEN or REPLICATE_API_KEY environment variable not set"
+      "REPLICATE_API_TOKEN environment variable not set"
     );
   }
 
