@@ -1,7 +1,8 @@
 ---
 name: content
 display_name: "Lisa"
-version: 1.3.1
+title: "Visual Content Specialist"
+version: 1.3.2
 model: sonnet
 description: >-
   Use this agent to create images, SVG graphics, visual content, presentation
