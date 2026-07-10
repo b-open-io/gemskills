@@ -179,7 +179,7 @@ if (provider === "xai") {
   let resolution = flags.resolution;
   if (resolution === "4k") { console.error("Note: xAI has no 4k; using 1080p."); resolution = "1080p"; }
 
-  let framePath = inputPath; // explicit --input start frame → direct i2v
+  let framePath: string | undefined = inputPath; // explicit --input start frame → direct i2v
 
   if (!framePath && !oneshot) {
     // Default "video from a prompt": make a start frame, then i2v with 1.5.

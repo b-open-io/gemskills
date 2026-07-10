@@ -371,7 +371,7 @@ function convertShapes(
   shapes: FocusedShape[],
   docName: string,
   layoutMode: "auto" | "manual"
-): { store: TldrStore } {
+): { schema: ReturnType<typeof getSerializedSchema>; store: TldrStore } {
   const store: TldrStore = {};
 
   // Annotations (notes, text) deferred for post-layout positioning
@@ -973,8 +973,11 @@ if (inputFile) {
 } else {
   // Read from stdin
   const chunks: Buffer[] = [];
-  for await (const chunk of Bun.stdin.stream()) {
-    chunks.push(Buffer.from(chunk));
+  const reader = Bun.stdin.stream().getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(Buffer.from(value));
   }
   const content = Buffer.concat(chunks).toString("utf-8");
   if (!content.trim()) {

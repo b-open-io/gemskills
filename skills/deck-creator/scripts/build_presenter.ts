@@ -65,7 +65,7 @@ interface SlideEntry {
   file: string;
   title: string;
   type: string;
-  backgroundMode: "transparent" | "opaque";
+  backgroundMode: "transparent" | "opaque" | "solid" | "gradient";
   renderMode: "image" | "html";
   headline?: string;
   content?: string;

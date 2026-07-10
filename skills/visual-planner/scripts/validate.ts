@@ -58,7 +58,10 @@ interface Issue {
 function validate(filePath: string): Issue[] {
   const abs = resolve(filePath);
   const raw = readFileSync(abs, "utf-8");
-  let tldr: { store: Record<string, any> };
+  let tldr: {
+    schema?: { schemaVersion?: number };
+    store: Record<string, any>;
+  };
 
   try {
     tldr = JSON.parse(raw);

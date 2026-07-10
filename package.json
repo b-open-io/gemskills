@@ -24,15 +24,20 @@
   },
   "files": [
     ".claude-plugin/",
+    ".codex-plugin/",
     "agents/",
+    "codex/",
     "commands/",
     "providers/",
     "scripts/",
+    "!scripts/**/__pycache__/**",
+    "!scripts/**/*.pyc",
     "skills/",
     "!skills/**/examples/**",
     "!skills/**/playground/.next/**",
     "!skills/**/playground/out/**",
     "!skills/**/playground/node_modules/**",
+    "!skills/**/playground/*.tsbuildinfo",
     "!dev/**",
     "README.md",
     "STYLES.md",
@@ -40,6 +45,7 @@
     "utils.ts"
   ],
   "dependencies": {
+    "@dagrejs/dagre": "^2.0.4",
     "@google/genai": "^1.34.0",
     "@quiverai/sdk": "^0.4.1",
     "agentation": "^2.2.1",
@@ -65,7 +71,10 @@
     "url": "https://github.com/b-open-io/gemskills.git"
   },
   "devDependencies": {
+    "@types/bun": "^1.3.5",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
   }
 }

@@ -391,7 +391,7 @@ export async function callGeminiImage(
     if (safetyRatings) console.error(`[gemini] Safety ratings: ${safetyRatings}`);
   }
 
-  const promptFeedback = (response as Record<string, unknown>).promptFeedback as
+  const promptFeedback = (response as unknown as Record<string, unknown>).promptFeedback as
     { blockReason?: string; safetyRatings?: Array<{ category?: string; probability?: string }> } | undefined;
   if (promptFeedback?.blockReason) {
     console.error(`[gemini] Prompt blocked — reason: ${promptFeedback.blockReason}`);

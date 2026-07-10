@@ -4,16 +4,44 @@
 
 # Gemini Skills for Agents
 
-Claude Code plugin for Gemini-powered image generation, video generation, editing, and visual analysis. Powered by **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`), **Nano Banana Pro** (`gemini-3-pro-image`), **Veo 3.1** (`veo-3.1-generate-preview`), and **Gemini 3 Flash**. 169 art styles, text-to-video, image-to-video, pixel avatars, presentation decks, and more.
+Claude Code and Codex plugin for Gemini-powered image generation, video generation, editing, and visual analysis. Powered by **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`), **Nano Banana Pro** (`gemini-3-pro-image`), **Veo 3.1** (`veo-3.1-generate-preview`), and **Gemini 3 Flash**. 169 art styles, text-to-video, image-to-video, pixel avatars, presentation decks, and more.
 
 Every image and video on this page was generated using gemskills.
 
 ## Installation
 
+### Claude Code
+
 ```bash
 /plugin marketplace add b-open-io/claude-plugins
 /plugin install gemskills@b-open-io
 ```
+
+The Claude plugin includes Lisa, the `content` agent, natively.
+
+### Codex
+
+Install Gemskills from the b-open-io Codex marketplace:
+
+```bash
+codex plugin marketplace add b-open-io/gemskills --ref master
+codex plugin add gemskills@b-open-io
+```
+
+The plugin exposes its skills and the explicit
+`$gemskills:codex-agent-setup` installer skill. Codex plugin installation alone
+does **not** install custom agents.
+
+When you explicitly want Lisa available to Codex, invoke the setup skill or run:
+
+```bash
+bash skills/codex-agent-setup/scripts/setup.sh          # current project
+bash skills/codex-agent-setup/scripts/setup.sh --user   # user scope, explicit only
+```
+
+The installer copies `gemskills-content.toml` as a regular file and never edits
+global Codex configuration. Start a new Codex session after installation, then
+invoke Lisa with the runtime agent name `gemskills_content`.
 
 <details>
 <summary>Individual skills (for other agentic frameworks)</summary>

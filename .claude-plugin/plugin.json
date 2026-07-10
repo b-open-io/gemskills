@@ -1,6 +1,6 @@
 {
   "name": "gemskills",
-  "version": "0.0.65",
+  "version": "0.0.66",
   "description": "Multi-provider AI media skills. Image, video, and edit generation across Google (Nano Banana Pro / Gemini 3 Pro Image, Veo 3.1), OpenAI (gpt-image-2), and xAI (Grok Imagine image + grok-imagine-video-1.5), with capability-aware auto-pick and a /gemskills:setup onboarding flow. Includes 169 art styles, interactive style browser, pixel avatars, team group photos, section dividers, platform icons, image optimization with sharp, text generation, upscaling, masked editing/inpainting, SVG creation, segmentation, and visual workflow planning.",
   "author": {
     "name": "b-open-io",
