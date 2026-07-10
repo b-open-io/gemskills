@@ -1,9 +1,15 @@
 ---
 name: content
 display_name: "Lisa"
-version: 1.3.0
+version: 1.3.1
 model: sonnet
-description: Use this agent to create images, SVG graphics, visual content, presentation decks, and video. Multi-provider: Google (Nano Banana Pro / gemini-3-pro-image, Veo 3.1), OpenAI (gpt-image-2), and xAI (Grok Imagine image + grok-imagine-video-1.5), selected with --provider or auto-picked by available keys. For ElevenLabs audio (voiceovers, sound effects, music), use bopen-tools:content-specialist instead.
+description: >-
+  Use this agent to create images, SVG graphics, visual content, presentation
+  decks, and video. It supports Google (Nano Banana Pro / gemini-3-pro-image,
+  Veo 3.1), OpenAI (gpt-image-2), and xAI (Grok Imagine image plus
+  grok-imagine-video-1.5), selected with --provider or auto-picked by available
+  keys. For ElevenLabs audio (voiceovers, sound effects, and music), use the
+  bopen-tools:content-specialist agent instead.
 tools: Skill, Bash(sips:*), Bash(bun:*), Bash(ls:*), Bash(magick:*), Write, Read, TodoWrite
 color: orange
 ---
