@@ -30,7 +30,20 @@ const PLAYGROUND_DIR = resolve(__dirname, "../playground");
 const args = process.argv.slice(2);
 const NO_OPEN = args.includes("--no-open");
 const WAIT_SIGNAL = args.includes("--wait-signal");
-const DEFAULT_PORT = parseInt(args.find((a) => a.startsWith("--port="))?.split("=")[1] || "3458", 10);
+const portValue =
+  args.find((a) => a.startsWith("--port="))?.split("=")[1] || process.env.PORT || "3458";
+const REQUESTED_PORT = Number(portValue);
+if (
+  !/^\d+$/.test(portValue) ||
+  !Number.isInteger(REQUESTED_PORT) ||
+  REQUESTED_PORT < 1 ||
+  REQUESTED_PORT > 65535
+) {
+  console.error(`Error: Invalid port: ${portValue}`);
+  process.exit(1);
+}
+const HOST = process.env.HOST || "127.0.0.1";
+const portlessUrl = process.env.PORTLESS_URL?.trim();
 
 let tldrFile = "";
 const fileIdx = args.indexOf("--file");
@@ -94,34 +107,15 @@ function isPortInUse(port: number): Promise<boolean> {
     server.once("listening", () => {
       server.close(() => resolve(false));
     });
-    server.listen(port, "127.0.0.1");
+    server.listen(port, HOST);
   });
-}
-
-/**
- * Kill the process occupying a port using lsof (macOS/Linux).
- * Returns true if a process was killed.
- */
-function killPortProcess(port: number): boolean {
-  const result = Bun.spawnSync(["lsof", "-ti", `tcp:${port}`], {
-    stdio: ["inherit", "pipe", "pipe"],
-  });
-  const pids = result.stdout
-    .toString()
-    .trim()
-    .split("\n")
-    .filter(Boolean);
-  if (pids.length === 0) return false;
-  for (const pid of pids) {
-    Bun.spawnSync(["kill", "-9", pid]);
-  }
-  return true;
 }
 
 /**
  * Find the first free port starting from `start`.
  */
-async function findFreePort(start: number, max = start + 20): Promise<number> {
+async function findFreePort(start: number, max = Math.min(start + 20, 65535)): Promise<number> {
+  if (start > 65535) throw new Error("No valid ports remain after the requested port");
   for (let port = start; port <= max; port++) {
     if (!(await isPortInUse(port))) return port;
   }
@@ -130,38 +124,41 @@ async function findFreePort(start: number, max = start + 20): Promise<number> {
 
 // Resolve the port to use, handling conflicts
 let PORT: number;
-if (await isPortInUse(DEFAULT_PORT)) {
-  console.error(`Port ${DEFAULT_PORT} is already in use. Attempting to free it...`);
-  const killed = killPortProcess(DEFAULT_PORT);
-  if (killed) {
-    // Brief pause to let the OS release the port
-    await Bun.sleep(500);
-    if (await isPortInUse(DEFAULT_PORT)) {
-      PORT = await findFreePort(DEFAULT_PORT + 1);
-      console.error(`Could not free port ${DEFAULT_PORT}. Using port ${PORT} instead.`);
-    } else {
-      PORT = DEFAULT_PORT;
-      console.error(`Freed port ${DEFAULT_PORT}.`);
-    }
-  } else {
-    PORT = await findFreePort(DEFAULT_PORT + 1);
-    console.error(`Could not identify process on port ${DEFAULT_PORT}. Using port ${PORT} instead.`);
+if (await isPortInUse(REQUESTED_PORT)) {
+  if (portlessUrl) {
+    console.error(
+      `Error: Portless assigned port ${REQUESTED_PORT}, but it is already in use. Refusing to use a different port because ${portlessUrl} would route to the wrong process.`,
+    );
+    process.exit(1);
   }
+  PORT = await findFreePort(REQUESTED_PORT + 1);
+  console.error(`Port ${REQUESTED_PORT} is already in use. Using port ${PORT} instead.`);
 } else {
-  PORT = DEFAULT_PORT;
+  PORT = REQUESTED_PORT;
 }
 
 // ── Launch Next.js ──────────────────────────────────────────────────
 
-const browserUrl = `http://localhost:${PORT}`;
+const browserHost =
+  HOST === "0.0.0.0"
+    ? "127.0.0.1"
+    : HOST === "::"
+      ? "[::1]"
+      : HOST.includes(":")
+        ? `[${HOST}]`
+        : HOST;
+const browserUrl = portlessUrl || `http://${browserHost}:${PORT}`;
 const HEARTBEAT_FILE = join(tmpdir(), `visual-planner-heartbeat-${PORT}.tmp`);
+try { unlinkSync(HEARTBEAT_FILE); } catch {}
 console.error(`Visual Planner Playground starting at ${browserUrl}`);
 console.error(`Diagram file: ${resolvedFile}`);
 
-const proc = Bun.spawn(["bun", "run", "next", "dev", "--turbopack", "-p", String(PORT)], {
+const proc = Bun.spawn(["bun", "run", "next", "dev", "--turbopack", "-H", HOST, "-p", String(PORT)], {
   cwd: PLAYGROUND_DIR,
   env: {
     ...process.env,
+    HOST,
+    PORT: String(PORT),
     TLDR_FILE: resolvedFile,
     HEARTBEAT_FILE,
     // Expose async mode to the Next.js app so the UI can show the correct button
@@ -201,25 +198,39 @@ if (!NO_OPEN) {
 
 const IDLE_TIMEOUT_MS = 120_000; // 2 minutes — generous for background tab throttling
 const IDLE_CHECK_MS = 15_000;
+const heartbeatGraceOverride = Number(process.env.PLAYGROUND_HEARTBEAT_GRACE_MS);
+const HEARTBEAT_GRACE_MS =
+  Number.isFinite(heartbeatGraceOverride) && heartbeatGraceOverride > 0
+    ? heartbeatGraceOverride
+    : 120_000;
+const heartbeatStartedAt = Date.now();
+let lastHeartbeatAt: number | undefined;
 
 // Don't start checking until the browser has had time to load and send a first heartbeat
 const idleWatcherDelay = setTimeout(() => {
-  const idleChecker = setInterval(() => {
+  const checkHeartbeat = () => {
     try {
-      const lastPing = parseInt(readFileSync(HEARTBEAT_FILE, "utf-8"), 10);
-      if (Date.now() - lastPing > IDLE_TIMEOUT_MS) {
-        console.error("No browser heartbeat for 2 minutes. Shutting down.");
-        clearInterval(idleChecker);
-        proc.kill("SIGTERM");
-      }
-    } catch {
-      // Heartbeat file doesn't exist yet — browser hasn't loaded
+      const lastPing = Number.parseInt(readFileSync(HEARTBEAT_FILE, "utf-8"), 10);
+      if (Number.isFinite(lastPing)) lastHeartbeatAt = Math.min(lastPing, Date.now());
+    } catch {}
+
+    const now = Date.now();
+    if (lastHeartbeatAt === undefined && now - heartbeatStartedAt >= HEARTBEAT_GRACE_MS) {
+      console.error("No browser heartbeat received before the startup grace expired. Shutting down.");
+      clearInterval(idleChecker);
+      proc.kill("SIGTERM");
+    } else if (lastHeartbeatAt !== undefined && now - lastHeartbeatAt > IDLE_TIMEOUT_MS) {
+      console.error("No browser heartbeat for 2 minutes. Shutting down.");
+      clearInterval(idleChecker);
+      proc.kill("SIGTERM");
     }
-  }, IDLE_CHECK_MS);
+  };
+  const idleChecker = setInterval(checkHeartbeat, IDLE_CHECK_MS);
+  checkHeartbeat();
 
   // Clean up interval on process exit
   process.on("exit", () => clearInterval(idleChecker));
-}, 30_000); // 30s grace period for initial page load
+}, Math.min(30_000, HEARTBEAT_GRACE_MS));
 
 process.on("exit", () => clearTimeout(idleWatcherDelay));
 
@@ -247,7 +258,7 @@ if (WAIT_SIGNAL) {
   const signalDir = dirname(resolvedFile);
   const signalBasename = `${resolvedFile.split("/").pop()}.signal`;
 
-  const watcher = watch(signalDir, async (eventType, filename) => {
+  const watcher = watch(signalDir, async (_eventType, filename) => {
     if (filename !== signalBasename) return;
     if (!existsSync(signalFile)) return;
 

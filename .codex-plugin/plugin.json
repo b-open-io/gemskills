@@ -1,6 +1,6 @@
 {
   "name": "gemskills",
-  "version": "0.0.66",
+  "version": "0.0.67",
   "description": "Multi-provider AI media skills with an optional Lisa custom-agent adapter for Codex",
   "author": {
     "name": "b-open-io",

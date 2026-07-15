@@ -24,7 +24,16 @@ const PLAYGROUND_DIR = resolve(__dirname, "../playground")
 
 const args = process.argv.slice(2)
 const NO_OPEN = args.includes("--no-open")
-const PORT = args.find((a) => a.startsWith("--port="))?.split("=")[1] || "3457"
+const portValue =
+  args.find((a) => a.startsWith("--port="))?.split("=")[1] ||
+  process.env.PORT ||
+  "3457"
+const PORT = Number(portValue)
+if (!/^\d+$/.test(portValue) || !Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+  console.error(`Error: Invalid port: ${portValue}`)
+  process.exit(1)
+}
+const HOST = process.env.HOST || "127.0.0.1"
 
 let deckDir = ""
 const dirIdx = args.indexOf("--dir")
@@ -58,7 +67,7 @@ if (!existsSync(nextBin)) {
     stdio: "inherit",
   })
   if (install.status !== 0) {
-    console.error("Failed to install dependencies. Run manually: cd " + PLAYGROUND_DIR + " && bun install")
+    console.error(`Failed to install dependencies. Run manually: cd ${PLAYGROUND_DIR} && bun install`)
     process.exit(1)
   }
   console.error("Dependencies installed.")
@@ -66,15 +75,27 @@ if (!existsSync(nextBin)) {
 
 // ── Launch Next.js ──────────────────────────────────────────────────
 
-const browserUrl = `http://localhost:${PORT}`
+const portlessUrl = process.env.PORTLESS_URL?.trim()
+const browserHost =
+  HOST === "0.0.0.0"
+    ? "127.0.0.1"
+    : HOST === "::"
+      ? "[::1]"
+      : HOST.includes(":")
+        ? `[${HOST}]`
+        : HOST
+const browserUrl = portlessUrl || `http://${browserHost}:${PORT}`
 const HEARTBEAT_FILE = join(tmpdir(), `deck-playground-heartbeat-${PORT}.tmp`)
+try { unlinkSync(HEARTBEAT_FILE) } catch {}
 console.error(`Deck Playground starting at ${browserUrl}`)
 console.error(`Deck directory: ${resolvedDir}`)
 
-const proc = Bun.spawn(["bun", "run", "next", "dev", "--turbopack", "-p", PORT], {
+const proc = Bun.spawn(["bun", "run", "next", "dev", "--turbopack", "-H", HOST, "-p", String(PORT)], {
   cwd: PLAYGROUND_DIR,
   env: {
     ...process.env,
+    HOST,
+    PORT: String(PORT),
     DECK_DIR: resolvedDir,
     HEARTBEAT_FILE,
   },
@@ -108,24 +129,38 @@ process.on("SIGTERM", cleanup)
 
 const IDLE_TIMEOUT_MS = 120_000 // 2 minutes — generous for background tab throttling
 const IDLE_CHECK_MS = 15_000
+const heartbeatGraceOverride = Number(process.env.PLAYGROUND_HEARTBEAT_GRACE_MS)
+const HEARTBEAT_GRACE_MS =
+  Number.isFinite(heartbeatGraceOverride) && heartbeatGraceOverride > 0
+    ? heartbeatGraceOverride
+    : 120_000
+const heartbeatStartedAt = Date.now()
+let lastHeartbeatAt: number | undefined
 
 // Don't start checking until the browser has had time to load and send a first heartbeat
 const idleWatcherDelay = setTimeout(() => {
-  const idleChecker = setInterval(() => {
+  const checkHeartbeat = () => {
     try {
-      const lastPing = parseInt(readFileSync(HEARTBEAT_FILE, "utf-8"), 10)
-      if (Date.now() - lastPing > IDLE_TIMEOUT_MS) {
-        console.error("No browser heartbeat for 2 minutes. Shutting down.")
-        clearInterval(idleChecker)
-        cleanup()
-      }
-    } catch {
-      // Heartbeat file doesn't exist yet — browser hasn't loaded
+      const lastPing = Number.parseInt(readFileSync(HEARTBEAT_FILE, "utf-8"), 10)
+      if (Number.isFinite(lastPing)) lastHeartbeatAt = Math.min(lastPing, Date.now())
+    } catch {}
+
+    const now = Date.now()
+    if (lastHeartbeatAt === undefined && now - heartbeatStartedAt >= HEARTBEAT_GRACE_MS) {
+      console.error("No browser heartbeat received before the startup grace expired. Shutting down.")
+      clearInterval(idleChecker)
+      cleanup()
+    } else if (lastHeartbeatAt !== undefined && now - lastHeartbeatAt > IDLE_TIMEOUT_MS) {
+      console.error("No browser heartbeat for 2 minutes. Shutting down.")
+      clearInterval(idleChecker)
+      cleanup()
     }
-  }, IDLE_CHECK_MS)
+  }
+  const idleChecker = setInterval(checkHeartbeat, IDLE_CHECK_MS)
+  checkHeartbeat()
 
   process.on("exit", () => clearInterval(idleChecker))
-}, 30_000) // 30s grace period for initial page load
+}, Math.min(30_000, HEARTBEAT_GRACE_MS))
 
 process.on("exit", () => clearTimeout(idleWatcherDelay))
 
