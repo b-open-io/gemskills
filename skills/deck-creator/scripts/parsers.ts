@@ -250,7 +250,14 @@ export function parseTheme(content: string): {
     let kvMatch: RegExpExecArray | null
     while ((kvMatch = kvRegex.exec(source)) !== null) {
       const key = kvMatch[1].toLowerCase()
-      const val = kvMatch[2].trim()
+      let val = kvMatch[2].trim()
+      // Theme authors often annotate hex colors for readability, for example:
+      // "#0a0f1a (deep navy-charcoal)". Keep the CSS value and discard only a
+      // complete trailing parenthetical annotation.
+      const describedHex = val.match(
+        /^(#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8}))\s+\([^)]*\)$/i,
+      )
+      if (describedHex) val = describedHex[1]
       if (TWEAKCN_KEYS.has(key)) out[key] = val
     }
     return out

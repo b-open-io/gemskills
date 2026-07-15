@@ -105,6 +105,11 @@ Establish a consistent visual system before generating slides.
 
 **Option B: Manual** - Define Background, Primary, Secondary, Text, and Accent colors from brand guidelines.
 
+When documenting theme variables, plain CSS values are preferred. A hex color may
+also include a trailing human-readable label, such as
+`- background: #0a0f1a (deep navy-charcoal)`; Deck Creator removes that label
+before using the value as CSS.
+
 ### Style Parameters
 
 ```yaml
