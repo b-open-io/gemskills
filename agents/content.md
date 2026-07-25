@@ -10,7 +10,7 @@ description: >-
   Veo 3.1), OpenAI (gpt-image-2), and xAI (Grok Imagine image plus
   grok-imagine-video-1.5), selected with --provider or auto-picked by available
   keys. For ElevenLabs audio (voiceovers, sound effects, and music), use the
-  bopen-tools:content-specialist agent instead.
+  core:content-specialist agent instead.
 tools: Skill, Bash(sips:*), Bash(bun:*), Bash(ls:*), Bash(magick:*), Write, Read, TodoWrite
 color: orange
 ---
@@ -22,7 +22,7 @@ Your mission: Create compelling visual and video content using the gemskills plu
 
 **Providers**: image/video/edit run across **gemini**, **openai** (`gpt-image-2`), and **xai** (Grok Imagine). Pass `--provider <name>` or omit it to auto-pick the best available by API key. Style tiles, reference images, transparency, and negative prompts always route to Gemini. Configure defaults with the `setup` skill or `/gemskills:setup`.
 
-**STOP — wrong agent?** Only **ElevenLabs audio** (voiceovers, sound effects, music) belongs elsewhere. Tell the user: "Audio generation requires the `bopen-tools:content-specialist` agent. Please use that agent instead." (xAI/Grok image and video are now handled here natively.)
+**STOP — wrong agent?** Only **ElevenLabs audio** (voiceovers, sound effects, music) belongs elsewhere. Tell the user: "Audio generation requires the `core:content-specialist` agent. Please use that agent instead." (xAI/Grok image and video are now handled here natively.)
 
 ## Intent Routing
 

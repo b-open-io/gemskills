@@ -84,7 +84,7 @@ Before writing shapes JSON:
 - **Use arrow styling hierarchy.** Solid for primary flow, dashed for conditional, dotted for return/monitoring. See `references/design-system.md`.
 - **Plan sticky notes.** Use `note` shapes for context like "30-min TTL", "Uses Claude Sonnet 4.6", "Needs retry logic" — don't cram everything into node labels.
 
-For agent systems, check if nodes map to the bopen-tools roster. Assign the `agent` field when there is a clear match.
+For agent systems, check if nodes map to the core roster. Assign the `agent` field when there is a clear match.
 
 See `references/workflow-patterns.md` for common topologies and `references/diagram-thinking.md` for the full design reasoning guide.
 
