@@ -24,11 +24,11 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiEdit } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { getApiKey, loadImageRequired, loadImage, saveImage, parseArgs } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
-const { openaiEdit } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { openaiEdit, resolveImageModelFlag } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
 const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
 type EditCapability = import("../../../providers/types").Capability;
 
-const { positional, flags, multi } = parseArgs(undefined, ["input"]);
+const { positional, flags, multi, booleans } = parseArgs(undefined, ["input"]);
 
 const inputPath = positional[0];
 const prompt = positional.slice(1).join(" ");
@@ -45,7 +45,10 @@ if (!inputPath || !prompt) {
   console.error("  --count <n>       Number of variations");
   console.error("  --seed <n>        Random seed");
   console.error("  --output <path>   Output file path");
-  console.error("  --provider <name> gemini (default) or openai (gpt-image-2 masked inpaint/compose)");
+  console.error("  --transparent     Transparent PNG output (OpenAI background=transparent)");
+  console.error("  --provider <name> gemini (default) or openai (Image 2.5 Flare / Sunburst)");
+  console.error("  --model <id>      flare | sunburst | gpt-image-2.5-flare | gpt-image-2.5-sunburst");
+  console.error("                    (sets openai + API model). Legacy gemini|openai aliases deprecated");
   process.exit(1);
 }
 
@@ -60,13 +63,19 @@ if (flags.mode) options.editMode = flags.mode;
 if (flags.aspect) options.aspectRatio = flags.aspect;
 if (flags.size) options.imageSize = flags.size;
 
-// Resolve provider. Negative prompts, outpaint mode, and transparency are
-// Gemini-only; mask + multi-image compose work on both.
+// Resolve provider. Negative prompts and outpaint mode are Gemini-only;
+// transparency, mask, and multi-image compose work on openai + gemini.
+const wantTransparent = booleans.has("transparent") || flags.transparent === "true";
 const editCaps: EditCapability[] = [];
 if (flags.negative) editCaps.push("negative");
 if (flags.mask) editCaps.push("mask");
 if (multi.input.length > 0) editCaps.push("multiRef");
-let editExplicit = flags.provider;
+if (wantTransparent) editCaps.push("transparent");
+const modelFlag = resolveImageModelFlag(flags.model);
+if (modelFlag.deprecatedAlias) {
+  console.error("Warning: --model as a provider alias is deprecated; use --provider instead.\n");
+}
+let editExplicit = flags.provider || modelFlag.provider;
 if (flags.mode && !editExplicit) editExplicit = "gemini"; // inpaint/outpaint mode is Gemini-specific
 const { provider, source } = await resolveProvider("edit", { explicit: editExplicit, caps: editCaps });
 console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
@@ -77,8 +86,10 @@ if (provider === "openai") {
   const res = await openaiEdit(prompt, {
     images: [inputPath, ...multi.input],
     mask: flags.mask,
+    model: modelFlag.openaiModel,
     aspect: flags.aspect,
     quality: flags.size ? qualityMap[flags.size] : "auto",
+    background: wantTransparent ? "transparent" : undefined,
     outputPath: flags.output,
   });
   for (const p of res.paths) console.log(`✓ Saved: ${p}`);

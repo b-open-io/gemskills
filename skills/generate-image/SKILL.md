@@ -105,7 +105,9 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/
 - `--guidance <n>` - Guidance scale
 - `--seed <n>` - Random seed for reproducibility
 - `--output <path>` - Output path
-- `--provider <name>` - `gemini`, `openai`, or `xai`. Omit to **auto-pick** the best available provider for the request (see Models). `--model` is a legacy alias; `grok` maps to `xai`.
+- `--transparent` - Transparent/alpha background (OpenAI `background=transparent`; also Gemini)
+- `--provider <name>` - `gemini`, `openai`, or `xai`. Omit to **auto-pick** the best available provider for the request (see Models).
+- `--model <id>` - OpenAI Image 2.5 variant: `flare` / `gpt-image-2.5-flare` (default) or `sunburst` / `gpt-image-2.5-sunburst`. Sets provider to openai. Legacy provider aliases `gemini|openai|xai|grok` still work but are deprecated — use `--provider`.
 
 ### Examples
 
@@ -217,8 +219,8 @@ Three providers, selected with `--provider` or **auto-picked** when omitted.
 
 | Provider | Model | Key | Strengths | Can't do |
 |----------|-------|-----|-----------|----------|
-| `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, negative prompts, **transparency**, 1K/2K/4K | — |
-| `openai` | `gpt-image-2` | `OPENAI_API_KEY` | Best **in-image text**, dense prompt understanding, custom sizes, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No transparency, no style tiles, no negative param |
+| `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, dedicated negative prompts, **transparency**, 1K/2K/4K | — |
+| `openai` | **`gpt-image-2.5-flare`** (Flare, default) / **`gpt-image-2.5-sunburst`** (Sunburst, `--model sunburst`) | `OPENAI_API_KEY` | Best **in-image text**, lighting/textures, complex instructions, detailed layouts, **transparent backgrounds**, custom sizes, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No style tiles, no dedicated negative param |
 | `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no img2img/tiles/negative |
 
 ### Auto-pick (default when `--provider` is omitted)
@@ -227,14 +229,16 @@ The script chooses the **best provider whose key is present and that supports
 what the request needs**. Ranking is `openai > gemini > xai`.
 
 `--input` (img2img / reference images) is supported by **both openai and gemini**
-— openai routes it through the `gpt-image-2` edits endpoint, gemini through Nano
+— openai routes it through the Image 2.5 edits endpoint, gemini through Nano
 Banana Pro (which also supports style tiles + up to 14 refs). So img2img
 auto-picks openai when its key is present; pass `--provider gemini` for Gemini's
 style-tile / multi-ref compositing.
 
-Capability gating still forces **Gemini** when the request uses `--style` (style
-tiles) or `--negative` (a true negative parameter) — only Gemini supports those.
-Pin a default with `/gemskills:setup` or `GEMSKILLS_IMAGE_PROVIDER`.
+`--transparent` is supported by **openai and gemini** (OpenAI passes
+`background=transparent`). Capability gating still forces **Gemini** when the
+request uses `--style` (style tiles) or `--negative` (a dedicated negative
+parameter) — only Gemini supports those. Pin a default with `/gemskills:setup`
+or `GEMSKILLS_IMAGE_PROVIDER`.
 
 When openai is chosen with a `--style`, the style **tile image** is dropped (the
 textual hints are still applied) and `--negative` is folded into the prompt as an
@@ -249,12 +253,13 @@ the matching guide and rewrite the prompt to it:**
 - `providers/prompts/image.xai.md`
 
 ```bash
-# Force a provider
+# Force a provider / Image 2.5 variant
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "neon city street, rain" --provider openai --size 4K
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "app icon, rounded square" --model sunburst --transparent
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "watercolor fox" --provider xai
 ```
 
-> Models verified live: June 2026 (`gpt-image-2`, `grok-imagine-image-quality`, `gemini-3-pro-image`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
+> Models verified live: September 2026 (`gpt-image-2.5-flare`, `gpt-image-2.5-sunburst`, `grok-imagine-image-quality`, `gemini-3-pro-image`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
 ## Reference Files
 

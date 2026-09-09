@@ -16,14 +16,15 @@ The canonical, detailed guidance lives in
 
 > **Describe the scene, don't just list keywords.**
 
-## Gemini-specific levers (use these; other providers lack them)
+## Gemini-specific levers (other providers lack these)
 - **Style tiles** (`--style <id>`): a reference tile is sent alongside the
   prompt; prepend "Match the artistic style, palette, textures, and technique
   from the reference image — do not copy its subject matter."
 - **Reference images** (`--input`, up to 14): describe how to combine them
   (character + location + props) for scene/character consistency.
 - **Negative prompt** (`--negative`): a true negative parameter — use it.
-- **Transparency**: request transparent/alpha backgrounds for cut-outs & icons.
+
+Transparency is also supported on OpenAI Image 2.5 (`--transparent`).
 
 Keep the full scene-description discipline (subject, environment, lighting,
 composition, style, mood, technical specs).

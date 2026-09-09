@@ -4,7 +4,7 @@
  * The capability matrix is the single source of truth for "can provider X do
  * what this request needs?" The resolver (config.ts) uses it to filter
  * providers during capability-aware auto-pick, so we never route a request to
- * a provider that can't honor it (e.g. transparent background → not gpt-image-2).
+ * a provider that can't honor it (e.g. style tiles → not openai).
  */
 
 import type { Provider } from "./keys";
@@ -25,30 +25,31 @@ export type Capability =
   | "i2v"; // image-to-video (requires a start frame)
 
 /**
- * What each provider supports, per task. Verified against live APIs June 2026.
+ * What each provider supports, per task. Verified against live APIs September 2026.
  *
  * Notes:
- * - openai image = gpt-image-2: NO transparent background, NO negative param,
- *   no style-tile concept. Edits support up to 16 images + mask.
+ * - openai image = gpt-image-2.5-flare (default) / gpt-image-2.5-sunburst
+ *   (opt-in): transparent backgrounds supported (background=transparent).
+ *   NO negative param, no style-tile concept. Edits support up to 16 images + mask.
  * - xai image = grok-imagine-image: basic text-to-image only.
  * - xai video: grok-imagine-video (v1) does t2v; grok-imagine-video-1.5 is
  *   image-to-video ONLY. We expose both modes via the provider (t2v one-shot
  *   on v1, or auto-frame → i2v on 1.5).
- * - gemini: the full-featured default (styles, multi-ref, transparency, Veo).
+ * - gemini: style tiles, dedicated negative, multi-ref, transparency, Veo.
  */
 export const CAPABILITIES: Record<Task, Record<Provider, Capability[]>> = {
   image: {
     // multiRef = image-to-image / reference images. Gemini does this on the
     // generations path; OpenAI does it via the EDIT endpoint (the generate-image
     // skill routes openai img2img through openaiEdit). xAI image is text-only.
-    // styleTile/transparent/negative remain Gemini-only.
+    // styleTile/negative remain Gemini-only. Transparency is openai + gemini.
     gemini: ["transparent", "negative", "styleTile", "multiRef"],
-    openai: ["multiRef"],
+    openai: ["transparent", "multiRef"],
     xai: [],
   },
   edit: {
     gemini: ["transparent", "negative", "styleTile", "multiRef", "mask"],
-    openai: ["multiRef", "mask"],
+    openai: ["transparent", "multiRef", "mask"],
     xai: [],
   },
   video: {
@@ -65,8 +66,8 @@ export const CAPABILITIES: Record<Task, Record<Provider, Capability[]>> = {
  */
 export const RANKINGS: Record<Task, Provider[]> = {
   image: ["openai", "gemini", "xai"],
-  // Edit defaults to Gemini (conversational edits, transparency, styles). OpenAI
-  // gpt-image-2 is excellent at masked inpainting — choose it with --provider openai.
+  // Edit defaults to Gemini (conversational edits, styles, dedicated negative).
+  // OpenAI Image 2.5 is excellent at masked inpainting and transparent PNG.
   edit: ["gemini", "openai"],
   video: ["xai", "gemini"],
 };

@@ -1,28 +1,76 @@
 /**
  * OpenAI image provider — direct api.openai.com integration (raw fetch, no SDK).
  *
- * Verified live (June 2026): models gpt-image-2, gpt-image-2-2026-04-21,
- * gpt-image-1.5, gpt-image-1, gpt-image-1-mini are present on /v1/models.
+ * Verified live (September 2026): gpt-image-2.5-flare (default),
+ * gpt-image-2.5-sunburst (opt-in). Direct API ids only — never prefix openai/.
  *
  * - Generate: POST /v1/images/generations (JSON) → { data:[{b64_json}], usage }
  *   GPT image models ALWAYS return b64_json (never a URL).
  * - Edit:     POST /v1/images/edits (multipart/form-data) → { data:[{b64_json}], usage }
  *   Up to 16 input images; optional mask (transparent areas = edit region).
  *
- * gpt-image-2 constraints: NO transparent background, input_fidelity not
- * configurable. Sizes: 1024x1024, 1536x1024, 1024x1536, auto, or custom.
+ * Image 2.5 supports transparent backgrounds (background=transparent).
+ * input_fidelity is not configurable. Sizes: 1024x1024, 1536x1024, 1024x1536,
+ * auto, or custom.
  */
 
 import { readFile } from "fs/promises";
 import { getOpenAIKey } from "./keys";
 import { getMimeType, saveImage } from "../shared";
+import type { Provider } from "./keys";
 import type { ProviderImageResult } from "./types";
 
 const OPENAI_BASE = "https://api.openai.com/v1";
 
-export const OPENAI_IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || "gpt-image-2";
+export const OPENAI_IMAGE_VARIANTS = {
+  flare: "gpt-image-2.5-flare",
+  sunburst: "gpt-image-2.5-sunburst",
+} as const;
 
-/** gpt-image-2 image-output token price ($/1M). Estimate only — see costUsd note. */
+const VARIANT_IDS = new Set<string>(Object.values(OPENAI_IMAGE_VARIANTS));
+const VARIANT_ALIASES = new Set<string>([...Object.keys(OPENAI_IMAGE_VARIANTS), ...VARIANT_IDS]);
+const LEGACY_PROVIDER_ALIASES = new Set(["gemini", "openai", "xai", "grok"]);
+
+/** Strip docs-only gateway prefix so it never reaches the API or env default. */
+function stripGateway(id: string): string {
+  return id.startsWith("openai/") ? id.slice("openai/".length) : id;
+}
+
+export function isOpenAIImageVariant(input?: string): boolean {
+  if (!input) return false;
+  return VARIANT_ALIASES.has(stripGateway(input.trim()).toLowerCase());
+}
+
+/** Resolve flare/sunburst aliases or a direct API id. Never returns `openai/`. */
+export function resolveOpenAIImageModel(input?: string): string {
+  const raw = stripGateway((input ?? process.env.OPENAI_IMAGE_MODEL ?? OPENAI_IMAGE_VARIANTS.flare).trim());
+  const key = raw.toLowerCase();
+  if (key === "flare" || key === "sunburst") return OPENAI_IMAGE_VARIANTS[key];
+  return raw;
+}
+
+export const OPENAI_IMAGE_MODEL = resolveOpenAIImageModel();
+
+export function resolveImageModelFlag(model?: string): {
+  provider?: Provider;
+  openaiModel?: string;
+  deprecatedAlias?: boolean;
+} {
+  if (!model) return {};
+  if (isOpenAIImageVariant(model)) {
+    return { provider: "openai", openaiModel: resolveOpenAIImageModel(model) };
+  }
+  const alias = model.toLowerCase();
+  if (LEGACY_PROVIDER_ALIASES.has(alias)) {
+    return {
+      provider: (alias === "grok" ? "xai" : alias) as Provider,
+      deprecatedAlias: true,
+    };
+  }
+  return {};
+}
+
+/** Image-output token price ($/1M). Estimate only — see costUsd note. */
 const OPENAI_IMAGE_OUTPUT_PER_M = 30;
 
 type Size = "1024x1024" | "1536x1024" | "1024x1536" | "auto" | (string & {});
@@ -90,13 +138,13 @@ export async function openaiImage(
     size?: Size;
     aspect?: string;
     quality?: "low" | "medium" | "high" | "auto";
-    background?: "opaque" | "auto";
+    background?: "opaque" | "auto" | "transparent";
     outputFormat?: "png" | "jpeg" | "webp";
     outputPath?: string;
   } = {}
 ): Promise<ProviderImageResult> {
   const key = getOpenAIKey();
-  const model = options.model || OPENAI_IMAGE_MODEL;
+  const model = resolveOpenAIImageModel(options.model);
   const format = options.outputFormat || "png";
   const body: Record<string, unknown> = {
     model,
@@ -132,12 +180,13 @@ export async function openaiEdit(
     size?: Size;
     aspect?: string;
     quality?: "low" | "medium" | "high" | "auto";
+    background?: "opaque" | "auto" | "transparent";
     outputFormat?: "png" | "jpeg" | "webp";
     outputPath?: string;
   }
 ): Promise<ProviderImageResult> {
   const key = getOpenAIKey();
-  const model = options.model || OPENAI_IMAGE_MODEL;
+  const model = resolveOpenAIImageModel(options.model);
   const format = options.outputFormat || "png";
 
   const form = new FormData();
@@ -154,6 +203,7 @@ export async function openaiEdit(
     const m = await readFile(options.mask);
     form.set("mask", new Blob([m], { type: "image/png" }), "mask.png");
   }
+  if (options.background) form.set("background", options.background);
 
   console.error(`Editing image with ${model} (OpenAI)...`);
   const start = Date.now();
