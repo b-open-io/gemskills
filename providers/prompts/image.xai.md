@@ -7,7 +7,7 @@ version: 1
 
 # Prompt guide — xAI Grok Imagine (text-to-image)
 
-Grok Imagine favors **shorter, punchier prompts** than Gemini or gpt-image-2. It
+Grok Imagine favors **shorter, punchier prompts** than Gemini or Image 2.5. It
 responds well to a strong central subject and a clear vibe, and tends to
 over-bake when given long multi-clause paragraphs.
 
@@ -27,7 +27,7 @@ over-bake when given long multi-clause paragraphs.
 ## When to pick xAI for images
 Grok Imagine is the spicier/faster option and a good fallback when Gemini's
 safety filter blocks benign prompts. For maximum fidelity/likeness and styles,
-prefer Gemini; for best text rendering, prefer gpt-image-2.
+prefer Gemini; for best text rendering, prefer `gpt-image-2.5-flare`.
 
 ## Skeleton
 > [Subject], [one dominant style], [setting/mood]. [Optional: lighting or color].

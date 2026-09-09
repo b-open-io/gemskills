@@ -1,6 +1,6 @@
 ---
 name: setup
-description: This skill should be used when the user asks to "set up gemskills", "configure gemskills", "choose default image/video provider", "use OpenAI for images", "use xAI/Grok for video", "switch image model", "which providers are available", "gemskills onboarding", or wants to set or inspect which AI provider (Gemini, OpenAI gpt-image-2, xAI Grok Imagine) is used by default for image, video, and edit generation. Detects available API keys and persists provider defaults.
+description: This skill should be used when the user asks to "set up gemskills", "configure gemskills", "choose default image/video provider", "use OpenAI for images", "use xAI/Grok for video", "switch image model", "which providers are available", "gemskills onboarding", or wants to set or inspect which AI provider (Gemini, OpenAI gpt-image-2.5-flare / Sunburst, xAI Grok Imagine) is used by default for image, video, and edit generation. Detects available API keys and persists provider defaults.
 ---
 
 # gemskills setup
@@ -11,9 +11,9 @@ default provider for **image**, **video**, and **edit**.
 
 | Task | Providers (key) | Notes |
 |------|-----------------|-------|
-| image | gemini (`GEMINI_API_KEY`), openai (`OPENAI_API_KEY`), xai (`XAI_API_KEY`) | openai `gpt-image-2` best text/realism; gemini = styles/refs/transparency; xai fast |
+| image | gemini (`GEMINI_API_KEY`), openai (`OPENAI_API_KEY`), xai (`XAI_API_KEY`) | openai `gpt-image-2.5-flare` (Flare default; `--model sunburst` for Sunburst) best text/realism/transparency; gemini = style tiles + dedicated negative; xai fast |
 | video | xai (`XAI_API_KEY`), gemini (`GEMINI_API_KEY`) | xai `grok-imagine-video-1.5` newest i2v; gemini Veo 3.1 audio/4K/refs |
-| edit | gemini (`GEMINI_API_KEY`), openai (`OPENAI_API_KEY`) | gemini conversational/transparency; openai masked inpaint/compose |
+| edit | gemini (`GEMINI_API_KEY`), openai (`OPENAI_API_KEY`) | gemini conversational + style tiles + dedicated negative; openai Image 2.5 masked inpaint/compose + transparent PNG |
 
 ## Config CLI
 
@@ -52,9 +52,9 @@ different key name. To pin a provider without prompting, `config set <task> <pro
 
 ## Notes
 
-- Auto-pick is **capability-aware**: requests using style tiles, reference
-  images, transparency, or negative prompts route to Gemini regardless of the
-  configured default, because only Gemini supports them.
+- Auto-pick is **capability-aware**: requests using style tiles or a dedicated
+  negative prompt route to Gemini regardless of the configured default.
+  Transparency is supported on OpenAI Image 2.5 (Flare/Sunburst) and Gemini.
 - Per-call `--provider <name>` always wins over saved config.
 - Keys are read from one canonical env var each; gemskills never falls back to
   alternate names — if the canonical var is unset, the provider fails loudly.

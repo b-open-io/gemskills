@@ -26,7 +26,7 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiImage, validateImageOptions, getImageModel } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { getApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
-const { openaiImage, openaiEdit } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { openaiImage, openaiEdit, resolveImageModelFlag } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
 const { xaiImage } = await import(resolve(PLUGIN_ROOT, "providers/xai.ts")) as typeof import("../../../providers/xai");
 const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
 type Capability = import("../../../providers/types").Capability;
@@ -59,7 +59,7 @@ async function loadStyle(
   return { style, tileImage };
 }
 
-const { positional, flags, multi } = parseArgs();
+const { positional, flags, multi, booleans } = parseArgs();
 const prompt = positional.join(" ");
 
 if (!prompt) {
@@ -74,8 +74,11 @@ if (!prompt) {
   console.error("  --count <n>       Number of images (1-4)");
   console.error("  --seed <n>        Random seed");
   console.error("  --output <path>   Output file path");
+  console.error("  --transparent     Transparent/alpha background (OpenAI background=transparent)");
   console.error("  --provider <name> gemini | openai | xai (default: auto-pick by available keys)");
-  console.error("                    (--model is a legacy alias; 'grok' maps to xai)");
+  console.error("  --model <id>      flare | sunburst | gpt-image-2.5-flare | gpt-image-2.5-sunburst");
+  console.error("                    (sets openai + API model). Legacy provider aliases");
+  console.error("                    gemini|openai|xai|grok are deprecated — use --provider");
   process.exit(1);
 }
 
@@ -141,15 +144,22 @@ if (styleId) {
   }
 }
 
+const wantTransparent = booleans.has("transparent") || flags.transparent === "true";
+
 // Derive the capabilities THIS request needs, then resolve the provider.
 const caps: Capability[] = [];
 if (styleId) caps.push("styleTile");
 if (inputPaths.length > 0) caps.push("multiRef");
 if (flags.negative) caps.push("negative");
+if (wantTransparent) caps.push("transparent");
 
-// --provider is preferred; --model is a legacy alias (grok → xai).
-let explicit = flags.provider || flags.model;
-if (explicit === "grok") explicit = "xai";
+// --provider is preferred. --model is Flare/Sunburst (openai) or a deprecated provider alias.
+const modelFlag = resolveImageModelFlag(flags.model);
+if (modelFlag.deprecatedAlias) {
+  console.error("Warning: --model as a provider alias is deprecated; use --provider instead.\n");
+}
+let explicit = flags.provider || modelFlag.provider;
+const openaiModel = modelFlag.openaiModel;
 
 const { provider, source } = await resolveProvider("image", { explicit, caps });
 console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
@@ -213,19 +223,24 @@ if (provider === "gemini") {
   const qualityMap: Record<string, "low" | "medium" | "high"> = { "1K": "low", "2K": "medium", "4K": "high" };
   const quality = flags.size ? qualityMap[flags.size] : "auto";
   const out = flags.output || generateTimestampFilename(descriptor, "png");
-  // Reference/input images → image-to-image via the edits endpoint (gpt-image-2
+  // Reference/input images → image-to-image via the edits endpoint (Image 2.5
   // generations can't take images; edits accepts up to 16).
+  const background = wantTransparent ? "transparent" as const : undefined;
   const res = inputPaths.length > 0
     ? await openaiEdit(plainPrompt(), {
         images: inputPaths,
+        model: openaiModel,
         aspect: flags.aspect,
         quality,
+        background,
         outputPath: out,
       })
     : await openaiImage(plainPrompt(), {
+        model: openaiModel,
         aspect: flags.aspect,
         quality,
         n: count,
+        background,
         outputPath: out,
       });
   for (const p of res.paths) console.log(`✓ Saved: ${p}`);

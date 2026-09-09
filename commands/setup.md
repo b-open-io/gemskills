@@ -27,9 +27,9 @@ If `$ARGUMENTS` is `show`, stop here and just report that output to the user.
 
 | Task | Provider options (only offer those with a key present) |
 |------|--------------------------------------------------------|
-| image | **openai** `gpt-image-2` (best text/realism) · **gemini** Nano Banana Pro (styles, refs, transparency) · **xai** Grok Imagine (fast) |
+| image | **openai** `gpt-image-2.5-flare` (Flare default; `--model sunburst` for Sunburst — text/realism/transparency) · **gemini** Nano Banana Pro (style tiles, dedicated negative) · **xai** Grok Imagine (fast) |
 | video | **xai** Grok Imagine Video 1.5 (newest i2v) · **gemini** Veo 3.1 (audio, 4K, refs) |
-| edit | **gemini** Nano Banana Pro (conversational, transparency) · **openai** `gpt-image-2` (masked inpaint/compose) |
+| edit | **gemini** Nano Banana Pro (conversational, style tiles, dedicated negative) · **openai** Image 2.5 (masked inpaint/compose, transparent PNG) |
 
 Keys: `GEMINI_API_KEY`, `OPENAI_API_KEY`, `XAI_API_KEY`. A missing key means that
 provider can't be a default — mention how to get it (aistudio.google.com,
@@ -63,4 +63,5 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/providers/config.ts se
 Re-run `config show` and summarize the final defaults in a short table. Remind
 the user they can always override per-call with `--provider <name>`, and that
 "Auto-pick" tasks will choose the best available provider that supports each
-request (e.g. style tiles/transparency force Gemini).
+request (e.g. style tiles or a dedicated negative force Gemini). Transparency
+is supported on OpenAI Image 2.5 and Gemini.

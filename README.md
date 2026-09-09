@@ -72,7 +72,7 @@ Optional keys unlock additional providers for image/video/edit:
 | Key | Unlocks | Get one |
 |-----|---------|---------|
 | `GEMINI_API_KEY` | Gemini Nano Banana Pro images, Veo 3.1 video, all 169 styles (default) | [aistudio.google.com](https://aistudio.google.com/apikey) |
-| `OPENAI_API_KEY` | OpenAI **`gpt-image-2`** image generation + masked editing | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `OPENAI_API_KEY` | OpenAI **`gpt-image-2.5-flare`** (Flare default; `--model sunburst` for Sunburst) image generation, masked editing, transparent PNG | [platform.openai.com](https://platform.openai.com/api-keys) |
 | `XAI_API_KEY` | xAI **Grok Imagine** image + **`grok-imagine-video-1.5`** video | [console.x.ai](https://console.x.ai) |
 | `REPLICATE_API_TOKEN` | Icon background removal; Veo reference-image / last-frame video | [replicate.com](https://replicate.com/account/api-tokens) |
 
@@ -80,9 +80,9 @@ Optional keys unlock additional providers for image/video/edit:
 
 `generate-image`, `generate-video`, and `edit-image` accept `--provider gemini|openai|xai`.
 Omit it and gemskills **auto-picks the best provider whose key is present and that
-supports the request** — e.g. plain image → `gpt-image-2`, video → `grok-imagine-video-1.5`,
-but anything needing **style tiles, reference images, transparency, or negative
-prompts routes to Gemini** (the only provider that supports them).
+supports the request** — e.g. plain image → `gpt-image-2.5-flare`, video → `grok-imagine-video-1.5`,
+but anything needing **style tiles or a dedicated negative prompt routes to
+Gemini**. Transparency is supported on OpenAI Image 2.5 and Gemini.
 
 Set your own defaults interactively with **`/gemskills:setup`** (or the `setup`
 skill), or pin them via env (`GEMSKILLS_IMAGE_PROVIDER`, `GEMSKILLS_VIDEO_PROVIDER`,
