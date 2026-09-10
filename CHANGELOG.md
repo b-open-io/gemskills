@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.70
+
+Codex plugin catalog icons (product-plugin icon sweep).
+
+- Wire official gemskills catalog art into `.codex-plugin/plugin.json` as `composerIcon` and `logo`.
+- Ship `assets/icon.png` and `assets/logo.png` from `https://bopen.ai/images/catalog/plugins/gemskills.png`.
+
 ## 0.0.69
 
 GPT Image 2.5 upgrade (Lisa/Luke policy locked 2026-09-08).

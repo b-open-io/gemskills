@@ -25,6 +25,7 @@
   "files": [
     ".claude-plugin/",
     ".codex-plugin/",
+    "assets/",
     "agents/",
     "codex/",
     "commands/",
