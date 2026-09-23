@@ -49,4 +49,5 @@ The edits endpoint takes up to **16 input images** and an optional **mask**
 - No negative parameter — phrase exclusions positively.
 
 ## Sizes
-`1:1`→1024x1024, `16:9`→1536x1024, `9:16`→1024x1536; quality `low|medium|high`.
+Same rules as generation: `--size 1K|2K|4K` + `--aspect W:H` (1:3 to 3:1), or an exact
+`--size WxH` (edges divisible by 16, max edge 3840). Quality: `--quality low|medium|high|xhigh|max|auto`.

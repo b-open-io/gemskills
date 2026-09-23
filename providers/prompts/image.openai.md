@@ -46,10 +46,12 @@ prompts differently than Gemini.
 - Transparent backgrounds
 - Reference-image edits (via the edits endpoint)
 
-## Size / quality mapping
-- Aspect → size: `1:1`→1024x1024, `16:9`/`4:3`→1536x1024, `9:16`/`3:4`→1024x1536.
-- `--size`: `1K`→quality `low` (fast drafts), `2K`→`medium`, `4K`→`high`.
-  Iterate at low, finalize at high.
+## Size / quality
+- Size: `--size 1K|2K|4K` sets the pixel budget (about 1 MP, 3.7 MP, 8.3 MP) and `--aspect W:H`
+  sets the shape (any ratio from 1:3 to 3:1). Or pass an exact `--size WxH` (edges divisible by 16,
+  max edge 3840). Examples: `--aspect 16:9 --size 4K` → 3840x2160, `--aspect 3:1 --size 4K` → 3840x1280.
+- Quality: `--quality low|medium|high|xhigh|max|auto`, separate from size.
+  Iterate at `low`, finalize at `high` or above.
 
 ## Skeleton
 > A [subject, specific appearance + materials], [doing what], in [setting +

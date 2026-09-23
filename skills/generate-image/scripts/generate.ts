@@ -26,7 +26,7 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiImage, validateImageOptions, getImageModel } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { getApiKey, loadImage, saveImage, parseArgs, generateTimestampFilename } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
-const { openaiImage, openaiEdit, resolveImageModelFlag } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { openaiImage, openaiEdit, resolveImageModelFlag, resolveOpenAISize, parseOpenAIQuality } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
 const { xaiImage } = await import(resolve(PLUGIN_ROOT, "providers/xai.ts")) as typeof import("../../../providers/xai");
 const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
 type Capability = import("../../../providers/types").Capability;
@@ -68,8 +68,11 @@ if (!prompt) {
   console.error("Options:");
   console.error("  --input <path>    Reference image (can specify multiple times, up to 14)");
   console.error("  --style <id>      Apply style from styles.json");
-  console.error("  --size <1K|2K|4K> Image size (default: model decides)");
-  console.error("  --aspect <ratio>  Aspect ratio: 1:1, 16:9, 9:16, 4:3, 3:4, 21:9");
+  console.error("  --size <1K|2K|4K> Image size (default: model decides). openai also takes WxH,");
+  console.error("                    e.g. 3840x1280 (edges divisible by 16, max edge 3840)");
+  console.error("  --aspect <ratio>  gemini: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9");
+  console.error("                    openai: any W:H from 1:3 to 3:1");
+  console.error("  --quality <q>     openai only: low | medium | high | xhigh | max | auto (default auto)");
   console.error("  --negative <text> Negative prompt");
   console.error("  --count <n>       Number of images (1-4)");
   console.error("  --seed <n>        Random seed");
@@ -82,25 +85,10 @@ if (!prompt) {
   process.exit(1);
 }
 
-const validSizes = ["1K", "2K", "4K"];
-const validAspects = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
-
 const options: any = {};
-// Only set imageSize when explicitly requested — not all models support this parameter
-if (flags.size) {
-  if (validSizes.includes(flags.size)) {
-    options.imageSize = flags.size;
-  } else {
-    console.error(`Warning: Invalid size "${flags.size}". Valid: ${validSizes.join(", ")}. Omitting imageSize.`);
-  }
-}
-if (flags.aspect) {
-  if (validAspects.includes(flags.aspect)) {
-    options.aspectRatio = flags.aspect;
-  } else {
-    console.error(`Warning: Invalid aspect ratio "${flags.aspect}". Valid: ${validAspects.join(", ")}`);
-  }
-}
+// Size and aspect are validated per provider below (gemini: validateImageOptions, openai: resolveOpenAISize).
+if (flags.size) options.imageSize = flags.size;
+if (flags.aspect) options.aspectRatio = flags.aspect;
 if (flags.negative) options.negativePrompt = flags.negative;
 if (flags.count) options.numberOfImages = parseInt(flags.count);
 if (flags.guidance) options.guidanceScale = parseFloat(flags.guidance);
@@ -163,6 +151,10 @@ const openaiModel = modelFlag.openaiModel;
 
 const { provider, source } = await resolveProvider("image", { explicit, caps });
 console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
+if (flags.quality && provider !== "openai") {
+  console.error(`Error: --quality is openai only (provider is ${provider}).`);
+  process.exit(1);
+}
 
 const descriptor = prompt.split(" ").slice(0, 4).join(" ");
 const count = options.numberOfImages;
@@ -220,8 +212,16 @@ if (provider === "gemini") {
   }
 } else if (provider === "openai") {
   warnUnsupported("openai");
-  const qualityMap: Record<string, "low" | "medium" | "high"> = { "1K": "low", "2K": "medium", "4K": "high" };
-  const quality = flags.size ? qualityMap[flags.size] : "auto";
+  let size: string;
+  let quality: ReturnType<typeof parseOpenAIQuality>;
+  try {
+    size = resolveOpenAISize(flags.size, flags.aspect);
+    quality = parseOpenAIQuality(flags.quality);
+  } catch (e) {
+    console.error(`Error: ${(e as Error).message}`);
+    process.exit(1);
+  }
+  console.error(`Size: ${size}, quality: ${quality}`);
   const out = flags.output || generateTimestampFilename(descriptor, "png");
   // Reference/input images → image-to-image via the edits endpoint (Image 2.5
   // generations can't take images; edits accepts up to 16).
@@ -230,21 +230,21 @@ if (provider === "gemini") {
     ? await openaiEdit(plainPrompt(), {
         images: inputPaths,
         model: openaiModel,
-        aspect: flags.aspect,
+        size,
         quality,
         background,
         outputPath: out,
       })
     : await openaiImage(plainPrompt(), {
         model: openaiModel,
-        aspect: flags.aspect,
+        size,
         quality,
         n: count,
         background,
         outputPath: out,
       });
   for (const p of res.paths) console.log(`✓ Saved: ${p}`);
-  if (res.costUsd != null) console.error(`Cost: ~$${res.costUsd.toFixed(4)}`);
+  console.error(res.costUsd != null ? `Cost: ~$${res.costUsd.toFixed(4)}` : `Cost: no price data for ${res.model}`);
 } else {
   // xai
   warnUnsupported("xai");

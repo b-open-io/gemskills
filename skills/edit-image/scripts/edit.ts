@@ -24,7 +24,7 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiEdit } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { getApiKey, loadImageRequired, loadImage, saveImage, parseArgs } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
-const { openaiEdit, resolveImageModelFlag } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { openaiEdit, resolveImageModelFlag, resolveOpenAISize, parseOpenAIQuality } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
 const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
 type EditCapability = import("../../../providers/types").Capability;
 
@@ -40,8 +40,10 @@ if (!inputPath || !prompt) {
   console.error("  --input <path>    Additional reference image (multiple allowed)");
   console.error("  --mask <path>     Mask image for targeted editing");
   console.error("  --mode <mode>     Edit mode: inpaint or outpaint");
-  console.error("  --aspect <ratio>  Aspect ratio");
-  console.error("  --size <size>     Image size");
+  console.error("  --aspect <ratio>  Aspect ratio (openai: any W:H from 1:3 to 3:1)");
+  console.error("  --size <size>     Image size: 1K | 2K | 4K (openai also takes WxH, e.g. 3840x1280)");
+  console.error("  --quality <q>     openai only: low | medium | high | xhigh | max | auto (default auto)");
+  console.error("  --jpeg-quality <n> gemini only: JPEG quality (1-100)");
   console.error("  --count <n>       Number of variations");
   console.error("  --seed <n>        Random seed");
   console.error("  --output <path>   Output file path");
@@ -54,7 +56,7 @@ if (!inputPath || !prompt) {
 
 const options: any = {};
 if (flags.format) options.outputFormat = flags.format;
-if (flags.quality) options.jpegQuality = parseInt(flags.quality);
+if (flags["jpeg-quality"]) options.jpegQuality = parseInt(flags["jpeg-quality"]);
 if (flags.negative) options.negativePrompt = flags.negative;
 if (flags.count) options.numberOfImages = parseInt(flags.count);
 if (flags.guidance) options.guidanceScale = parseFloat(flags.guidance);
@@ -79,21 +81,38 @@ let editExplicit = flags.provider || modelFlag.provider;
 if (flags.mode && !editExplicit) editExplicit = "gemini"; // inpaint/outpaint mode is Gemini-specific
 const { provider, source } = await resolveProvider("edit", { explicit: editExplicit, caps: editCaps });
 console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
+if (flags.quality && provider !== "openai") {
+  console.error(`Error: --quality is openai only (provider is ${provider}). For JPEG quality use --jpeg-quality.`);
+  process.exit(1);
+}
+if (flags["jpeg-quality"] && provider === "openai") {
+  console.error("Error: --jpeg-quality is gemini only. For openai use --quality low|medium|high|xhigh|max|auto.");
+  process.exit(1);
+}
 
 if (provider === "openai") {
   if (flags.negative) console.error("Note: openai has no negative param; fold exclusions into the prompt.\n");
-  const qualityMap: Record<string, "low" | "medium" | "high"> = { "1K": "low", "2K": "medium", "4K": "high" };
+  let size: string;
+  let quality: ReturnType<typeof parseOpenAIQuality>;
+  try {
+    size = resolveOpenAISize(flags.size, flags.aspect);
+    quality = parseOpenAIQuality(flags.quality);
+  } catch (e) {
+    console.error(`Error: ${(e as Error).message}`);
+    process.exit(1);
+  }
+  console.error(`Size: ${size}, quality: ${quality}`);
   const res = await openaiEdit(prompt, {
     images: [inputPath, ...multi.input],
     mask: flags.mask,
     model: modelFlag.openaiModel,
-    aspect: flags.aspect,
-    quality: flags.size ? qualityMap[flags.size] : "auto",
+    size,
+    quality,
     background: wantTransparent ? "transparent" : undefined,
     outputPath: flags.output,
   });
   for (const p of res.paths) console.log(`✓ Saved: ${p}`);
-  if (res.costUsd != null) console.error(`Cost: ~$${res.costUsd.toFixed(4)}`);
+  console.error(res.costUsd != null ? `Cost: ~$${res.costUsd.toFixed(4)}` : `Cost: no price data for ${res.model}`);
 } else {
   const apiKey = getApiKey();
   const imageData = await loadImageRequired(inputPath);

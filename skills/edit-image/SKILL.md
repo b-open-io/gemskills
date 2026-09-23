@@ -35,7 +35,10 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/edit-image/scri
 - `--mask <path>` - Optional mask image (white = edit area, black = keep)
 - `--mode <inpaint|outpaint>` - Edit mode
 - `--format <png|jpeg|webp>` - Output format
-- `--quality <n>` - JPEG quality (1-100)
+- `--size <1K|2K|4K|WxH>` - Output size. openai also takes an exact `WxH`, for example `3840x1280`.
+- `--aspect <ratio>` - Output aspect. openai accepts any `W:H` from 1:3 to 3:1. Do not combine with `--size WxH`.
+- `--quality <low|medium|high|xhigh|max|auto>` - openai only (default `auto`).
+- `--jpeg-quality <n>` - gemini only: JPEG quality (1-100)
 - `--negative <prompt>` - What to avoid in the edit
 - `--count <n>` - Number of variations
 - `--seed <n>` - Random seed

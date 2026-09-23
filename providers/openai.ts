@@ -10,8 +10,11 @@
  *   Up to 16 input images; optional mask (transparent areas = edit region).
  *
  * Image 2.5 supports transparent backgrounds (background=transparent).
- * input_fidelity is not configurable. Sizes: 1024x1024, 1536x1024, 1024x1536,
- * auto, or custom.
+ * input_fidelity is rejected by Image 2.5 (invalid_input_fidelity_model), so it is never sent.
+ *
+ * Size rules (docs + live probes, 2026-09-23): "auto", or WIDTHxHEIGHT with both edges
+ * divisible by 16, aspect between 1:3 and 3:1, max edge 3840, total pixels 655,360..8,294,400.
+ * Quality: low | medium | high | xhigh | max | auto (xhigh and max are new in 2.5).
  */
 
 import { readFile } from "fs/promises";
@@ -70,26 +73,98 @@ export function resolveImageModelFlag(model?: string): {
   return {};
 }
 
-/** Image-output token price ($/1M). Estimate only — see costUsd note. */
-const OPENAI_IMAGE_OUTPUT_PER_M = 30;
+export type OpenAIQuality = "low" | "medium" | "high" | "xhigh" | "max" | "auto";
+export const OPENAI_QUALITIES: readonly OpenAIQuality[] = ["low", "medium", "high", "xhigh", "max", "auto"];
 
-type Size = "1024x1024" | "1536x1024" | "1024x1536" | "auto" | (string & {});
+/** Parse --quality for openai. Missing → "auto"; anything else outside the enum throws. */
+export function parseOpenAIQuality(value?: string): OpenAIQuality {
+  if (value === undefined) return "auto";
+  if ((OPENAI_QUALITIES as readonly string[]).includes(value)) return value as OpenAIQuality;
+  throw new Error(`Invalid --quality "${value}". Valid: ${OPENAI_QUALITIES.join(", ")}.`);
+}
 
-/** Map gemskills aspect ratios to the nearest supported gpt-image size. */
-export function aspectToSize(aspect?: string): Size {
-  switch (aspect) {
-    case "16:9":
-    case "4:3":
-      return "1536x1024";
-    case "9:16":
-    case "3:4":
-      return "1024x1536";
-    case "1:1":
-      return "1024x1024";
-    default:
-      return "auto";
+const SIZE_MULTIPLE = 16;
+const MAX_EDGE = 3840;
+const MIN_PIXELS = 655_360;
+const MAX_PIXELS = 8_294_400;
+const MAX_RATIO = 3;
+
+/** Pixel budget per --size tier. 4K is the documented maximum (3840x2160). */
+const TIER_PIXELS = { "1K": 1024 * 1024, "2K": 2560 * 1440, "4K": MAX_PIXELS } as const;
+export type OpenAISizeTier = keyof typeof TIER_PIXELS;
+
+/** Throw with the violated rule if WxH is not accepted by Image 2.5. */
+export function checkOpenAISize(width: number, height: number): void {
+  const label = `${width}x${height}`;
+  if (width % SIZE_MULTIPLE || height % SIZE_MULTIPLE) {
+    throw new Error(`Invalid size ${label}: both edges must be divisible by ${SIZE_MULTIPLE}.`);
+  }
+  if (Math.max(width, height) > MAX_EDGE) {
+    throw new Error(`Invalid size ${label}: max edge is ${MAX_EDGE}.`);
+  }
+  if (Math.max(width, height) / Math.min(width, height) > MAX_RATIO) {
+    throw new Error(`Invalid size ${label}: aspect must be between 1:${MAX_RATIO} and ${MAX_RATIO}:1.`);
+  }
+  const pixels = width * height;
+  if (pixels < MIN_PIXELS || pixels > MAX_PIXELS) {
+    throw new Error(`Invalid size ${label}: total pixels must be ${MIN_PIXELS}..${MAX_PIXELS} (got ${pixels}).`);
   }
 }
+
+function parseAspect(aspect: string): number {
+  const m = /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?)$/.exec(aspect);
+  if (!m) throw new Error(`Invalid --aspect "${aspect}". Use W:H, for example 3:1.`);
+  const ratio = Number(m[1]) / Number(m[2]);
+  if (ratio > MAX_RATIO || ratio < 1 / MAX_RATIO) {
+    throw new Error(`Invalid --aspect "${aspect}": openai accepts 1:${MAX_RATIO} to ${MAX_RATIO}:1.`);
+  }
+  return ratio;
+}
+
+const floorTo = (n: number) => Math.floor(n / SIZE_MULTIPLE) * SIZE_MULTIPLE;
+
+/**
+ * Resolve --size / --aspect into the API size string.
+ * --size WxH is sent as given (and cannot be combined with --aspect).
+ * --size 1K|2K|4K sets the pixel budget; --aspect sets the shape (default 1:1).
+ * Neither flag → "auto".
+ */
+export function resolveOpenAISize(size?: string, aspect?: string): string {
+  if (size && /^\d+x\d+$/.test(size)) {
+    if (aspect) throw new Error("Use --size WxH or --aspect, not both.");
+    const [w, h] = size.split("x").map(Number);
+    checkOpenAISize(w, h);
+    return size;
+  }
+  if (size && !(size in TIER_PIXELS)) {
+    throw new Error(`Invalid --size "${size}". Use 1K, 2K, 4K, or WxH (for example 3840x1280).`);
+  }
+  if (!size && !aspect) return "auto";
+  const pixels = TIER_PIXELS[(size ?? "1K") as OpenAISizeTier];
+  const ratio = aspect ? parseAspect(aspect) : 1;
+  // Round the short edge first, then derive the long edge, so rounding never widens the ratio.
+  const longOverShort = Math.max(ratio, 1 / ratio);
+  let short = floorTo(Math.sqrt(pixels / longOverShort));
+  let long = floorTo(short * longOverShort);
+  if (long > MAX_EDGE) {
+    short = floorTo(MAX_EDGE / longOverShort);
+    long = floorTo(short * longOverShort);
+  }
+  const [width, height] = ratio >= 1 ? [long, short] : [short, long];
+  checkOpenAISize(width, height);
+  return `${width}x${height}`;
+}
+
+/** USD per 1M tokens, from https://platform.openai.com/docs/pricing (checked 2026-09-23). */
+const IMAGE_2_5_PRICE = { textInput: 5, imageInput: 8, imageOutput: 30 };
+const PRICES_PER_M: Record<string, typeof IMAGE_2_5_PRICE> = {
+  "gpt-image-2.5-flare": IMAGE_2_5_PRICE,
+  "gpt-image-2.5-flare-2026-09-08": IMAGE_2_5_PRICE,
+  "gpt-image-2.5-sunburst": IMAGE_2_5_PRICE,
+  "gpt-image-2.5-sunburst-2026-09-08": IMAGE_2_5_PRICE,
+};
+
+type Size = "auto" | (string & {});
 
 async function parseOrThrow(res: Response, where: string): Promise<any> {
   const text = await res.text();
@@ -108,10 +183,16 @@ async function parseOrThrow(res: Response, where: string): Promise<any> {
   return json;
 }
 
-function estimateCostUsd(json: any): number | undefined {
-  const imgTokens = json?.usage?.output_tokens_details?.image_tokens;
-  if (typeof imgTokens !== "number") return undefined;
-  return (imgTokens / 1_000_000) * OPENAI_IMAGE_OUTPUT_PER_M;
+/** Cost from the response usage. undefined when the model has no entry in PRICES_PER_M. */
+function estimateCostUsd(model: string, json: any): number | undefined {
+  const price = PRICES_PER_M[model];
+  if (!price) return undefined;
+  const u = json?.usage;
+  if (!u) throw new Error("OpenAI response has no usage block");
+  const textIn = u.input_tokens_details?.text_tokens ?? 0;
+  const imageIn = u.input_tokens_details?.image_tokens ?? 0;
+  const imageOut = u.output_tokens_details?.image_tokens ?? 0;
+  return (textIn * price.textInput + imageIn * price.imageInput + imageOut * price.imageOutput) / 1_000_000;
 }
 
 async function saveAll(json: any, outputPath: string | undefined, format: string): Promise<string[]> {
@@ -136,8 +217,7 @@ export async function openaiImage(
     model?: string;
     n?: number;
     size?: Size;
-    aspect?: string;
-    quality?: "low" | "medium" | "high" | "auto";
+    quality?: OpenAIQuality;
     background?: "opaque" | "auto" | "transparent";
     outputFormat?: "png" | "jpeg" | "webp";
     outputPath?: string;
@@ -150,7 +230,7 @@ export async function openaiImage(
     model,
     prompt,
     n: options.n ?? 1,
-    size: options.size || aspectToSize(options.aspect),
+    size: options.size ?? "auto",
     quality: options.quality || "auto",
     output_format: format,
   };
@@ -166,7 +246,7 @@ export async function openaiImage(
   const json = await parseOrThrow(res, "images/generations");
   const paths = await saveAll(json, options.outputPath, format);
   console.error(`Generated in ${((Date.now() - start) / 1000).toFixed(1)}s`);
-  return { paths, provider: "openai", model, costUsd: estimateCostUsd(json) };
+  return { paths, provider: "openai", model, costUsd: estimateCostUsd(model, json) };
 }
 
 // ── Edit (inpainting / multi-image compose) ────────────────────────
@@ -178,8 +258,7 @@ export async function openaiEdit(
     mask?: string; // optional PNG mask path
     model?: string;
     size?: Size;
-    aspect?: string;
-    quality?: "low" | "medium" | "high" | "auto";
+    quality?: OpenAIQuality;
     background?: "opaque" | "auto" | "transparent";
     outputFormat?: "png" | "jpeg" | "webp";
     outputPath?: string;
@@ -192,7 +271,7 @@ export async function openaiEdit(
   const form = new FormData();
   form.set("model", model);
   form.set("prompt", prompt);
-  form.set("size", options.size || aspectToSize(options.aspect));
+  form.set("size", options.size ?? "auto");
   form.set("quality", options.quality || "auto");
   form.set("output_format", format);
   for (const p of options.images) {
@@ -215,5 +294,5 @@ export async function openaiEdit(
   const json = await parseOrThrow(res, "images/edits");
   const paths = await saveAll(json, options.outputPath, format);
   console.error(`Edited in ${((Date.now() - start) / 1000).toFixed(1)}s`);
-  return { paths, provider: "openai", model, costUsd: estimateCostUsd(json) };
+  return { paths, provider: "openai", model, costUsd: estimateCostUsd(model, json) };
 }

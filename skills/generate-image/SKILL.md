@@ -98,8 +98,9 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/
 
 - `--input <path>` - Reference image (can specify multiple times, up to 14 images)
 - `--style <id>` - Apply style from the style library (see browsing-styles skill)
-- `--size <1K|2K|4K>` - Image size (default: 1K for fast drafts)
-- `--aspect <ratio>` - Aspect ratio: 1:1, 16:9, 9:16, 4:3, 3:4
+- `--size <1K|2K|4K|WxH>` - Image size (default: model decides). `1K`/`2K`/`4K` set the pixel budget on every provider. openai also takes an exact `WxH`, for example `3840x1280`.
+- `--aspect <ratio>` - gemini: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9. openai: any `W:H` from 1:3 to 3:1 (for example `3:1` for a wide banner). Do not combine with `--size WxH`.
+- `--quality <low|medium|high|xhigh|max|auto>` - openai only (default `auto`). `xhigh` and `max` are new in Image 2.5. Gemini and xai reject this flag.
 - `--negative <prompt>` - Negative prompt (what to avoid)
 - `--count <n>` - Number of images (1-4, default: 1)
 - `--guidance <n>` - Guidance scale
@@ -220,7 +221,7 @@ Three providers, selected with `--provider` or **auto-picked** when omitted.
 | Provider | Model | Key | Strengths | Can't do |
 |----------|-------|-----|-----------|----------|
 | `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, dedicated negative prompts, **transparency**, 1K/2K/4K | — |
-| `openai` | **`gpt-image-2.5-flare`** (Flare, default) / **`gpt-image-2.5-sunburst`** (Sunburst, `--model sunburst`) | `OPENAI_API_KEY` | Best **in-image text**, lighting/textures, complex instructions, detailed layouts, **transparent backgrounds**, custom sizes, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No style tiles, no dedicated negative param |
+| `openai` | **`gpt-image-2.5-flare`** (Flare, default) / **`gpt-image-2.5-sunburst`** (Sunburst, `--model sunburst`) | `OPENAI_API_KEY` | Best **in-image text**, lighting/textures, complex instructions, detailed layouts, **transparent backgrounds**, custom sizes up to 3840px edge and 1:3–3:1 aspect, quality up to `max`, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No style tiles, no dedicated negative param |
 | `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no img2img/tiles/negative |
 
 ### Auto-pick (default when `--provider` is omitted)
@@ -254,10 +255,17 @@ the matching guide and rewrite the prompt to it:**
 
 ```bash
 # Force a provider / Image 2.5 variant
-bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "neon city street, rain" --provider openai --size 4K
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "neon city street, rain" --provider openai --size 4K --quality high
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "panoramic website footer city" --model sunburst --aspect 3:1 --size 4K   # 3840x1280
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "app icon, rounded square" --model sunburst --transparent
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "watercolor fox" --provider xai
 ```
+
+### OpenAI size rules (Image 2.5)
+
+The API accepts `auto` or `WIDTHxHEIGHT` where both edges are divisible by 16, the aspect is 1:3 to 3:1, the max edge is 3840, and total pixels are 655,360 to 8,294,400. The script computes a valid size from `--size` tier + `--aspect`, and stops with an error for any size the API would reject. It never changes an invalid size to `auto`. Sizes above 2560x1440 are experimental per OpenAI. `input_fidelity` is not supported by Image 2.5 and is never sent.
+
+Cost is printed from the response `usage` with the published per-token prices (text input $5, image input $8, image output $30 per 1M tokens). Models without a price entry print "no price data".
 
 > Models verified live: September 2026 (`gpt-image-2.5-flare`, `gpt-image-2.5-sunburst`, `grok-imagine-image-quality`, `gemini-3-pro-image`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
