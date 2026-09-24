@@ -1,15 +1,18 @@
 ---
 name: upscale-image
-description: This skill should be used when the user asks to "upscale an image", "increase image resolution", "make image bigger", "enlarge image", or "enhance image resolution". Requires Vertex AI credentials.
+description: This skill should be used when the user asks to "upscale an image", "increase image resolution", "make image bigger", "enlarge image", or "enhance image resolution". Supports Vertex AI and Atlas Cloud.
 ---
 
 # Upscale Image
 
-Upscale images using Imagen on Vertex AI.
+Upscale images using Imagen on Vertex AI by default, or Atlas Cloud as an optional provider.
 
 ## Prerequisites
 
-This skill requires Vertex AI credentials (not GEMINI_API_KEY).
+Choose one provider:
+
+- **Vertex AI (default):** Google Cloud project and Application Default Credentials.
+- **Atlas Cloud:** `ATLASCLOUD_API_KEY`; no Google Cloud setup is required.
 
 ### Check Current Setup
 
@@ -50,6 +53,14 @@ If credentials are not configured, guide the user through these steps:
    echo 'export GOOGLE_CLOUD_PROJECT=your-project-id' >> ~/.zshenv
    ```
 
+### Atlas Cloud Setup
+
+Set the API key in your environment:
+
+```bash
+export ATLASCLOUD_API_KEY="your-atlascloud-api-key"
+```
+
 ## Usage
 
 ```bash
@@ -59,9 +70,10 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/upscale-image/s
 ### Options
 
 - `--factor <x2|x4>` - Upscale factor (default: x2)
-- `--format <png|jpeg|webp>` - Output format
+- `--format <png|jpeg|jpg|webp>` - Output format
 - `--quality <n>` - JPEG quality (1-100)
 - `--output <path>` - Output path
+- `--provider <vertex|atlas>` - Upscale provider (default: `vertex`)
 - `--project <id>` - Google Cloud project (overrides env var)
 - `--location <region>` - Vertex AI location (default: us-central1)
 
@@ -79,6 +91,9 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/upscale-image/s
 
 # Specify project explicitly
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/upscale-image/scripts/upscale.ts photo.jpg --project my-gcp-project --factor x4
+
+# Use Atlas Cloud without changing the default Vertex workflow
+bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/upscale-image/scripts/upscale.ts photo.jpg --provider atlas --factor x4 --format png
 ```
 
 ## Context Discipline
@@ -87,7 +102,10 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/upscale-image/s
 
 ## Model
 
-Uses `imagen-3.0-generate-002` via Vertex AI upscaleImage API.
+Vertex uses `imagen-3.0-generate-002` via the Vertex AI `upscaleImage` API.
+
+Atlas Cloud uses `atlascloud/image-upscaler`, uploads the local input temporarily,
+submits one upscale request, and polls the prediction endpoint until completion.
 
 ## Why Vertex AI?
 
