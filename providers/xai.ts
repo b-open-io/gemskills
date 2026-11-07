@@ -1,10 +1,10 @@
 /**
  * xAI (Grok Imagine) provider — direct api.x.ai integration.
  *
- * Verified live (June 2026):
+ * Verified live (2026-11-07; /v1/models + a 2.0 image call):
  * - Image:  POST /v1/images/generations  (synchronous)
  *           → { data: [{ url, mime_type }], usage: { cost_in_usd_ticks } }
- *           models: grok-imagine-image, grok-imagine-image-quality
+ *           models: grok-imagine-image-2.0 (default), grok-imagine-image
  * - Video:  POST /v1/videos/generations  → { request_id }
  *           poll GET /v1/videos/{id}      → { status, progress, video:{url,duration}, usage }
  *           grok-imagine-video      (v1)  : text-to-video (and i2v)
@@ -24,7 +24,7 @@ import { xaiTicksToUsd } from "./types";
 
 const XAI_BASE = "https://api.x.ai"; // paths below include the /v1 prefix
 
-export const XAI_IMAGE_MODEL = process.env.XAI_IMAGE_MODEL || "grok-imagine-image-quality";
+export const XAI_IMAGE_MODEL = process.env.XAI_IMAGE_MODEL || "grok-imagine-image-2.0";
 export const XAI_VIDEO_T2V_MODEL = process.env.XAI_VIDEO_T2V_MODEL || "grok-imagine-video";
 export const XAI_VIDEO_I2V_MODEL = process.env.XAI_VIDEO_I2V_MODEL || "grok-imagine-video-1.5";
 

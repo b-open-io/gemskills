@@ -44,8 +44,8 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/edit-image/scri
 - `--seed <n>` - Random seed
 - `--output <path>` - Output path
 - `--transparent` - Transparent PNG output (OpenAI `background=transparent`; also Gemini)
-- `--provider <name>` - `gemini` or `openai`. Omit to auto-pick.
-- `--model <id>` - OpenAI Image 2.5 variant: `flare` / `gpt-image-2.5-flare` (default) or `sunburst` / `gpt-image-2.5-sunburst`. Sets provider to openai.
+- `--provider <name>` - `gemini` or `openai`. Omit to auto-pick (openai when `OPENAI_API_KEY` is set).
+- `--model <id>` - OpenAI Image 2.6 variant: `sunburst` / `gpt-image-2.6-sunburst` (default, finals) or `flare` / `gpt-image-2.6-flare` (fast drafts). Sets provider to openai.
 
 ### Examples
 
@@ -83,15 +83,15 @@ Default provider is **`gemini`** (`gemini-3-pro-image`, Nano Banana Pro) — bes
 for conversational/semantic edits, style-consistent edits, dedicated negatives,
 and multi-image composition. No Vertex AI credentials required.
 
-Pass `--provider openai` (or `--model flare|sunburst`) to use **Image 2.5**
-(`gpt-image-2.5-flare` default, `gpt-image-2.5-sunburst` opt-in) for masked
+Pass `--provider openai` (or `--model flare|sunburst`) to use **Image 2.6**
+(`gpt-image-2.6-sunburst` default, `gpt-image-2.6-flare` for fast drafts) for masked
 inpainting, multi-image compositing (`--mask`, multiple `--input`), and
 **transparent PNG** output when requested (`--transparent` →
-`background=transparent`). Image 2.5 has no dedicated negative-prompt parameter
+`background=transparent`). Image 2.6 has no dedicated negative-prompt parameter
 and no outpaint mode — so `--negative` and `--mode` stay on Gemini (auto-routed).
 Style tiles remain Gemini-only.
 
 After the provider is resolved, tune the prompt with the matching guide:
 `providers/prompts/edit.gemini.md` or `providers/prompts/edit.openai.md`.
 
-> Models verified live: September 2026 (`gemini-3-pro-image`, `gpt-image-2.5-flare`, `gpt-image-2.5-sunburst`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
+> Models verified live: 2026-11-07 (`gpt-image-2.6-sunburst`, `gpt-image-2.6-flare`; `gemini-3-pro-image` by docs only, Gemini key was rejected, so Gemini was not live-tested). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.

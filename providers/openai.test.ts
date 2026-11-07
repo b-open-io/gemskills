@@ -18,27 +18,37 @@ afterEach(() => {
 
 describe("OPENAI_IMAGE_VARIANTS", () => {
   test("flare and sunburst are direct API ids", () => {
-    expect(OPENAI_IMAGE_VARIANTS.flare).toBe("gpt-image-2.5-flare");
-    expect(OPENAI_IMAGE_VARIANTS.sunburst).toBe("gpt-image-2.5-sunburst");
+    expect(OPENAI_IMAGE_VARIANTS.flare).toBe("gpt-image-2.6-flare");
+    expect(OPENAI_IMAGE_VARIANTS.sunburst).toBe("gpt-image-2.6-sunburst");
     expect(OPENAI_IMAGE_MODEL).not.toStartWith("openai/");
   });
 });
 
 describe("resolveOpenAIImageModel", () => {
   test("aliases and ids", () => {
-    expect(resolveOpenAIImageModel("flare")).toBe("gpt-image-2.5-flare");
-    expect(resolveOpenAIImageModel("sunburst")).toBe("gpt-image-2.5-sunburst");
-    expect(resolveOpenAIImageModel("gpt-image-2.5-flare")).toBe("gpt-image-2.5-flare");
-    expect(resolveOpenAIImageModel("gpt-image-2.5-sunburst")).toBe("gpt-image-2.5-sunburst");
+    expect(resolveOpenAIImageModel("flare")).toBe("gpt-image-2.6-flare");
+    expect(resolveOpenAIImageModel("sunburst")).toBe("gpt-image-2.6-sunburst");
+    expect(resolveOpenAIImageModel("gpt-image-2.6-flare")).toBe("gpt-image-2.6-flare");
+    expect(resolveOpenAIImageModel("gpt-image-2.6-sunburst")).toBe("gpt-image-2.6-sunburst");
   });
 
   test("strips docs-only gateway prefix", () => {
-    expect(resolveOpenAIImageModel("openai/gpt-image-2.5-flare")).toBe("gpt-image-2.5-flare");
-    expect(resolveOpenAIImageModel("openai/gpt-image-2.5-sunburst")).toBe("gpt-image-2.5-sunburst");
-    expect(isOpenAIImageVariant("openai/gpt-image-2.5-flare")).toBe(true);
+    expect(resolveOpenAIImageModel("openai/gpt-image-2.6-flare")).toBe("gpt-image-2.6-flare");
+    expect(resolveOpenAIImageModel("openai/gpt-image-2.6-sunburst")).toBe("gpt-image-2.6-sunburst");
+    expect(isOpenAIImageVariant("openai/gpt-image-2.6-flare")).toBe(true);
   });
 
-  test("does not invent other 2.5 names", () => {
+  test("default model is sunburst (finals)", () => {
+    delete process.env[envKey];
+    expect(resolveOpenAIImageModel()).toBe("gpt-image-2.6-sunburst");
+  });
+
+  test("2.5 ids are no longer variants", () => {
+    expect(isOpenAIImageVariant("gpt-image-2.5-flare")).toBe(false);
+    expect(isOpenAIImageVariant("gpt-image-2.5-sunburst")).toBe(false);
+  });
+
+  test("does not invent other names", () => {
     expect(resolveOpenAIImageModel("gpt-image-3")).toBe("gpt-image-3");
     expect(isOpenAIImageVariant("gpt-image-3")).toBe(false);
     expect(isOpenAIImageVariant("gpt-image-2")).toBe(false);
@@ -49,15 +59,15 @@ describe("resolveImageModelFlag", () => {
   test("flare/sunburst select openai + API model", () => {
     expect(resolveImageModelFlag("flare")).toEqual({
       provider: "openai",
-      openaiModel: "gpt-image-2.5-flare",
+      openaiModel: "gpt-image-2.6-flare",
     });
     expect(resolveImageModelFlag("sunburst")).toEqual({
       provider: "openai",
-      openaiModel: "gpt-image-2.5-sunburst",
+      openaiModel: "gpt-image-2.6-sunburst",
     });
-    expect(resolveImageModelFlag("gpt-image-2.5-sunburst")).toEqual({
+    expect(resolveImageModelFlag("gpt-image-2.6-sunburst")).toEqual({
       provider: "openai",
-      openaiModel: "gpt-image-2.5-sunburst",
+      openaiModel: "gpt-image-2.6-sunburst",
     });
   });
 
@@ -80,7 +90,8 @@ describe("capabilities", () => {
     expect(CAPABILITIES.edit.openai).toContain("transparent");
   });
 
-  test("image ranking is unchanged", () => {
+  test("image and edit auto-pick prefer openai", () => {
     expect(RANKINGS.image).toEqual(["openai", "gemini", "xai"]);
+    expect(RANKINGS.edit).toEqual(["openai", "gemini"]);
   });
 });

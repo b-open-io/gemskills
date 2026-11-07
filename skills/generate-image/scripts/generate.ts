@@ -79,7 +79,7 @@ if (!prompt) {
   console.error("  --output <path>   Output file path");
   console.error("  --transparent     Transparent/alpha background (OpenAI background=transparent)");
   console.error("  --provider <name> gemini | openai | xai (default: auto-pick by available keys)");
-  console.error("  --model <id>      flare | sunburst | gpt-image-2.5-flare | gpt-image-2.5-sunburst");
+  console.error("  --model <id>      flare | sunburst | gpt-image-2.6-flare | gpt-image-2.6-sunburst");
   console.error("                    (sets openai + API model). Legacy provider aliases");
   console.error("                    gemini|openai|xai|grok are deprecated — use --provider");
   process.exit(1);
@@ -141,7 +141,7 @@ if (inputPaths.length > 0) caps.push("multiRef");
 if (flags.negative) caps.push("negative");
 if (wantTransparent) caps.push("transparent");
 
-// --provider is preferred. --model is Flare/Sunburst (openai) or a deprecated provider alias.
+// --provider is preferred. --model is Sunburst/Flare (openai) or a deprecated provider alias.
 const modelFlag = resolveImageModelFlag(flags.model);
 if (modelFlag.deprecatedAlias) {
   console.error("Warning: --model as a provider alias is deprecated; use --provider instead.\n");
@@ -223,7 +223,7 @@ if (provider === "gemini") {
   }
   console.error(`Size: ${size}, quality: ${quality}`);
   const out = flags.output || generateTimestampFilename(descriptor, "png");
-  // Reference/input images → image-to-image via the edits endpoint (Image 2.5
+  // Reference/input images → image-to-image via the edits endpoint (Image 2.6
   // generations can't take images; edits accepts up to 16).
   const background = wantTransparent ? "transparent" as const : undefined;
   const res = inputPaths.length > 0

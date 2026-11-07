@@ -169,3 +169,7 @@ Edit `assets/styles.json`:
 3. Write descriptive `promptHints`
 4. Write a `tilePrompt` for generating the tile image
 5. Run `bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/browsing-styles/scripts/generate_tiles.ts --style <id>` to generate the tile
+
+## Provider support
+
+Style tiles are reference images that only **Gemini** consumes natively. `generate-image --style <id>` therefore routes to Gemini even when `OPENAI_API_KEY` is set. With `--provider openai` or `--provider xai`, only the text prompt hints from the style are used and the script prints a note. `generate_tiles.ts` calls Gemini and needs `GEMINI_API_KEY`.

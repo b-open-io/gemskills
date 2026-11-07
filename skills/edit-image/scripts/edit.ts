@@ -48,8 +48,8 @@ if (!inputPath || !prompt) {
   console.error("  --seed <n>        Random seed");
   console.error("  --output <path>   Output file path");
   console.error("  --transparent     Transparent PNG output (OpenAI background=transparent)");
-  console.error("  --provider <name> gemini (default) or openai (Image 2.5 Flare / Sunburst)");
-  console.error("  --model <id>      flare | sunburst | gpt-image-2.5-flare | gpt-image-2.5-sunburst");
+  console.error("  --provider <name> openai (default when OPENAI_API_KEY is set; Image 2.6 Sunburst / Flare) or gemini");
+  console.error("  --model <id>      flare | sunburst | gpt-image-2.6-flare | gpt-image-2.6-sunburst");
   console.error("                    (sets openai + API model). Legacy gemini|openai aliases deprecated");
   process.exit(1);
 }
@@ -78,7 +78,8 @@ if (modelFlag.deprecatedAlias) {
   console.error("Warning: --model as a provider alias is deprecated; use --provider instead.\n");
 }
 let editExplicit = flags.provider || modelFlag.provider;
-if (flags.mode && !editExplicit) editExplicit = "gemini"; // inpaint/outpaint mode is Gemini-specific
+// inpaint/outpaint mode, variation count, guidance, and seed are Gemini-only; the openai edit path ignores them.
+if ((flags.mode || flags.count || flags.guidance || flags.seed) && !editExplicit) editExplicit = "gemini";
 const { provider, source } = await resolveProvider("edit", { explicit: editExplicit, caps: editCaps });
 console.error(`Provider: ${provider}${source === "auto" ? " (auto-picked)" : ` (${source})`}\n`);
 if (flags.quality && provider !== "openai") {

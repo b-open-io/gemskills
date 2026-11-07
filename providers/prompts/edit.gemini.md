@@ -16,11 +16,11 @@ guidance lives in the `edit-image` skill's own SKILL.md and
 - **Negative prompts** as a true parameter.
 - **Style tiles** for style-consistent edits.
 
-Transparency is also supported on OpenAI Image 2.5 (`--transparent`).
+Transparency is also supported on OpenAI Image 2.6 (`--transparent`).
 
 ## Essentials
 - Describe the change precisely and how it integrates (lighting, perspective,
   materials). Reference unchanged regions to keep them stable.
 - Prefer Gemini whenever the edit needs a style tile or a true negative
-  prompt; otherwise Image 2.5 (`gpt-image-2.5-flare`) is a strong alternative
+  prompt; otherwise Image 2.6 (`gpt-image-2.6-sunburst`) is a strong alternative
   for masked inpainting, multi-image compositing, and transparent PNG.

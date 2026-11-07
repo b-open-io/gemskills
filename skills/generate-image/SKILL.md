@@ -1,11 +1,11 @@
 ---
 name: generate-image
-description: This skill should be used when the user asks to "generate an image", "create a banner", "make artwork", "create an illustration", "generate a logo", "make a graphic", "design a header", "AI art", "img2img", "social share image", "OG image", "open graph image", "Twitter card", "hero image", "cover photo", "profile picture", "social media graphic", or needs AI image generation. Handles prompt rewriting and Gemini 3 Pro image generation API calls.
+description: This skill should be used when the user asks to "generate an image", "create a banner", "make artwork", "create an illustration", "generate a logo", "make a graphic", "design a header", "AI art", "img2img", "social share image", "OG image", "open graph image", "Twitter card", "hero image", "cover photo", "profile picture", "social media graphic", or needs AI image generation. Handles prompt rewriting and multi-provider image generation: OpenAI GPT Image 2.6 (default when OPENAI_API_KEY is set), Gemini Nano Banana Pro, and xAI Grok Imagine.
 ---
 
 # Generate Image
 
-Generate images using Nano Banana Pro (`gemini-3-pro-image`).
+Generate images with OpenAI GPT Image 2.6 (`gpt-image-2.6-sunburst` finals, `gpt-image-2.6-flare` drafts), Gemini Nano Banana Pro (`gemini-3-pro-image`), or xAI Grok Imagine (`grok-imagine-image-2.0`). Auto-pick prefers OpenAI when `OPENAI_API_KEY` is set; style tiles and negative prompts route to Gemini.
 
 ## When to Use
 
@@ -100,7 +100,7 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/
 - `--style <id>` - Apply style from the style library (see browsing-styles skill)
 - `--size <1K|2K|4K|WxH>` - Image size (default: model decides). `1K`/`2K`/`4K` set the pixel budget on every provider. openai also takes an exact `WxH`, for example `3840x1280`.
 - `--aspect <ratio>` - gemini: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9. openai: any `W:H` from 1:3 to 3:1 (for example `3:1` for a wide banner). Do not combine with `--size WxH`.
-- `--quality <low|medium|high|xhigh|max|auto>` - openai only (default `auto`). `xhigh` and `max` are new in Image 2.5. Gemini and xai reject this flag.
+- `--quality <low|medium|high|xhigh|max|auto>` - openai only (default `auto`). `xhigh` and `max` arrived in Image 2.5 and still hold in 2.6. Gemini and xai reject this flag.
 - `--negative <prompt>` - Negative prompt (what to avoid)
 - `--count <n>` - Number of images (1-4, default: 1)
 - `--guidance <n>` - Guidance scale
@@ -108,7 +108,7 @@ bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/
 - `--output <path>` - Output path
 - `--transparent` - Transparent/alpha background (OpenAI `background=transparent`; also Gemini)
 - `--provider <name>` - `gemini`, `openai`, or `xai`. Omit to **auto-pick** the best available provider for the request (see Models).
-- `--model <id>` - OpenAI Image 2.5 variant: `flare` / `gpt-image-2.5-flare` (default) or `sunburst` / `gpt-image-2.5-sunburst`. Sets provider to openai. Legacy provider aliases `gemini|openai|xai|grok` still work but are deprecated — use `--provider`.
+- `--model <id>` - OpenAI Image 2.6 variant: `sunburst` / `gpt-image-2.6-sunburst` (default, finals) or `flare` / `gpt-image-2.6-flare` (fast drafts). Sets provider to openai. Legacy provider aliases `gemini|openai|xai|grok` still work but are deprecated — use `--provider`.
 
 ### Examples
 
@@ -220,9 +220,9 @@ Three providers, selected with `--provider` or **auto-picked** when omitted.
 
 | Provider | Model | Key | Strengths | Can't do |
 |----------|-------|-----|-----------|----------|
-| `gemini` (default fallback) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, dedicated negative prompts, **transparency**, 1K/2K/4K | — |
-| `openai` | **`gpt-image-2.5-flare`** (Flare, default) / **`gpt-image-2.5-sunburst`** (Sunburst, `--model sunburst`) | `OPENAI_API_KEY` | Best **in-image text**, lighting/textures, complex instructions, detailed layouts, **transparent backgrounds**, custom sizes up to 3840px edge and 1:3–3:1 aspect, quality up to `max`, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No style tiles, no dedicated negative param |
-| `xai` | `grok-imagine-image-quality` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no img2img/tiles/negative |
+| `gemini` (fallback; required for style tiles and negatives) | `gemini-3-pro-image` (Nano Banana Pro) | `GEMINI_API_KEY` | Style tiles, up to 14 reference images, dedicated negative prompts, **transparency**, 1K/2K/4K | — |
+| `openai` | **`gpt-image-2.6-sunburst`** (Sunburst, default, finals) / **`gpt-image-2.6-flare`** (Flare, fast drafts, `--model flare`) | `OPENAI_API_KEY` | Best **in-image text**, lighting/textures, complex instructions, detailed layouts, **transparent backgrounds**, custom sizes up to 3840px edge and 1:3–3:1 aspect, quality up to `max`, **image-to-image** (`--input`, up to 16, via the edits endpoint) | No style tiles, no dedicated negative param |
+| `xai` | `grok-imagine-image-2.0` | `XAI_API_KEY` | Fast, spicier; good when Gemini's filter blocks a benign prompt | Text-to-image only — no img2img/tiles/negative |
 
 ### Auto-pick (default when `--provider` is omitted)
 
@@ -230,7 +230,7 @@ The script chooses the **best provider whose key is present and that supports
 what the request needs**. Ranking is `openai > gemini > xai`.
 
 `--input` (img2img / reference images) is supported by **both openai and gemini**
-— openai routes it through the Image 2.5 edits endpoint, gemini through Nano
+— openai routes it through the Image 2.6 edits endpoint, gemini through Nano
 Banana Pro (which also supports style tiles + up to 14 refs). So img2img
 auto-picks openai when its key is present; pass `--provider gemini` for Gemini's
 style-tile / multi-ref compositing.
@@ -254,20 +254,20 @@ the matching guide and rewrite the prompt to it:**
 - `providers/prompts/image.xai.md`
 
 ```bash
-# Force a provider / Image 2.5 variant
+# Force a provider / Image 2.6 variant
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "neon city street, rain" --provider openai --size 4K --quality high
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "panoramic website footer city" --model sunburst --aspect 3:1 --size 4K   # 3840x1280
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "app icon, rounded square" --model sunburst --transparent
 bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate.ts "watercolor fox" --provider xai
 ```
 
-### OpenAI size rules (Image 2.5)
+### OpenAI size rules (Image 2.6)
 
-The API accepts `auto` or `WIDTHxHEIGHT` where both edges are divisible by 16, the aspect is 1:3 to 3:1, the max edge is 3840, and total pixels are 655,360 to 8,294,400. The script computes a valid size from `--size` tier + `--aspect`, and stops with an error for any size the API would reject. It never changes an invalid size to `auto`. Sizes above 2560x1440 are experimental per OpenAI. `input_fidelity` is not supported by Image 2.5 and is never sent.
+The API accepts `auto` or `WIDTHxHEIGHT` where both edges are divisible by 16, the aspect is 1:3 to 3:1, the max edge is 3840, and total pixels are 655,360 to 8,294,400. The script computes a valid size from `--size` tier + `--aspect`, and stops with an error for any size the API would reject. It never changes an invalid size to `auto`. Sizes above 2560x1440 are experimental per OpenAI. `input_fidelity` is not supported by Image 2.6 and is never sent.
 
 Cost is printed from the response `usage` with the published per-token prices (text input $5, image input $8, image output $30 per 1M tokens). Models without a price entry print "no price data".
 
-> Models verified live: September 2026 (`gpt-image-2.5-flare`, `gpt-image-2.5-sunburst`, `grok-imagine-image-quality`, `gemini-3-pro-image`). If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
+> Models verified live: 2026-11-07 (`gpt-image-2.6-sunburst`, `gpt-image-2.6-flare`, `grok-imagine-image-2.0`). `gemini-3-pro-image` is by docs only (Gemini key rejected); Google's docs also list `gemini-nano-banana-2.1` (Flash tier) — not yet adopted. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
 ## Reference Files
 

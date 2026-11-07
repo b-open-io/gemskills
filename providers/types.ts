@@ -25,11 +25,11 @@ export type Capability =
   | "i2v"; // image-to-video (requires a start frame)
 
 /**
- * What each provider supports, per task. Verified against live APIs September 2026.
+ * What each provider supports, per task. Verified against live APIs 2026-11-07.
  *
  * Notes:
- * - openai image = gpt-image-2.5-flare (default) / gpt-image-2.5-sunburst
- *   (opt-in): transparent backgrounds supported (background=transparent).
+ * - openai image = gpt-image-2.6-sunburst (default, finals) / gpt-image-2.6-flare
+ *   (fast drafts): transparent backgrounds supported (background=transparent).
  *   NO negative param, no style-tile concept. Edits support up to 16 images + mask.
  * - xai image = grok-imagine-image: basic text-to-image only.
  * - xai video: grok-imagine-video (v1) does t2v; grok-imagine-video-1.5 is
@@ -66,9 +66,9 @@ export const CAPABILITIES: Record<Task, Record<Provider, Capability[]>> = {
  */
 export const RANKINGS: Record<Task, Provider[]> = {
   image: ["openai", "gemini", "xai"],
-  // Edit defaults to Gemini (conversational edits, styles, dedicated negative).
-  // OpenAI Image 2.5 is excellent at masked inpainting and transparent PNG.
-  edit: ["gemini", "openai"],
+  // Edit prefers OpenAI Image 2.6 (best masked inpainting, consistent edits,
+  // transparent PNG). Gemini-only needs (negative, styleTile) route to Gemini by capability.
+  edit: ["openai", "gemini"],
   video: ["xai", "gemini"],
 };
 

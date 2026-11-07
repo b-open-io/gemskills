@@ -1,7 +1,7 @@
 {
   "name": "gemskills",
   "version": "1.0.3",
-  "description": "Gemini 3 skills for Claude Code - image generation, editing, text, design analysis, spatial awareness, visual critique",
+  "description": "Multi-provider media skills for Claude Code (OpenAI GPT Image 2.6, Gemini, xAI Grok Imagine) - image generation, editing, text, design analysis, spatial awareness, visual critique",
   "type": "module",
   "scripts": {
     "ask": "bun run skills/ask-gemini/scripts/ask_gemini.ts",

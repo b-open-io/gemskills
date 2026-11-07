@@ -1,20 +1,20 @@
 /**
  * OpenAI image provider — direct api.openai.com integration (raw fetch, no SDK).
  *
- * Verified live (September 2026): gpt-image-2.5-flare (default),
- * gpt-image-2.5-sunburst (opt-in). Direct API ids only — never prefix openai/.
+ * Verified live (2026-11-07): gpt-image-2.6-sunburst (default, finals),
+ * gpt-image-2.6-flare (fast drafts). Direct API ids only — never prefix openai/.
  *
  * - Generate: POST /v1/images/generations (JSON) → { data:[{b64_json}], usage }
  *   GPT image models ALWAYS return b64_json (never a URL).
  * - Edit:     POST /v1/images/edits (multipart/form-data) → { data:[{b64_json}], usage }
  *   Up to 16 input images; optional mask (transparent areas = edit region).
  *
- * Image 2.5 supports transparent backgrounds (background=transparent).
- * input_fidelity is rejected by Image 2.5 (invalid_input_fidelity_model), so it is never sent.
+ * Image 2.6 supports transparent backgrounds (background=transparent).
+ * input_fidelity is rejected by Image 2.6 (invalid_input_fidelity_model), so it is never sent.
  *
  * Size rules (docs + live probes, 2026-09-23): "auto", or WIDTHxHEIGHT with both edges
  * divisible by 16, aspect between 1:3 and 3:1, max edge 3840, total pixels 655,360..8,294,400.
- * Quality: low | medium | high | xhigh | max | auto (xhigh and max are new in 2.5).
+ * Quality: low | medium | high | xhigh | max | auto (xhigh and max arrived in 2.5).
  */
 
 import { readFile } from "fs/promises";
@@ -26,8 +26,8 @@ import type { ProviderImageResult } from "./types";
 const OPENAI_BASE = "https://api.openai.com/v1";
 
 export const OPENAI_IMAGE_VARIANTS = {
-  flare: "gpt-image-2.5-flare",
-  sunburst: "gpt-image-2.5-sunburst",
+  flare: "gpt-image-2.6-flare",
+  sunburst: "gpt-image-2.6-sunburst",
 } as const;
 
 const VARIANT_IDS = new Set<string>(Object.values(OPENAI_IMAGE_VARIANTS));
@@ -46,7 +46,7 @@ export function isOpenAIImageVariant(input?: string): boolean {
 
 /** Resolve flare/sunburst aliases or a direct API id. Never returns `openai/`. */
 export function resolveOpenAIImageModel(input?: string): string {
-  const raw = stripGateway((input ?? process.env.OPENAI_IMAGE_MODEL ?? OPENAI_IMAGE_VARIANTS.flare).trim());
+  const raw = stripGateway((input ?? process.env.OPENAI_IMAGE_MODEL ?? OPENAI_IMAGE_VARIANTS.sunburst).trim());
   const key = raw.toLowerCase();
   if (key === "flare" || key === "sunburst") return OPENAI_IMAGE_VARIANTS[key];
   return raw;
@@ -93,7 +93,7 @@ const MAX_RATIO = 3;
 const TIER_PIXELS = { "1K": 1024 * 1024, "2K": 2560 * 1440, "4K": MAX_PIXELS } as const;
 export type OpenAISizeTier = keyof typeof TIER_PIXELS;
 
-/** Throw with the violated rule if WxH is not accepted by Image 2.5. */
+/** Throw with the violated rule if WxH is not accepted by Image 2.6. */
 export function checkOpenAISize(width: number, height: number): void {
   const label = `${width}x${height}`;
   if (width % SIZE_MULTIPLE || height % SIZE_MULTIPLE) {
@@ -155,13 +155,11 @@ export function resolveOpenAISize(size?: string, aspect?: string): string {
   return `${width}x${height}`;
 }
 
-/** USD per 1M tokens, from https://platform.openai.com/docs/pricing (checked 2026-09-23). */
-const IMAGE_2_5_PRICE = { textInput: 5, imageInput: 8, imageOutput: 30 };
-const PRICES_PER_M: Record<string, typeof IMAGE_2_5_PRICE> = {
-  "gpt-image-2.5-flare": IMAGE_2_5_PRICE,
-  "gpt-image-2.5-flare-2026-09-08": IMAGE_2_5_PRICE,
-  "gpt-image-2.5-sunburst": IMAGE_2_5_PRICE,
-  "gpt-image-2.5-sunburst-2026-09-08": IMAGE_2_5_PRICE,
+/** USD per 1M tokens, from https://platform.openai.com/docs/pricing (checked 2026-09-23 for 2.5; 2.6 is priced the same per OpenAI launch notes). */
+const IMAGE_2_6_PRICE = { textInput: 5, imageInput: 8, imageOutput: 30 };
+const PRICES_PER_M: Record<string, typeof IMAGE_2_6_PRICE> = {
+  "gpt-image-2.6-flare": IMAGE_2_6_PRICE,
+  "gpt-image-2.6-sunburst": IMAGE_2_6_PRICE,
 };
 
 type Size = "auto" | (string & {});

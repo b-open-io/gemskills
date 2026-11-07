@@ -171,3 +171,7 @@ Bump the patch version in `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` and
 ## Context Discipline
 
 **Do not read generated tile images back into context.** The scripts output file paths only. Ask the user to visually inspect tiles and provide feedback for iteration.
+
+## Provider support
+
+Tile generation (`browsing-styles/scripts/generate_tiles.ts`) calls **Gemini** directly because tiles are the Gemini style-reference format, so this skill needs `GEMINI_API_KEY`. The optional reference-image path through `generate-image --input` also works on OpenAI (`--provider openai`), but the tile is only consumed as a style reference by Gemini.

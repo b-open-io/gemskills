@@ -65,24 +65,62 @@ bunx skills add b-open-io/gemskills --skill setup
 ```
 </details>
 
-**Requirements**: `GEMINI_API_KEY` ([get one](https://aistudio.google.com/apikey)) is the baseline and powers every skill.
+**Requirements**: at least one provider key. Image, edit, and video skills run on OpenAI, Gemini, or xAI. Several skills are Gemini-only (see the skill support table below).
 
-Optional keys unlock additional providers for image/video/edit:
+Each key unlocks a provider:
 
 | Key | Unlocks | Get one |
 |-----|---------|---------|
-| `GEMINI_API_KEY` | Gemini Nano Banana Pro images, Veo 3.1 video, all 169 styles (default) | [aistudio.google.com](https://aistudio.google.com/apikey) |
-| `OPENAI_API_KEY` | OpenAI **`gpt-image-2.5-flare`** (Flare default; `--model sunburst` for Sunburst) image generation, masked editing, transparent PNG | [platform.openai.com](https://platform.openai.com/api-keys) |
-| `XAI_API_KEY` | xAI **Grok Imagine** image + **`grok-imagine-video-1.5`** video | [console.x.ai](https://console.x.ai) |
+| `GEMINI_API_KEY` | Gemini Nano Banana Pro images (`gemini-3-pro-image`), Veo 3.1 video, style tiles (all 169 styles), dedicated negative prompts, SVG, segmentation, text/vision | [aistudio.google.com](https://aistudio.google.com/apikey) |
+| `OPENAI_API_KEY` | OpenAI **`gpt-image-2.6-sunburst`** (Sunburst default for finals; `--model flare` for fast drafts) image generation, masked editing, transparent PNG | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `XAI_API_KEY` | xAI **`grok-imagine-image-2.0`** images (text-to-image only) + **`grok-imagine-video-1.5`** video | [console.x.ai](https://console.x.ai) |
+| `QUIVERAI_API_KEY` | `generate-svg` (Quiver Arrow) | [quiver.ai](https://quiver.ai) |
 | `REPLICATE_API_TOKEN` | Icon background removal; Veo reference-image / last-frame video | [replicate.com](https://replicate.com/account/api-tokens) |
 
 ### Providers & auto-pick
 
-`generate-image`, `generate-video`, and `edit-image` accept `--provider gemini|openai|xai`.
-Omit it and gemskills **auto-picks the best provider whose key is present and that
-supports the request** — e.g. plain image → `gpt-image-2.5-flare`, video → `grok-imagine-video-1.5`,
-but anything needing **style tiles or a dedicated negative prompt routes to
-Gemini**. Transparency is supported on OpenAI Image 2.5 and Gemini.
+`generate-image`, `generate-video`, `edit-image`, and `generate-icon` accept `--provider`
+(`gemini|openai|xai`; video is `gemini|xai`). Omit it and gemskills **auto-picks the best
+provider whose key is present and that supports the request**. Image and edit rank
+`openai > gemini > xai`, so with `OPENAI_API_KEY` set a plain request runs on
+`gpt-image-2.6-sunburst`. Video ranks `xai > gemini`. Anything needing **style tiles or a
+dedicated negative prompt routes to Gemini**. Force a provider with `--provider gemini`.
+`--model sunburst` (finals, default) or `--model flare` (fast drafts) selects the OpenAI variant.
+If the picked provider's key is missing, the script exits with the exact env var and where to get a key.
+
+| Feature | OpenAI GPT Image 2.6 | Gemini (Nano Banana Pro / Veo 3.1) | xAI (Grok Imagine) |
+|---|---|---|---|
+| Text-to-image | yes | yes | yes (`grok-imagine-image-2.0`) |
+| Image-to-image / reference images | yes (edits endpoint, up to 16) | yes (up to 14) | no |
+| Masked edit | yes | yes | no |
+| Transparent background | yes (`--transparent`) | yes | no |
+| Custom size / aspect | `1K\|2K\|4K` or `WxH`, aspect 1:3 to 3:1 | `--size`, `--aspect` | `--aspect`, 1k/2k |
+| `--quality` | low, medium, high, xhigh, max, auto | no | no |
+| Style tiles (`--style`) | no (text hints only) | yes | no (text hints only) |
+| Negative prompt | no (folded into prompt) | yes | no (folded into prompt) |
+| Video | no | Veo 3.1 (t2v, i2v) | `grok-imagine-video`, `-1.5` (i2v) |
+
+### Skill provider support
+
+| Skill | OpenAI | Gemini | xAI | Notes |
+|---|---|---|---|---|
+| generate-image | yes | yes | yes | auto-pick; `--style` and `--negative` need Gemini |
+| edit-image | yes | yes | no | outpaint mode, `--negative`, `--count`, `--seed`, `--guidance` need Gemini |
+| generate-video | no | yes | yes | no OpenAI video model |
+| generate-icon | yes | yes | no | background removal needs `REPLICATE_API_TOKEN` |
+| avatar-portrait / pixel-avatar | yes | yes | no | runs through generate-image with `--input` |
+| team-group-photo | yes | yes | no | multi-image composite; `--style` routes to Gemini |
+| style-creator | no | yes | no | tile generation (`generate_tiles.ts`) calls Gemini directly |
+| section-dividers | no | yes | no | uses `--negative`; Gemini only |
+| browsing-styles | no | yes | no | style tiles are Gemini reference images; `generate_tiles.ts` calls Gemini |
+| deck-creator | yes | yes | yes | slides use generate-image; the playground app itself is Gemini only |
+| generate-svg | no | no | no | Quiver Arrow (`arrow-preview`); needs `QUIVERAI_API_KEY` |
+| upscale-image | no | yes | no | Imagen upscale through Vertex AI credentials |
+| segment-image | no | yes | no | Gemini vision |
+| ask-gemini | no | yes | no | Gemini text/vision |
+| visual-planner | n/a | optional | n/a | tldraw diagrams; Gemini only for optional backgrounds |
+| optimize-images | n/a | n/a | n/a | local sharp, no provider |
+| setup | yes | yes | yes | detects all three keys |
 
 Set your own defaults interactively with **`/gemskills:setup`** (or the `setup`
 skill), or pin them via env (`GEMSKILLS_IMAGE_PROVIDER`, `GEMSKILLS_VIDEO_PROVIDER`,

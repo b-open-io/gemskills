@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.72
+
+GPT Image 2.6 default (checked 2026-11-07 against the OpenAI, xAI, and Google model lists).
+
+- **OpenAI**: `--model flare|sunburst` and the full ids now map to `gpt-image-2.6-flare` and `gpt-image-2.6-sunburst`. Sunburst is the default (finals, more consistent edits). Flare is documented for fast drafts. Size, quality, transparent, and edits handling were re-tested on 2.6.
+- **Auto-pick**: edit now ranks `openai > gemini` (image already did). Gemini-only flags (`--mode`, `--count`, `--seed`, `--guidance`, `--negative`, `--style`) still route to Gemini.
+- **generate-icon**: new OpenAI path (`--provider`, `--model`) for the master image, with the existing background-removal pipeline.
+- **xAI**: image default is `grok-imagine-image-2.0` (the old `grok-imagine-image-quality` id is no longer in the model list).
+- **Docs**: README has a feature table and a per-skill provider table. Every skill states its provider support. The content agent, setup flow, and codex adapter describe the three providers.
+- **Not changed, flagged**: Google lists `gemini-nano-banana-2.1`, a newer Flash-tier image model. The Gemini key in the test environment was rejected, so the Gemini path was not live-tested and the default stays `gemini-3.1-flash-image` / `gemini-3-pro-image`.
+
 ## 0.0.71
 
 GPT Image 2.5 sizes and quality (API rules checked 2026-09-23 against docs and live probes).

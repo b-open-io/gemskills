@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "generate an icon",
 
 # Generate Icon Skill
 
-Generate professional icons for any platform using Gemini AI with automatic background removal, cropping, and multi-size export.
+Generate professional icons for any platform using OpenAI GPT Image 2.6 or Gemini (auto-picked by available key) with automatic background removal, cropping, and multi-size export.
 
 ## Quick Start
 
@@ -138,3 +138,7 @@ output/
 | ICNS not generated | Only works on macOS (requires iconutil) |
 | Background not removed cleanly | Try a simpler prompt with solid background |
 | Icon too complex | Simplify prompt, avoid "detailed" or "realistic" |
+
+## Provider support
+
+The master image comes from **OpenAI `gpt-image-2.6-sunburst`** or **Gemini**. With no flag, auto-pick prefers OpenAI when `OPENAI_API_KEY` is set and falls back to the only key present. Force one with `--provider openai|gemini`. `--model sunburst|flare` selects the OpenAI variant and implies `--provider openai`. A `--input` reference image goes through the OpenAI edits endpoint or the Gemini reference path. xAI is not supported (its image model has no reference images). Background removal needs `REPLICATE_API_TOKEN` regardless of provider; `--skip-remove-bg` skips it. A missing provider key stops the script with the exact env var to set.

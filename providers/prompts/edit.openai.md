@@ -1,23 +1,23 @@
 ---
 provider: openai
 task: edit
-model: gpt-image-2.5-flare
+model: gpt-image-2.6-sunburst
 version: 2
 ---
 
-# Prompt guide — OpenAI Flare / Image 2.5 (edit / inpaint / compose)
+# Prompt guide — OpenAI Sunburst / Flare (Image 2.6, edit / inpaint / compose)
 
-Default model: `gpt-image-2.5-flare` (Flare). High-precision opt-in:
-`gpt-image-2.5-sunburst` (Sunburst) via `--model sunburst` or
-`OPENAI_IMAGE_MODEL`. Direct API ids only — never prefix `openai/`.
+Default model: `gpt-image-2.6-sunburst` (Sunburst, finals; more consistent
+across edits). Fast drafts: `gpt-image-2.6-flare` (Flare) via `--model flare`
+or `OPENAI_IMAGE_MODEL`. Direct API ids only — never prefix `openai/`.
 
 The edits endpoint takes up to **16 input images** and an optional **mask**
 (transparent areas of the PNG mask = the region to change). Returns `b64_json`.
 
 ## Flare vs Sunburst
-- **Flare** — default for most edits and composites.
-- **Sunburst** — opt in when the edit needs tighter instruction following or
-  precise type/layout.
+- **Sunburst** — default for edits and composites; best instruction following
+  and consistency across repeated edits.
+- **Flare** — fast tier for quick draft edits.
 
 ## Masked inpainting
 - Describe **only what should appear in the masked region**, plus how it should
@@ -44,7 +44,7 @@ The edits endpoint takes up to **16 input images** and an optional **mask**
 ## Don't
 - Do not confuse **mask transparency** (edit region) with **output alpha**
   (transparent background). Request output transparency separately.
-- **No `input_fidelity` control** on Image 2.5 (always high). If you need an
+- **No `input_fidelity` control** on Image 2.6 (always high). If you need an
   explicit low/high fidelity knob, that's gpt-image-1/1.5.
 - No negative parameter — phrase exclusions positively.
 

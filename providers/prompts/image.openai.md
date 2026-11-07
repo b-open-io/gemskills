@@ -1,30 +1,30 @@
 ---
 provider: openai
 task: image
-model: gpt-image-2.5-flare
+model: gpt-image-2.6-sunburst
 version: 2
 ---
 
-# Prompt guide — OpenAI Flare / Image 2.5 (text-to-image)
+# Prompt guide — OpenAI Sunburst / Flare (Image 2.6, text-to-image)
 
-Default model: `gpt-image-2.5-flare` (Flare). High-precision opt-in:
-`gpt-image-2.5-sunburst` (Sunburst) via `--model sunburst` or
-`OPENAI_IMAGE_MODEL`. Pass the **direct API id** only — never prefix `openai/`.
+Default model: `gpt-image-2.6-sunburst` (Sunburst, finals). Fast drafts:
+`gpt-image-2.6-flare` (Flare) via `--model flare` or `OPENAI_IMAGE_MODEL`. Pass the **direct API id** only — never prefix `openai/`.
 
-Image 2.5 is reasoning-augmented: it reads dense, well-structured natural
+Image 2.6 is reasoning-augmented: it reads dense, well-structured natural
 language and renders text inside images far better than prior models. Tune
 prompts differently than Gemini.
 
 ## Flare vs Sunburst
-- **Flare** (`gpt-image-2.5-flare`) — default. Lisa/content go-to.
-- **Sunburst** (`gpt-image-2.5-sunburst`) — high-precision opt-in for tighter
-  layouts, fine type, and exact instruction following.
+- **Sunburst** (`gpt-image-2.6-sunburst`) — default. Higher-quality tier for
+  final output: tighter layouts, fine type, exact instruction following.
+- **Flare** (`gpt-image-2.6-flare`) — fast tier for drafts and iteration
+  (`--model flare`). Re-run the chosen draft on Sunburst for the final.
 
 ## Do
 - **Write in clear prose, not keyword lists.** One or two tight paragraphs.
   State subject → setting → lighting → composition → mood, in that order.
 - **Be explicit about any in-image text.** Quote it: `the sign reads "OPEN"`.
-  Image 2.5 is strong at legible typography — use it.
+  Image 2.6 is strong at legible typography — use it.
 - **Name the framing and lens feel** ("eye-level, 35mm, shallow depth of field").
 - **State the output intent** ("product hero on seamless white", "editorial
   cover"). The model uses intent to resolve ambiguity.
@@ -33,13 +33,13 @@ prompts differently than Gemini.
   (CLI: `--transparent`).
 
 ## Don't
-- **No negative-prompt syntax.** Image 2.5 has no negative parameter. To
+- **No negative-prompt syntax.** Image 2.6 has no negative parameter. To
   exclude something, say it positively: instead of "no people", write "an empty
   plaza". (The skill auto-appends an `Avoid: …` clause when `--negative` is set,
   but prefer baking exclusions into the description.)
 - **Don't over-stack styles.** One coherent aesthetic beats five adjectives.
 
-## Themes that play to Image 2.5
+## Themes that play to Image 2.6
 - Lighting and material textures
 - Complex multi-step instructions
 - Detailed layouts and typography

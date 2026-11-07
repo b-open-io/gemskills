@@ -24,7 +24,7 @@ The canonical, detailed guidance lives in
   (character + location + props) for scene/character consistency.
 - **Negative prompt** (`--negative`): a true negative parameter — use it.
 
-Transparency is also supported on OpenAI Image 2.5 (`--transparent`).
+Transparency is also supported on OpenAI Image 2.6 (`--transparent`).
 
 Keep the full scene-description discipline (subject, environment, lighting,
 composition, style, mood, technical specs).

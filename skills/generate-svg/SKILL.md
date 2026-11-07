@@ -81,3 +81,7 @@ Cost: 1 credit per request (regardless of `--count`).
 Rate limit: 20 requests per 60 seconds.
 
 > Last verified: March 2026.
+
+## Provider support
+
+Uses Quiver Arrow (`arrow-preview`) with `QUIVERAI_API_KEY` or `QUIVER_API_KEY`. It does not use OpenAI, Gemini, or xAI keys. For raster artwork, use `generate-image`.

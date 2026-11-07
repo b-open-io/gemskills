@@ -240,3 +240,7 @@ npm rebuild sharp
 5. Optimize: `bun run --cwd ${CLAUDE_PLUGIN_ROOT} ${CLAUDE_PLUGIN_ROOT}/skills/optimize-images/scripts/optimize-images.ts`
 6. Verify: Check sizes and visual quality
 7. Commit: Include optimized images in deployment
+
+## Provider support
+
+Local `sharp` processing. No provider key is needed.

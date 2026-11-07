@@ -69,3 +69,7 @@ Uses **gemini-3.1-pro-preview** (Gemini 3.1 Pro) - optimized for:
 - Technical analysis
 
 > Last verified: February 2026. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`. See `references/gemini-api.md` in this skill directory for current models and Google's official `gemini-api-dev` skill for the canonical source.
+
+## Provider support
+
+Gemini only by design (text, vision, and writing feedback from Gemini). Requires `GEMINI_API_KEY`. For OpenAI or xAI image work, use `generate-image` or `edit-image`.

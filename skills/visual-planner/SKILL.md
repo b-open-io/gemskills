@@ -323,3 +323,7 @@ Key simplifications vs raw `.tldr`:
 - **`references/tldraw-mcp.md`** — How the official tldraw MCP works, focused shape format spec, fill/color/geo mappings. Our skill provides equivalent functionality without requiring the MCP server
 - **`references/workflow-patterns.md`** — Supervisor, hierarchical, pipeline, peer-to-peer, and human-in-loop patterns with layout recommendations
 - **`references/design-system.md`** — Planning visual conventions, phase indicators, color system
+
+## Provider support
+
+Diagram creation (`create_diagram.ts`) is local tldraw tooling and needs no provider key. Optional AI backgrounds use `generate-image`, which accepts OpenAI, Gemini, or xAI keys.

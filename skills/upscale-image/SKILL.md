@@ -92,3 +92,7 @@ Uses `imagen-3.0-generate-002` via Vertex AI upscaleImage API.
 ## Why Vertex AI?
 
 The Imagen upscaling API is only available through Vertex AI, not the standard Gemini API. This is a Google limitation - the `upscaleImage` method in the @google/genai SDK only works with Vertex AI backend.
+
+## Provider support
+
+Gemini family only: Imagen upscaling is available through Vertex AI credentials. OpenAI and xAI have no equivalent endpoint in gemskills. For a generative re-render, use `edit-image` (OpenAI or Gemini).

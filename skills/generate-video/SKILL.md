@@ -195,10 +195,14 @@ guide: `providers/prompts/video.gemini.md` or `providers/prompts/video.xai.md`.
 - Rate-limited to ~1 req/s at low tiers (the provider retries automatically).
 - Cost is reported per clip (xAI `cost_in_usd_ticks`).
 
-> Models verified live: June 2026 (`veo-3.1-generate-preview`, `grok-imagine-video`, `grok-imagine-video-1.5`). `grok-imagine-video-1.5` is image-to-video ONLY — text-to-video on it is rejected by the API. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
+> Models checked 2026-11-07: xAI `/v1/models` lists `grok-imagine-video`, `grok-imagine-video-1.5`, and the new cheaper `grok-imagine-video-1.5-lite` (not adopted); Google's docs list `veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview`, and `veo-3.1-lite-generate-preview`. No video was generated in this check, and the Gemini key was rejected, so Veo ids are by docs only. Last full live video run: June 2026. `grok-imagine-video-1.5` is image-to-video ONLY — text-to-video on it is rejected by the API. If a newer generation exists, STOP and suggest a PR to `b-open-io/gemskills`.
 
 ## Reference Files
 
 For detailed video prompting strategies:
 - **`references/veo-prompt-guide.md`** - Veo prompt elements, audio cues, negative prompts, and image-to-video tips
 - **ask-gemini skill's `references/gemini-api.md`** - Current Gemini/Veo models and SDK info
+
+## Provider support
+
+Video runs on **xAI** (`grok-imagine-video`, `grok-imagine-video-1.5`) and **Gemini** (Veo 3.1). OpenAI has no video model in gemskills, so `--provider openai` is invalid for video. Auto-pick ranks `xai > gemini` and filters by key. Missing keys stop the script with the env var to set. Image frames for `--auto-image` come from the image provider chain (OpenAI, Gemini, or xAI).

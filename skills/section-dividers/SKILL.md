@@ -286,3 +286,7 @@ From `tokenpass-web/src/components/BorderedParallax.tsx`:
 3. If image has transparent space, account for it
 4. Test on both mobile AND desktop
 5. Fixed pixel values work consistently across screen sizes
+
+## Provider support
+
+Generation uses `generate-image` with `--negative`. A dedicated negative prompt exists only on **Gemini**, so auto-pick routes this skill to Gemini and needs `GEMINI_API_KEY`. With `--provider openai`, the negatives are folded into the prompt text and the script prints a note; check the strip edges before using the result. Background removal needs `REPLICATE_API_TOKEN`.

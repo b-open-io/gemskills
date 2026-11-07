@@ -211,3 +211,7 @@ project/deck/
 - **`references/generation.md`** - Prompt templates, parallel generation, PDF stitching
 - **`references/presenter.md`** - HTML presenter build, video modes, keyboard shortcuts
 - **`assets/videos/`** - Bundled ambient video backgrounds (seeded to ~/.gemskills on first use)
+
+## Provider support
+
+Slide generation runs through `generate-image` and works on **OpenAI** (`gpt-image-2.6-sunburst`, strong for slide text and layout), **Gemini**, and **xAI**. Auto-pick prefers OpenAI when `OPENAI_API_KEY` is set; `--style <id>` routes to Gemini. The playground web app (`playground/`) has its own server code that calls Gemini directly for in-app generation, editing, and video, so the playground needs `GEMINI_API_KEY`. Reason: it ships self-contained server helpers and does not import the plugin's provider layer. Use the CLI path above for OpenAI or xAI decks.

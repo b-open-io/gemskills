@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "create an avatar f
 
 # Avatar Portrait
 
-Generate stylized avatar portraits from reference photos using Gemini image generation, preserving recognizable likeness while applying a requested visual style.
+Generate stylized avatar portraits from reference photos using the generate-image script (OpenAI GPT Image 2.6 or Gemini, auto-picked), preserving recognizable likeness while applying a requested visual style.
 
 ## When to Use
 
@@ -153,3 +153,7 @@ Save to: /path/to/output/dan-pixel.png
 
 For background style references:
 - **`references/background-styles.md`** - Common background approaches for avatars
+
+## Provider support
+
+Generate through `skills/generate-image/scripts/generate.ts` with `--input <photo>`. Reference-image input works on **OpenAI** (`gpt-image-2.6-sunburst` via the edits endpoint) and **Gemini** (Nano Banana Pro). With `OPENAI_API_KEY` set, auto-pick uses OpenAI; add `--style <id>` and it routes to Gemini because style tiles are Gemini reference images. Force a provider with `--provider openai|gemini`. xAI cannot take reference images, so it cannot make likeness avatars.

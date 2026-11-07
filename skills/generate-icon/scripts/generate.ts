@@ -3,7 +3,7 @@
  * Generate Icon - Main entry point
  *
  * Pipeline:
- * 1. Generate master image via Gemini (or use provided master)
+ * 1. Generate master image via OpenAI GPT Image 2.6 or Gemini (auto-picked; or use provided master)
  * 2. Remove background via Replicate rembg
  * 3. Crop whitespace and center on square canvas
  * 4. Export all sizes for the selected preset
@@ -36,6 +36,9 @@ const { resolvePluginRoot } = await import(resolve(import.meta.dir, "../../../re
 });
 const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiImage } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
+const { openaiImage, openaiEdit, resolveImageModelFlag } = await import(resolve(PLUGIN_ROOT, "providers/openai.ts")) as typeof import("../../../providers/openai");
+const { resolveProvider } = await import(resolve(PLUGIN_ROOT, "providers/config.ts")) as typeof import("../../../providers/config");
+type IconCapability = import("../../../providers/types").Capability;
 import {
   removeBackground,
   cropAndCenter,
@@ -71,6 +74,8 @@ interface Args {
   skipGenerate: boolean;
   skipRemoveBg: boolean;
   backgroundColor?: string;
+  provider?: string;
+  model?: string;
 }
 
 function parseArgs(): Args {
@@ -114,6 +119,8 @@ function parseArgs(): Args {
     console.error("  --skip-generate       Skip AI generation (requires --master-image)");
     console.error("  --skip-remove-bg      Skip background removal");
     console.error("  --bg-color <hex>      Background color for non-transparent presets");
+    console.error("  --provider <name>     openai | gemini (default: auto-pick, openai when OPENAI_API_KEY is set)");
+    console.error("  --model <id>          sunburst | flare | gpt-image-2.6-sunburst | gpt-image-2.6-flare (sets provider openai)");
     process.exit(1);
   }
 
@@ -153,6 +160,8 @@ function parseArgs(): Args {
     skipGenerate,
     skipRemoveBg: parsed["skip-remove-bg"] === true,
     backgroundColor: parsed["bg-color"] as string | undefined,
+    provider: parsed.provider as string | undefined,
+    model: parsed.model as string | undefined,
   };
 }
 
@@ -314,9 +323,11 @@ async function main() {
     // Copy to output directory
     await writeFile(masterRawPath, await readFile(args.masterImage));
   } else if (!args.skipGenerate) {
-    console.log("Stage 1: Generating master image via Gemini...");
+    const iconCaps: IconCapability[] = args.input ? ["multiRef"] : [];
+    const modelFlag = resolveImageModelFlag(args.model);
+    const { provider, source } = await resolveProvider("image", { explicit: args.provider || modelFlag.provider, caps: iconCaps });
+    console.log(`Stage 1: Generating master image via ${provider} (${source})...`);
 
-    const apiKey = getApiKey();
     const basePrompt = ICON_PROMPT_TEMPLATE.replace("{userPrompt}", args.prompt);
 
     const options: {
@@ -328,12 +339,14 @@ async function main() {
       aspectRatio: "1:1",
     };
 
-    // Add reference image if provided
+    // Add reference image if provided (gemini path only; openai passes the file to the edits endpoint)
     let inputImageCleanup: (() => Promise<void>) | undefined;
+    let openaiReferencePath: string | undefined;
     if (args.input) {
       const prepared = await prepareInputImagePath(args.input);
       inputImageCleanup = prepared.cleanup;
-      const inputImage = await loadImage(prepared.path);
+      openaiReferencePath = prepared.path;
+      const inputImage = provider === "gemini" ? await loadImage(prepared.path) : null;
       if (inputImage) {
         console.log(`  Using reference image: ${args.input}`);
         options.inputImage = inputImage;
@@ -347,17 +360,25 @@ async function main() {
           attempt === 1
             ? basePrompt
             : `${basePrompt}\n\nCRITICAL: Do NOT render checkerboard transparency previews, tiled transparency patterns, or gray square grids. Keep interior regions as solid color or true transparency only.`;
-        const result = await callGeminiImage(apiKey, iconPrompt, options);
-
-        if (result.images.length === 0) {
-          console.error("Error: No image generated");
-          if (result.text) console.error(`Model response: ${result.text}`);
+        if (provider === "openai") {
+          const openaiOptions = { model: modelFlag.openaiModel, size: "1024x1024", quality: "high" as const, outputPath: masterRawPath };
+          if (openaiReferencePath) {
+            await openaiEdit(iconPrompt, { ...openaiOptions, images: [openaiReferencePath] });
+          } else {
+            await openaiImage(iconPrompt, openaiOptions);
+          }
+        } else if (provider === "gemini") {
+          const result = await callGeminiImage(getApiKey(), iconPrompt, options);
+          if (result.images.length === 0) {
+            console.error("Error: No image generated");
+            if (result.text) console.error(`Model response: ${result.text}`);
+            process.exit(1);
+          }
+          await writeFile(masterRawPath, Buffer.from(result.images[0].data, "base64"));
+        } else {
+          console.error(`Error: generate-icon supports openai or gemini, not ${provider}.`);
           process.exit(1);
         }
-
-        // Save master
-        const imageData = result.images[0];
-        await writeFile(masterRawPath, Buffer.from(imageData.data, "base64"));
 
         const checkerboard = await hasCheckerboardArtifact(masterRawPath);
         if (checkerboard && attempt < 2) {

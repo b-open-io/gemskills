@@ -153,3 +153,7 @@ Same individual portraits, different background input.
 - Generate individual portraits first (Step 3) to lock in style per person
 - Add "Uniform [style name] style" to group prompt
 - Generate at 2K for better detail consistency
+
+## Provider support
+
+Every step runs through `generate-image`. Portraits and the group composite need reference-image input, which **OpenAI** (`gpt-image-2.6-sunburst`, up to 16 inputs) and **Gemini** (up to 14) support. xAI does not. Auto-pick uses OpenAI when `OPENAI_API_KEY` is set. Steps that pass `--style <id>` route to Gemini (style tiles). For a single-provider run, add `--provider openai` or `--provider gemini`; with `--provider openai` the style becomes text hints only.
