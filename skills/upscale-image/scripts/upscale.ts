@@ -23,6 +23,7 @@ const PLUGIN_ROOT = resolvePluginRoot(import.meta.dir);
 const { callGeminiUpscale } = await import(resolve(PLUGIN_ROOT, "utils.ts")) as typeof import("../../../utils");
 type GeminiImageResult = import("../../../utils").GeminiImageResult;
 const { loadImageRequired, saveImage, parseArgs } = await import(resolve(PLUGIN_ROOT, "shared.ts")) as typeof import("../../../shared");
+const { atlasUpscale } = await import(resolve(PLUGIN_ROOT, "providers/atlas-upscale.ts")) as typeof import("../../../providers/atlas-upscale");
 
 const { positional, flags } = parseArgs();
 const inputPath = positional[0];
@@ -34,11 +35,26 @@ if (!inputPath) {
   console.error("  --factor <x2|x4>   Upscale factor (default: x2)");
   console.error("  --format <fmt>     Output format: png, jpeg, webp");
   console.error("  --quality <n>      JPEG quality (1-100)");
+  console.error("  --provider <name>  vertex | atlas (default: vertex)");
   console.error("  --project <id>     Google Cloud project");
   console.error("  --output <path>    Output file path");
-  console.error("\nRequires Vertex AI credentials:");
-  console.error("  - GOOGLE_CLOUD_PROJECT environment variable");
-  console.error("  - Run: gcloud auth application-default login");
+  console.error("\nCredentials:");
+  console.error("  - Vertex (default): GOOGLE_CLOUD_PROJECT + gcloud ADC");
+  console.error("  - Atlas: ATLASCLOUD_API_KEY");
+  process.exit(1);
+}
+
+const provider = flags.provider || "vertex";
+if (provider !== "vertex" && provider !== "atlas") {
+  console.error(`Error: Invalid provider "${provider}". Valid: vertex, atlas`);
+  process.exit(1);
+}
+if (flags.factor && flags.factor !== "x2" && flags.factor !== "x4") {
+  console.error(`Error: Invalid factor "${flags.factor}". Valid: x2, x4`);
+  process.exit(1);
+}
+if (flags.format && !["png", "jpeg", "jpg", "webp"].includes(flags.format)) {
+  console.error(`Error: Invalid format "${flags.format}". Valid: png, jpeg, jpg, webp`);
   process.exit(1);
 }
 
@@ -49,10 +65,22 @@ if (flags.quality) options.jpegQuality = parseInt(flags.quality);
 if (flags.project) options.project = flags.project;
 if (flags.location) options.location = flags.location;
 
-const imageData = await loadImageRequired(inputPath);
-
-console.error("Upscaling image (via Vertex AI)...\n");
-const result: GeminiImageResult = await callGeminiUpscale(imageData, options);
+let result: GeminiImageResult;
+if (provider === "atlas") {
+  if (flags.project || flags.location || flags.quality) {
+    console.error("Note: Atlas Cloud ignores --project, --location, and --quality.\n");
+  }
+  console.error("Upscaling image (via Atlas Cloud)...\n");
+  const atlasResult = await atlasUpscale(inputPath, {
+    factor: flags.factor === "x4" ? "x4" : "x2",
+    outputFormat: (flags.format || "png") as "jpeg" | "png" | "webp" | "jpg",
+  });
+  result = { images: [{ data: atlasResult.data, mimeType: atlasResult.mimeType }] };
+} else {
+  const imageData = await loadImageRequired(inputPath);
+  console.error("Upscaling image (via Vertex AI)...\n");
+  result = await callGeminiUpscale(imageData, options);
+}
 
 for (let i = 0; i < result.images.length; i++) {
   const img = result.images[i];

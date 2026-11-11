@@ -76,6 +76,7 @@ Each key unlocks a provider:
 | `XAI_API_KEY` | xAI **`grok-imagine-image-2.0`** images (text-to-image only) + **`grok-imagine-video-1.5`** video | [console.x.ai](https://console.x.ai) |
 | `QUIVERAI_API_KEY` | `generate-svg` (Quiver Arrow) | [quiver.ai](https://quiver.ai) |
 | `REPLICATE_API_TOKEN` | Icon background removal; Veo reference-image / last-frame video | [replicate.com](https://replicate.com/account/api-tokens) |
+| `ATLASCLOUD_API_KEY` | Optional **`atlascloud/image-upscaler`** provider for 2x/4x upscaling | [atlascloud.ai](https://www.atlascloud.ai/) |
 
 ### Providers & auto-pick
 
@@ -323,7 +324,7 @@ Use ask-gemini for prompt refinement, design critique, and full page redesigns f
 | **team-group-photo** | Individual styled portraits composited into group scenes |
 | **generate-icon** | Platform icons (favicon, iOS, Android, PWA, desktop) with auto sizing |
 | **edit-image** | Inpainting and outpainting with masks |
-| **upscale-image** | 2x/4x upscaling via Vertex AI |
+| **upscale-image** | 2x/4x upscaling via Vertex AI or optional Atlas Cloud provider |
 | **segment-image** | Object identification and extraction |
 | **optimize-images** | Batch compress PNGs/JPEGs for web using sharp |
 | **generate-svg** | Vector graphics, logos, and icons |
